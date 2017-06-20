@@ -59,7 +59,25 @@ define(
                     key: 'object-properties'
                 }
             };
+            var notesRegion = {
+                name: 'notes',
+                title: 'Notes Region',
+                modes: ['browse'],
+                content: {
+                    key: 'object-notes'
+                }
+            };
+            var editNotesRegion = {
+                name: 'editNotes',
+                title: 'Edit Notes Region',
+                modes: ['edit'],
+                content: {
+                    key: 'edit-notes'
+                }
+            };
             this.addRegion(new Region(metadataRegion), 0);
+            this.addRegion(new Region(notesRegion), 1);
+            this.addRegion(new Region(editNotesRegion), 1);
         };
 
         return InspectorRegion;

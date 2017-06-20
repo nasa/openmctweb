@@ -34,12 +34,14 @@ define(
         function SaveAndStopEditingAction(
             dialogService,
             notificationService,
+            editNotesService,
             context
         ) {
             this.context = context;
             this.domainObject = (context || {}).domainObject;
             this.dialogService = dialogService;
             this.notificationService = notificationService;
+            this.editNotesService = editNotesService;
         }
 
         /**
@@ -51,7 +53,7 @@ define(
          */
         SaveAndStopEditingAction.prototype.perform = function () {
             var domainObject = this.domainObject,
-                saveAction = new SaveAction(this.dialogService, this.notificationService, this.context);
+                saveAction = new SaveAction(this.dialogService, this.notificationService, this.editNotesService, this.context);
 
             function closeEditor() {
                 return domainObject.getCapability("editor").finish();

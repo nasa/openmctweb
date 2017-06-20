@@ -37,6 +37,7 @@ define(
                 actionContext,
                 dialogService,
                 notificationService,
+                editNotesService,
                 mockActionCapability,
                 capabilities = {},
                 action;
@@ -86,6 +87,11 @@ define(
                     ["info", "error"]
                 );
 
+                editNotesService = jasmine.createSpyObj(
+                    "editNotesService",
+                    ["saveNotes"]
+                );
+
                 mockDomainObject.hasCapability.andReturn(true);
                 mockDomainObject.getCapability.andCallFake(function (capability) {
                     return capabilities[capability];
@@ -94,7 +100,7 @@ define(
                 mockEditorCapability.save.andReturn(mockPromise(true));
                 mockEditorCapability.isEditContextRoot.andReturn(true);
 
-                action = new SaveAndStopEditingAction(dialogService, notificationService, actionContext);
+                action = new SaveAndStopEditingAction(dialogService, notificationService, editNotesService, actionContext);
             });
 
 

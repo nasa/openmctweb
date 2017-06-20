@@ -40,6 +40,7 @@ define([
     "text!./res/templates/back-arrow.html",
     "text!./res/templates/items/items.html",
     "text!./res/templates/browse/object-properties.html",
+    "text!./res/templates/browse/object-notes.html",
     "text!./res/templates/browse/inspector-region.html",
     'legacyRegistry'
 ], function (
@@ -62,6 +63,7 @@ define([
     backArrowTemplate,
     itemsTemplate,
     objectPropertiesTemplate,
+    objectNotesTemplate,
     inspectorRegionTemplate,
     legacyRegistry
 ) {
@@ -191,6 +193,10 @@ define([
                     "template": objectPropertiesTemplate
                 },
                 {
+                    "key": "object-notes",
+                    "template": objectNotesTemplate
+                },
+                {
                     "key": "inspector-region",
                     "template": inspectorRegionTemplate
                 }
@@ -226,7 +232,7 @@ define([
                         "$window"
                     ],
                     "group": "windowing",
-                    "cssClass": "icon-new-window",
+                    "cssclass": "icon-new-window",
                     "priority": "preferred"
                 },
                 {
@@ -241,7 +247,7 @@ define([
                 {
                     "key": "items",
                     "name": "Items",
-                    "cssClass": "icon-thumbs-strip",
+                    "cssclass": "icon-thumbs-strip",
                     "description": "Grid of available items",
                     "template": itemsTemplate,
                     "uses": [

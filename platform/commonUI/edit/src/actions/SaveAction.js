@@ -34,11 +34,13 @@ define(
         function SaveAction(
             dialogService,
             notificationService,
+            editNotesService,
             context
         ) {
             this.domainObject = (context || {}).domainObject;
             this.dialogService = dialogService;
             this.notificationService = notificationService;
+            this.editNotesService = editNotesService;
         }
 
         /**
@@ -58,6 +60,8 @@ define(
             // used to insulate underlying objects from changes made
             // during editing.
             function doSave() {
+                //First save the notes
+                self.editNotesService.saveNotes(domainObject);
                 return domainObject.getCapability("editor").save();
             }
 

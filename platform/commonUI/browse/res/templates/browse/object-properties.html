@@ -25,7 +25,8 @@
             <em class="t-inspector-part-header">Properties</em>
             <div class="inspector-properties"
                  ng-repeat="data in metadata"
-                 ng-class="{ first:$index === 0 }">
+                 ng-class="{ first:$index === 0 }"
+                 ng-if="data.name !== 'Notes'">
                 <div class="label">{{ data.name }}</div>
                 <div class="value">{{ data.value }}</div>
             </div>

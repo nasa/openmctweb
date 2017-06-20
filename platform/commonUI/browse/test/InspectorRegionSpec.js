@@ -35,7 +35,7 @@ define(
             });
 
             it("creates default region parts", function () {
-                expect(inspectorRegion.regions.length).toBe(1);
+                expect(inspectorRegion.regions.length).toBe(3);
             });
 
         });

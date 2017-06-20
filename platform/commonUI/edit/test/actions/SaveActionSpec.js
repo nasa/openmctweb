@@ -31,6 +31,7 @@ define(
                 actionContext,
                 mockDialogService,
                 mockNotificationService,
+                mockEditNotesService,
                 mockActionCapability,
                 capabilities = {},
                 action;
@@ -81,6 +82,11 @@ define(
                     ["info", "error"]
                 );
 
+                mockEditNotesService = jasmine.createSpyObj(
+                    "editNotesService",
+                    ["saveNotes"]
+                );
+
                 mockDomainObject.hasCapability.andReturn(true);
                 mockDomainObject.getCapability.andCallFake(function (capability) {
                     return capabilities[capability];
@@ -89,7 +95,7 @@ define(
                 mockEditorCapability.save.andReturn(mockPromise(true));
                 mockEditorCapability.isEditContextRoot.andReturn(true);
 
-                action = new SaveAction(mockDialogService, mockNotificationService, actionContext);
+                action = new SaveAction(mockDialogService, mockNotificationService, mockEditNotesService, actionContext);
             });
 
             it("only applies to domain object with an editor capability", function () {
