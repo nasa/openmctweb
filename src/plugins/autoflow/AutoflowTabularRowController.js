@@ -66,19 +66,10 @@ define([], function () {
      * Activate this controller; begin listening for changes.
      */
     AutoflowTabularRowController.prototype.activate = function () {
-        this.unsubscribe = this.openmct.telemetry.subscribe(
+        this.unsubscribe = this.openmct.telemetry.latest(
             this.domainObject,
             this.updateRowData.bind(this)
         );
-
-        this.openmct.telemetry.request(
-            this.domainObject,
-            { size: 1 }
-        ).then(function (history) {
-            if (!this.initialized && history.length > 0) {
-                this.updateRowData(history[history.length - 1]);
-            }
-        }.bind(this));
     };
 
     /**

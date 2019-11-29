@@ -45,8 +45,17 @@
                 openmct.install(openmct.plugins.UTCTimeSystem());
                 openmct.install(openmct.plugins.ImportExport());
                 openmct.install(openmct.plugins.AutoflowView({
-                    type: "telemetry.panel"
+                    type: "view.autoflow"
                 }));
+                openmct.types.addType("view.autoflow", {
+                    key: "view.autoflow",
+                    name: "Autoflow",
+                    creatable: true,
+                    initialize: function (model) {
+                        model.composition = [];
+                        return model
+                    }
+                });
                 openmct.install(openmct.plugins.Conductor({
                     menuOptions: [
                         {

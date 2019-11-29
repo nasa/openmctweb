@@ -41,8 +41,7 @@ define([
             spyOn(mockmct.telemetry, 'getMetadata');
             spyOn(mockmct.telemetry, 'getValueFormatter');
             spyOn(mockmct.telemetry, 'limitEvaluator');
-            spyOn(mockmct.telemetry, 'request');
-            spyOn(mockmct.telemetry, 'subscribe');
+            spyOn(mockmct.telemetry, 'latest');
 
             var plugin = new AutoflowTabularPlugin({ type: testType });
             plugin(mockmct);
@@ -140,14 +139,10 @@ define([
                         return mockFormatter;
                     });
                     mockmct.telemetry.limitEvaluator.and.returnValue(mockEvaluator);
-                    mockmct.telemetry.subscribe.and.callFake(function (obj, callback) {
+                    mockmct.telemetry.latest.and.callFake(function (obj, callback) {
                         var key = obj.identifier.key;
                         callbacks[key] = callback;
                         return mockUnsubscribes[key];
-                    });
-                    mockmct.telemetry.request.and.callFake(function (obj, request) {
-                        var key = obj.identifier.key;
-                        return Promise.resolve([testHistories[key]]);
                     });
                     mockMetadata.valuesForHints.and.callFake(function (hints) {
                         return [{ hint: hints[0] }];
@@ -229,19 +224,6 @@ define([
                 it("subscribes to all child objects", function () {
                     testKeys.forEach(function (key) {
                         expect(callbacks[key]).toEqual(jasmine.any(Function));
-                    });
-                });
-
-                it("displays historical telemetry", function () {
-                    function rowTextDefined() {
-                        return $(testContainer).find(".l-autoflow-item").filter(".r").text() !== "";
-                    }
-                    return domObserver.when(rowTextDefined).then(function () {
-                        testKeys.forEach(function (key, index) {
-                            var datum = testHistories[key];
-                            var $cell = $(testContainer).find(".l-autoflow-row").eq(index).find(".r");
-                            expect($cell.text()).toEqual(String(datum.range));
-                        });
                     });
                 });
 

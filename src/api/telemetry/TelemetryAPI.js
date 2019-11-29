@@ -24,12 +24,14 @@ define([
     './TelemetryMetadataManager',
     './TelemetryValueFormatter',
     './DefaultMetadataProvider',
+    './latestValueSubscription',
     '../objects/object-utils',
     'lodash'
 ], function (
     TelemetryMetadataManager,
     TelemetryValueFormatter,
     DefaultMetadataProvider,
+    latestValueSubscription,
     objectUtils,
     _
 ) {
@@ -333,6 +335,41 @@ define([
             }
             delete this.subscribeCache[keyString];
         }.bind(this);
+    };
+
+
+    /**
+     * Subscribe to receive the latest telemetry value for a given domain
+     * object. The callback will be called whenever newer data is received from
+     * a realtime provider.  If a LAD provider is available, Open MCT will use
+     * it to provide an initial value for the latest data subscriber.
+     *
+     * Using this method will ensure that you only receive telemetry values in
+     * order, according to the current time system.  If openmct receives a new
+     * telemetry value from a provider that occurs out of order, i.e. the
+     * timestamp is less than the last received timestamp, then it will discard
+     * the message instead of notifying the callback.  In a telemetry system
+     * where data may be processed out of order, this guarantees that the end
+     * user is always viewing the latest data.
+     *
+     * If the user changes the time system, Open MCT will attempt to provide
+     * a new value from the LAD data provider and continue to provide new values
+     * via realtime providers.
+     *
+     * @param {module:openmct.DomainObject} domainObject the object
+     *        which has associated telemetry
+     * @param {Function} callback the callback to invoke with new data, as
+     *        it becomes available
+     * @returns {Function} a function which may be called to terminate
+     *          the subscription
+     */
+    TelemetryAPI.prototype.latest = function (domainObject, callback) {
+        return latestValueSubscription(
+            domainObject,
+            callback,
+            this,
+            this.openmct
+        );
     };
 
     /**
