@@ -84,7 +84,10 @@ define(
                                 lineWidth: 'Size',
                                 textColor: 'Color',
                                 fontSize: 'Size',
-                                fontStyle: 'Style'
+                                fontStyle: 'Style',
+                                tools: {
+                                    undo: 'Undo'
+                                }
                             }
                         },
                         saveHandler: function (image, done) {
