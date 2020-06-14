@@ -20,6 +20,8 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
+import { TypeKeyConstants } from "../constants/TypeKeyConstants";
+
 define([
     './flexibleLayoutViewProvider',
     './utils/container',
@@ -34,7 +36,7 @@ define([
         return function install(openmct) {
             openmct.objectViews.addProvider(new FlexibleLayoutViewProvider(openmct));
 
-            openmct.types.addType('flexible-layout', {
+            openmct.types.addType(TypeKeyConstants.FLEXIBLE_LAYOUT, {
                 name: "Flexible Layout",
                 creatable: true,
                 description: "A fluid, flexible layout canvas that can display multiple objects in rows or columns.",

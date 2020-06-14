@@ -1,3 +1,5 @@
+import { TypeKeyConstants } from "../constants/TypeKeyConstants";
+
 define([
     './SummaryWidgetsCompositionPolicy',
     './src/telemetry/SummaryWidgetMetadataProvider',
@@ -84,7 +86,7 @@ define([
         };
 
         return function install(openmct) {
-            openmct.types.addType('summary-widget', widgetType);
+            openmct.types.addType(TypeKeyConstants.SUMMARY_WIDGET, widgetType);
             openmct.legacyExtension('policies', {category: 'composition',
                 implementation: SummaryWidgetsCompositionPolicy, depends: ['openmct']
             });

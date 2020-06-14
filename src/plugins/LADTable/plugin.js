@@ -20,6 +20,8 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
+import { TypeKeyConstants } from "../constants/TypeKeyConstants";
+
 define([
     './LADTableViewProvider',
     './LADTableSetViewProvider'
@@ -32,7 +34,7 @@ define([
             openmct.objectViews.addProvider(new LADTableViewProvider(openmct));
             openmct.objectViews.addProvider(new LADTableSetViewProvider(openmct));
 
-            openmct.types.addType('LadTable', {
+            openmct.types.addType(TypeKeyConstants.LAD_TABLE, {
                 name: "LAD Table",
                 creatable: true,
                 description: "A Latest Available Data tabular view in which each row displays the values for one or more contained telemetry objects.",
@@ -42,7 +44,7 @@ define([
                 }
             });
 
-            openmct.types.addType('LadTableSet', {
+            openmct.types.addType(TypeKeyConstants.LAD_TABLE_SET, {
                 name: "LAD Table Set",
                 creatable: true,
                 description: "A Latest Available Data tabular view in which each row displays the values for one or more contained telemetry objects.",

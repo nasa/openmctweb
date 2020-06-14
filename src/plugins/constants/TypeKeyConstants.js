@@ -20,29 +20,14 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
-import { TypeKeyConstants } from "../constants/TypeKeyConstants";
-
-define([
-    './TelemetryTableViewProvider',
-    './TableConfigurationViewProvider',
-    './TelemetryTableType'
-], function (
-    TelemetryTableViewProvider,
-    TableConfigurationViewProvider,
-    TelemetryTableType
-) {
-    return function plugin() {
-        return function install(openmct) {
-            openmct.objectViews.addProvider(new TelemetryTableViewProvider(openmct));
-            openmct.inspectorViews.addProvider(new TableConfigurationViewProvider(openmct));
-            openmct.types.addType(TypeKeyConstants.TELEMETRY_TABLE, TelemetryTableType);
-            openmct.composition.addPolicy((parent, child) => {
-                if (parent.type === 'table') {
-                    return child.hasOwnProperty('telemetry');
-                } else {
-                    return true;
-                }
-            });
-        };
-    };
-});
+export const TypeKeyConstants = {
+    WEB_PAGE: 'webPage',
+    GENERATOR: 'generator',
+    LAYOUT: 'layout',
+    FLEXIBLE_LAYOUT: 'flexible-layout',
+    LAD_TABLE_SET: 'LadTableSet',
+    SUMMARY_WIDGET: 'summary-widget',
+    TABS: 'tabs',
+    TELEMETRY_MEAN: 'telemetry-mean',
+    TELEMETRY_TABLE: 'table'
+};

@@ -20,12 +20,14 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
+import { TypeKeyConstants } from "../constants/TypeKeyConstants";
+
 define(['./src/MeanTelemetryProvider'], function (MeanTelemetryProvider) {
     var DEFAULT_SAMPLES = 10;
 
     function plugin() {
         return function install(openmct) {
-            openmct.types.addType('telemetry-mean', {
+            openmct.types.addType(TypeKeyConstants.TELEMETRY_MEAN, {
                 name: 'Telemetry Filter',
                 description: 'Provides telemetry values that represent the mean of the last N values of a telemetry stream',
                 creatable: true,

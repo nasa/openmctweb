@@ -20,6 +20,8 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
+import { TypeKeyConstants } from "../constants/TypeKeyConstants";
+
 define([
     './tabs'
 ], function (
@@ -29,7 +31,7 @@ define([
         return function install(openmct) {
             openmct.objectViews.addProvider(new Tabs(openmct));
 
-            openmct.types.addType('tabs', {
+            openmct.types.addType(TypeKeyConstants.TABS, {
                 name: "Tabs View",
                 description: 'Add multiple objects of any type to this view, and quickly navigate between them with tabs',
                 creatable: true,
