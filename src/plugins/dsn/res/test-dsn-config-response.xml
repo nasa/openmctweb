@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+	<sites>
+		<site name="mdscc" friendlyName="Madrid" longitude="-4.2480085" latitude="40.2413554">
+			<dish name="DSS63" friendlyName="DSS 63" type="70M"></dish>
+			<dish name="DSS65" friendlyName="DSS 65" type="34MHEF"></dish>
+			<dish name="DSS54" friendlyName="DSS 54" type="34M"></dish>
+			<dish name="DSS55" friendlyName="DSS 55" type="34M"></dish>
+		</site>
+		<site name="gdscc" friendlyName="Goldstone" longitude="-116.8895382" latitude="35.2443523">
+			<dish name="DSS14" friendlyName="DSS 14" type="70M"></dish>
+			<dish name="DSS24" friendlyName="DSS 24" type="34M"></dish>
+			<dish name="DSS25" friendlyName="DSS 25" type="34M"></dish>
+			<dish name="DSS26" friendlyName="DSS 26" type="34M"></dish>
+		</site>
+		<site name="cdscc" friendlyName="Canberra" longitude="148.9812673" latitude="-35.2209189">
+			<dish name="DSS43" friendlyName="DSS 43" type="70M"></dish>
+			<dish name="DSS34" friendlyName="DSS 34" type="34M"></dish>
+			<dish name="DSS35" friendlyName="DSS 35" type="34M"></dish>
+			<dish name="DSS36" friendlyName="DSS 36" type="34M"></dish>
+		</site>
+	</sites>
+	<spacecraftMap>
+		<spacecraft name="ace" explorerName="sc_ace" friendlyName="Advanced Composition Explorer" thumbnail="true"></spacecraft>
+		<spacecraft name="argo" explorerName="" friendlyName="ArgoMoon"></spacecraft>
+		<spacecraft name="atot" explorerName="" friendlyName="Advanced Tracking and Observational Techniques"></spacecraft>
+		<spacecraft name="bios" explorerName="" friendlyName="BioSentinel"></spacecraft>
+		<spacecraft name="cas" explorerName="sc_cassini" friendlyName="Cassini" thumbnail="true"></spacecraft>
+		<spacecraft name="cass" explorerName="sc_cassini" friendlyName="Cassini" thumbnail="true"></spacecraft>
+		<spacecraft name="ch1" explorerName="sc_chandrayaan" friendlyName="Chandrayaan"></spacecraft>
+		<spacecraft name="ch2" explorerName="" friendlyName="Chandrayaan-2"></spacecraft>
+		<spacecraft name="chdr" explorerName="sc_chandra" friendlyName="Chandra" thumbnail="true"></spacecraft>
+		<spacecraft name="clu1" explorerName="sc_cluster_1" friendlyName="Cluster 1" thumbnail="true"></spacecraft>
+		<spacecraft name="clu2" explorerName="sc_cluster_2" friendlyName="Cluster 2" thumbnail="true"></spacecraft>
+		<spacecraft name="clu3" explorerName="sc_cluster_3" friendlyName="Cluster 3" thumbnail="true"></spacecraft>
+		<spacecraft name="clu4" explorerName="sc_cluster_4" friendlyName="Cluster 4" thumbnail="true"></spacecraft>
+		<spacecraft name="cusp" explorerName="" friendlyName="CubeSat for Solar Particles"></spacecraft>
+		<spacecraft name="dart" explorerName="" friendlyName="Double Asteroid Redirection Test"></spacecraft>
+		<spacecraft name="dawn" explorerName="sc_dawn" friendlyName="Dawn" thumbnail="true"></spacecraft>
+		<spacecraft name="dif" explorerName="sc_deep_impact" friendlyName="Deep Impact" thumbnail="true"></spacecraft>
+		<spacecraft name="dsco" explorerName="" friendlyName="DSCOVR" thumbnail="true"></spacecraft>
+		<spacecraft name="dsn" explorerName="" friendlyName="Testing"></spacecraft>
+		<spacecraft name="egs" explorerName="" friendlyName="EVN and Global Services"></spacecraft>
+		<spacecraft name="emm" explorerName="" friendlyName="Emirates Mars Mission"></spacecraft>
+		<spacecraft name="em-1" explorerName="" friendlyName="Exploration Mission-1" thumbnail="true"></spacecraft>
+		<spacecraft name="em-2" explorerName="" friendlyName="Exploration Mission-2"></spacecraft>
+		<spacecraft name="em-3" explorerName="" friendlyName="Exploration Mission-3"></spacecraft>
+		<spacecraft name="em-4" explorerName="" friendlyName="Exploration Mission-4"></spacecraft>
+		<spacecraft name="em-5" explorerName="" friendlyName="Exploration Mission-5"></spacecraft>
+		<spacecraft name="em-6" explorerName="" friendlyName="Exploration Mission-6"></spacecraft>
+		<spacecraft name="em-7" explorerName="" friendlyName="Exploration Mission-7"></spacecraft>
+		<spacecraft name="em-8" explorerName="" friendlyName="Exploration Mission-8"></spacecraft>
+		<spacecraft name="em-9" explorerName="" friendlyName="Exploration Mission-9"></spacecraft>
+		<spacecraft name="em-10" explorerName="" friendlyName="Exploration Mission-10"></spacecraft>
+		<spacecraft name="equl" explorerName="" friendlyName="EQUULEUS"></spacecraft>
+		<spacecraft name="eurc" explorerName="" friendlyName="Europa Clipper"></spacecraft>
+		<spacecraft name="eus" explorerName="" friendlyName="Exploration Upper Stage"></spacecraft>
+		<spacecraft name="gaia" explorerName="" friendlyName="Gaia"></spacecraft>
+		<spacecraft name="gbra" explorerName="" friendlyName="Ground Based Radio Astronomy"></spacecraft>
+		<spacecraft name="go10" explorerName="sc_goes_10" friendlyName="GOES 10"></spacecraft>
+		<spacecraft name="go11" explorerName="sc_goes_11" friendlyName="GOES 11"></spacecraft>
+		<spacecraft name="go12" explorerName="sc_goes_12" friendlyName="GOES 12"></spacecraft>
+		<spacecraft name="go13" explorerName="sc_goes_13" friendlyName="GOES 13"></spacecraft>
+		<spacecraft name="go14" explorerName="sc_goes_14" friendlyName="GOES 14"></spacecraft>
+		<spacecraft name="go15" explorerName="sc_goes_15" friendlyName="GOES 15"></spacecraft>
+		<spacecraft name="go16" explorerName="" friendlyName="GOES 16"></spacecraft>
+		<spacecraft name="go17" explorerName="" friendlyName="GOES 17"></spacecraft>
+		<spacecraft name="grla" explorerName="sc_grail_a" friendlyName="GRAIL A"></spacecraft>
+		<spacecraft name="grlb" explorerName="sc_grail_b" friendlyName="GRAIL B"></spacecraft>
+		<spacecraft name="gssr" explorerName="" friendlyName="Goldstone Solar System Radar"></spacecraft>
+		<spacecraft name="gtl" explorerName="sc_geotail" friendlyName="Geotail" thumbnail="true"></spacecraft>
+		<spacecraft name="gvrt" explorerName="" friendlyName="Goldstone Apple Valley Radio Telescope"></spacecraft>
+		<spacecraft name="hst" explorerName="sc_hubble_space_telescope" friendlyName="Hubble Space Telescope" thumbnail="true"></spacecraft>
+		<spacecraft name="hyb2" explorerName="" friendlyName="Hayabusa-2" thumbnail="true"></spacecraft>
+		<spacecraft name="ice" explorerName="sc_ice" friendlyName="ISEE-3 Reboot" thumbnail="true"></spacecraft>
+		<spacecraft name="imag" explorerName="sc_image" friendlyName="IMAGE" thumbnail="true"></spacecraft>
+		<spacecraft name="intg" explorerName="sc_integral" friendlyName="INTEGRAL"></spacecraft>
+		<spacecraft name="jno" explorerName="sc_juno" friendlyName="Juno" thumbnail="true"></spacecraft>
+		<spacecraft name="jwst" explorerName="" friendlyName="James Webb Space Telescope"></spacecraft>
+		<spacecraft name="kepl" explorerName="sc_kepler" friendlyName="Kepler" thumbnail="true"></spacecraft>
+		<spacecraft name="lade" explorerName="sc_ladee" friendlyName="LADEE" thumbnail="true"></spacecraft>
+		<spacecraft name="lcro" explorerName="sc_lcross" friendlyName="LCROSS"></spacecraft>
+		<spacecraft name="lfl" explorerName="" friendlyName="Lunar Flashlight"></spacecraft>
+		<spacecraft name="lro" explorerName="sc_lunar_reconnaissance_orbiter" friendlyName="Lunar Reconnaissance Orbiter" thumbnail="true"></spacecraft>
+		<spacecraft name="lucy" explorerName="" friendlyName="Lucy"></spacecraft>
+		<spacecraft name="lunah-map" explorerName="" friendlyName="Lunar Hydrogen MAPper"></spacecraft>
+		<spacecraft name="m01o" explorerName="sc_mars_odyssey" friendlyName="Mars Odyssey" thumbnail="true"></spacecraft>
+		<spacecraft name="m01s" explorerName="sc_mars_odyssey" friendlyName="Mars Odyssey" thumbnail="true"></spacecraft>
+		<spacecraft name="m20" explorerName="" friendlyName="Mars 2020"></spacecraft>
+		<spacecraft name="map" explorerName="sc_wmap" friendlyName="WMAP"></spacecraft>
+		<spacecraft name="mcoa" explorerName="sc_marco_a" friendlyName="MarCO A" thumbnail="true"></spacecraft>
+		<spacecraft name="mcob" explorerName="sc_marco_b" friendlyName="MarCO B" thumbnail="true"></spacecraft>
+		<spacecraft name="mer1" explorerName="sc_mars_exploration_rover_b" friendlyName="Opportunity" thumbnail="true"></spacecraft>
+		<spacecraft name="mer2" explorerName="sc_mars_exploration_rover_a" friendlyName="Spirit" thumbnail="true"></spacecraft>
+		<spacecraft name="mex" explorerName="sc_mars_express" friendlyName="Mars Express" thumbnail="true"></spacecraft>
+		<spacecraft name="mgs" explorerName="sc_mars_global_surveyor" friendlyName="Mars Global Surveyor"></spacecraft>
+		<spacecraft name="mli" explorerName="" friendlyName="Lunar Ice Cube"></spacecraft>
+		<spacecraft name="mms1" explorerName="sc_mms1" friendlyName="MMS 1" thumbnail="true"></spacecraft>
+		<spacecraft name="mms2" explorerName="sc_mms2" friendlyName="MMS 2" thumbnail="true"></spacecraft>
+		<spacecraft name="mms3" explorerName="sc_mms3" friendlyName="MMS 3" thumbnail="true"></spacecraft>
+		<spacecraft name="mms4" explorerName="sc_mms4" friendlyName="MMS 4" thumbnail="true"></spacecraft>
+		<spacecraft name="mom" explorerName="sc_mars_orbiter_mission" friendlyName="Mars Orbiter Mission" thumbnail="true"></spacecraft>
+		<spacecraft name="mro" explorerName="sc_mars_reconnaissance_orbiter" friendlyName="Mars Reconnaissance Orbiter" thumbnail="true"></spacecraft>
+		<spacecraft name="mros" explorerName="sc_mars_reconnaissance_orbiter" friendlyName="Mars Reconnaissance Orbiter" thumbnail="true"></spacecraft>
+		<spacecraft name="msgr" explorerName="sc_messenger" friendlyName="MESSENGER" thumbnail="true"></spacecraft>
+		<spacecraft name="msl" explorerName="sc_mars_science_laboratory" friendlyName="Mars Science Laboratory (Curiosity)" thumbnail="true"></spacecraft>
+		<spacecraft name="musc" explorerName="sc_hayabusa" friendlyName="Hayabusa"></spacecraft>
+		<spacecraft name="mvn" explorerName="sc_maven" friendlyName="MAVEN" thumbnail="true"></spacecraft>
+		<spacecraft name="neas" explorerName="" friendlyName="Near Earth Asteroid Scout"></spacecraft>
+		<spacecraft name="nhpc" explorerName="sc_new_horizons" friendlyName="New Horizons" thumbnail="true"></spacecraft>
+		<spacecraft name="no15" explorerName="sc_noaa_15" friendlyName="NOAA 15"></spacecraft>
+		<spacecraft name="no16" explorerName="sc_noaa_16" friendlyName="NOAA 16"></spacecraft>
+		<spacecraft name="no17" explorerName="sc_noaa_17" friendlyName="NOAA 17"></spacecraft>
+		<spacecraft name="no18" explorerName="sc_noaa_18" friendlyName="NOAA 18"></spacecraft>
+		<spacecraft name="nsyt" explorerName="sc_insight" friendlyName="InSight" thumbnail="true"></spacecraft>
+		<spacecraft name="omot" explorerName="" friendlyName="OMOTENASHI"></spacecraft>
+		<spacecraft name="orx" explorerName="sc_osiris_rex" friendlyName="OSIRIS-REx" thumbnail="true"></spacecraft>
+		<spacecraft name="phx" explorerName="sc_phoenix" friendlyName="Phoenix"></spacecraft>
+		<spacecraft name="plc" explorerName="sc_akatsuki" friendlyName="Akatsuki" thumbnail="true"></spacecraft>
+		<spacecraft name="polr" explorerName="sc_polar" friendlyName="POLAR"></spacecraft>
+		<spacecraft name="psyc" explorerName="" friendlyName="Psyche"></spacecraft>
+		<spacecraft name="rd1" explorerName="" friendlyName="Red Dragon 1"></spacecraft>
+		<spacecraft name="rfc" explorerName="" friendlyName="Reference Frame Calibration"></spacecraft>
+		<spacecraft name="rose" explorerName="sc_rosetta" friendlyName="Rosetta" thumbnail="true"></spacecraft>
+		<spacecraft name="rp" explorerName="" friendlyName="Resource Prospector" link="https://www.nasa.gov/resource-prospector"></spacecraft>
+		<spacecraft name="rsp" explorerName="" friendlyName="ExoMars Rover and Surface Platform"></spacecraft>
+		<spacecraft name="rsts" explorerName="" friendlyName="Resource System Time Sharing"></spacecraft>
+		<spacecraft name="sdu" explorerName="sc_stardust" friendlyName="Stardust"></spacecraft>
+		<spacecraft name="sele" explorerName="sc_kaguya" friendlyName="Kaguya"></spacecraft>
+		<spacecraft name="sgp" explorerName="" friendlyName="Space Geodesy Program"></spacecraft>
+		<spacecraft name="soho" explorerName="sc_soho" friendlyName="SOHO" thumbnail="true"></spacecraft>
+		<spacecraft name="spp" explorerName="sc_parker_solar_probe" friendlyName="Parker Solar Probe" thumbnail="true"></spacecraft>
+		<spacecraft name="sta" explorerName="sc_stereo_ahead" friendlyName="STEREO A" thumbnail="true"></spacecraft>
+		<spacecraft name="stab" explorerName="sc_stereo_behind" friendlyName="STEREO B" thumbnail="true"></spacecraft>
+		<spacecraft name="stb" explorerName="sc_stereo_behind" friendlyName="STEREO B" thumbnail="true"></spacecraft>
+		<spacecraft name="stf" explorerName="sc_sirtf" friendlyName="Spitzer Space Telescope" thumbnail="true"></spacecraft>
+		<spacecraft name="td10" explorerName="sc_tdrs_10" friendlyName="TDRS 10" thumbnail="true"></spacecraft>
+		<spacecraft name="td11" explorerName="" friendlyName="TDRS 11"></spacecraft>
+		<spacecraft name="td12" explorerName="" friendlyName="TDRS 12"></spacecraft>
+		<spacecraft name="td13" explorerName="" friendlyName="TDRS 13"></spacecraft>
+		<spacecraft name="tdr1" explorerName="sc_tdrs_1" friendlyName="TDRS 1" thumbnail="true"></spacecraft>
+		<spacecraft name="tdr3" explorerName="sc_tdrs_3" friendlyName="TDRS 3" thumbnail="true"></spacecraft>
+		<spacecraft name="tdr4" explorerName="sc_tdrs_4" friendlyName="TDRS 4" thumbnail="true"></spacecraft>
+		<spacecraft name="tdr5" explorerName="sc_tdrs_5" friendlyName="TDRS 5" thumbnail="true"></spacecraft>
+		<spacecraft name="tdr6" explorerName="sc_tdrs_6" friendlyName="TDRS 6" thumbnail="true"></spacecraft>
+		<spacecraft name="tdr7" explorerName="sc_tdrs_7" friendlyName="TDRS 7" thumbnail="true"></spacecraft>
+		<spacecraft name="tdr8" explorerName="sc_tdrs_8" friendlyName="TDRS 8" thumbnail="true"></spacecraft>
+		<spacecraft name="tdr9" explorerName="sc_tdrs_9" friendlyName="TDRS 9" thumbnail="true"></spacecraft>
+		<spacecraft name="terr" explorerName="sc_terra" friendlyName="TERRA" thumbnail="true"></spacecraft>
+		<spacecraft name="tess" explorerName="" friendlyName="Transiting Exoplanet Survey Satellite" thumbnail="true"></spacecraft>
+		<spacecraft name="tgo" explorerName="" friendlyName="Trace Gas Orbiter" thumbnail="true"></spacecraft>
+		<spacecraft name="thb" explorerName="sc_themis_b" friendlyName="THEMIS B" thumbnail="true"></spacecraft>
+		<spacecraft name="thc" explorerName="sc_themis_c" friendlyName="THEMIS C" thumbnail="true"></spacecraft>
+		<spacecraft name="ulys" explorerName="sc_ulysses" friendlyName="Ulysses"></spacecraft>
+		<spacecraft name="vex" explorerName="sc_venus_express" friendlyName="Venus Express" thumbnail="true"></spacecraft>
+		<spacecraft name="vgr1" explorerName="sc_voyager_1" friendlyName="Voyager 1" thumbnail="true"></spacecraft>
+		<spacecraft name="vgr2" explorerName="sc_voyager_2" friendlyName="Voyager 2" thumbnail="true"></spacecraft>
+		<spacecraft name="vlbi" explorerName="" friendlyName="V.L.B. Interferometry"></spacecraft>
+		<spacecraft name="wind" explorerName="sc_wind" friendlyName="WIND" thumbnail="true"></spacecraft>
+		<spacecraft name="xmm" explorerName="" friendlyName="XMM-Newton"></spacecraft>
+	</spacecraftMap>
+</config>

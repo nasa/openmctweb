@@ -1,0 +1,259 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dsn>
+	<station
+		name="gdscc"
+		friendlyName="Goldstone"
+		timeUTC="1549708172929"
+		timeZoneOffset="-28800000" />
+	<dish
+		name="DSS14"
+		azimuthAngle="86.24"
+		elevationAngle="15.91"
+		windSpeed="12.35"
+		isMSPA="false"
+		isArray="false"
+		isDDOR="false"
+		created="2019-02-09T09:35:17.496Z"
+		updated="2019-02-09T09:35:20.154Z">
+		<downSignal
+			signalType="data"
+			signalTypeDebug="IN LOCK OFF 1 MCD2"
+			dataRate="160.002853"
+			frequency="8420585323.254991"
+			power="-155.647873"
+			spacecraft="VGR1"
+			spacecraftId="31"/>
+		<upSignal
+			signalType="none"
+			signalTypeDebug="none"
+			power="-155.647873"
+			frequency="8420585323.254991"
+			dataRate="160.002853"
+			spacecraft=""
+			spacecraftId=""/>
+		<target name="VGR1" id="31" uplegRange="2.1700581860317E10" downlegRange="2.1698131625495E10" rtlt="144764.894661"/>
+	</dish>
+	<station
+		name="mdscc"
+		friendlyName="Madrid"
+		timeUTC="1549708172929"
+		timeZoneOffset="3600000" />
+	<dish
+		name="DSS55"
+		azimuthAngle="75.83"
+		elevationAngle="12.95"
+		windSpeed="1.85"
+		isMSPA="false"
+		isArray="false"
+		isDDOR="false"
+		created="2019-02-09T09:15:07.723Z"
+		updated="2019-02-09T09:15:09.286Z">
+		<downSignal
+			signalType="carrier"
+			signalTypeDebug="IDLE OFF 1 MCD2"
+			dataRate="0.000000"
+			frequency="8445880028.747212"
+			power="-152.555756"
+			spacecraft="ORX"
+			spacecraftId="64"/>
+		<upSignal
+			signalType="data"
+			signalTypeDebug="ON 1 TRK"
+			power="18.751057"
+			frequency="7188"
+			dataRate=""
+			spacecraft="ORX"
+			spacecraftId="64"/>
+		<target name="ORX" id="64" uplegRange="8.7209050534E7" downlegRange="8.7227473597E7" rtlt="581.865482"/>
+	</dish>
+	<dish
+		name="DSS54"
+		azimuthAngle="178.92"
+		elevationAngle="47.11"
+		windSpeed="1.85"
+		isMSPA="false"
+		isArray="false"
+		isDDOR="false"
+		created="2019-02-09T09:30:06.562Z"
+		updated="2019-02-09T09:30:08.043Z">
+		<downSignal
+			signalType="data"
+			signalTypeDebug="IN LOCK OFF 1 MCD2"
+			dataRate="1250001.875000"
+			frequency="2281890499.493606"
+			power="-109.716393"
+			spacecraft="MMS4"
+			spacecraftId="113"/>
+		<upSignal
+			signalType="data"
+			signalTypeDebug="ON 1 "
+			power="0.257009"
+			frequency="2101"
+			dataRate=""
+			spacecraft="MMS4"
+			spacecraftId="113"/>
+		<target name="MMS4" id="113" uplegRange="88172.45" downlegRange="88162.085" rtlt="0.588185"/>
+	</dish>
+	<dish
+		name="DSS63"
+		azimuthAngle="184.23"
+		elevationAngle="29.16"
+		windSpeed="1.85"
+		isMSPA="false"
+		isArray="true"
+		isDDOR="false"
+		created="2019-02-09T06:45:08.628Z"
+		updated="2019-02-09T06:45:10.472Z">
+		<downSignal
+			signalType="data"
+			signalTypeDebug="IN LOCK IN LOCK 1 TURBO"
+			dataRate="1584.295776"
+			frequency="8438244878.003306"
+			power="-142.915909"
+			spacecraft="NHPC"
+			spacecraftId="98"/>
+		<downSignal
+			signalType="carrier"
+			signalTypeDebug="IDLE OFF 1 TURBO"
+			dataRate="0.000000"
+			frequency="8438244878.531168"
+			power="-150.590561"
+			spacecraft="NHPC"
+			spacecraftId="98"/>
+		<upSignal
+			signalType="data"
+			signalTypeDebug="ON 1 TRK"
+			power="16.738283"
+			frequency="7181"
+			dataRate=""
+			spacecraft="NHPC"
+			spacecraftId="98"/>
+		<target name="NHPC" id="98" uplegRange="6.645086593856E9" downlegRange="6.644465960143E9" rtlt="44329.458362"/>
+	</dish>
+	<dish
+		name="DSS65"
+		azimuthAngle="80.56"
+		elevationAngle="6.00"
+		windSpeed="1.85"
+		isMSPA="true"
+		isArray="false"
+		isDDOR="false"
+		created="2019-02-09T10:00:17.973Z"
+		updated="2019-02-09T10:00:22.911Z">
+		<downSignal
+			signalType="none"
+			signalTypeDebug="IDLE OFF 0 MCD2"
+			dataRate="0.000000"
+			frequency="8439442065.000198"
+			power="-143.357635"
+			spacecraft="MRO"
+			spacecraftId="74"/>
+		<downSignal
+			signalType="none"
+			signalTypeDebug="IDLE OFF 0 MCD2"
+			dataRate="0.000000"
+			frequency="8404125999.999966"
+			power="-477.521271"
+			spacecraft="NSYT"
+			spacecraftId="189"/>
+		<downSignal
+			signalType="none"
+			signalTypeDebug="IDLE OFF 0 MCD3"
+			dataRate="0.000000"
+			frequency="8406841100.000173"
+			power="-158.359390"
+			spacecraft="M01O"
+			spacecraftId="53"/>
+		<upSignal
+			signalType="none"
+			signalTypeDebug="OFF 0 "
+			power="0.000000"
+			frequency="7153"
+			dataRate=""
+			spacecraft="NSYT"
+			spacecraftId="189"/>
+		<target name="M01O" id="53" uplegRange="2.38840846942E8" downlegRange="2.38863201951E8" rtlt="1593.374992"/>
+		<target name="MRO" id="74" uplegRange="2.38845187132E8" downlegRange="2.38863679346E8" rtlt="1593.378177"/>
+		<target name="NSYT" id="189" uplegRange="2.38846481923E8" downlegRange="2.38866837562E8" rtlt="1593.399244"/>
+	</dish>
+	<station
+		name="cdscc"
+		friendlyName="Canberra"
+		timeUTC="1549708172929"
+		timeZoneOffset="39600000" />
+	<dish
+		name="DSS35"
+		azimuthAngle=""
+		elevationAngle=""
+		windSpeed=""
+		isMSPA="true"
+		isArray="false"
+		isDDOR="false"
+		created="2019-02-09T06:04:08.393Z"
+		updated="2019-02-09T07:31:42.339Z">
+		<downSignal
+			signalType="none"
+			signalTypeDebug="  -1 "
+			dataRate="none"
+			frequency="none"
+			power="none"
+			spacecraft="TGO"
+			spacecraftId="143"/>
+		<downSignal
+			signalType="none"
+			signalTypeDebug="  -1 "
+			dataRate=""
+			frequency=""
+			power=""
+			spacecraft="MRO"
+			spacecraftId="74"/>
+		<downSignal
+			signalType="none"
+			signalTypeDebug="  -1 "
+			dataRate=""
+			frequency=""
+			power=""
+			spacecraft="M01O"
+			spacecraftId="53"/>
+		<upSignal
+			signalType="data"
+			signalTypeDebug="ON 1 "
+			power="4.990538"
+			frequency="7183"
+			dataRate=""
+			spacecraft="MRO"
+			spacecraftId="74"/>
+		<target name="M01O" id="53" uplegRange="2.38835620284E8" downlegRange="2.38857973203E8" rtlt="1593.34295"/>
+		<target name="MRO" id="74" uplegRange="2.38839960493E8" downlegRange="2.38858450693E8" rtlt="1593.346136"/>
+		<target name="TGO" id="143" uplegRange="2.38837123774E8" downlegRange="2.3885856761E8" rtlt="1593.346916"/>
+	</dish>
+	<dish
+		name="DSS34"
+		azimuthAngle=""
+		elevationAngle=""
+		windSpeed=""
+		isMSPA="false"
+		isArray="false"
+		isDDOR="false"
+		created="2019-02-09T06:04:05.531Z"
+		updated="2019-02-09T06:04:05.531Z">
+		<downSignal
+			signalType="none"
+			signalTypeDebug="  -1 "
+			dataRate=""
+			frequency=""
+			power=""
+			spacecraft="M01O"
+			spacecraftId="53"/>
+		<upSignal
+			signalType="none"
+			signalTypeDebug="  "
+			power=""
+			frequency=""
+			dataRate=""
+			spacecraft="M01O"
+			spacecraftId="53"/>
+		<target name="M01O" id="53" uplegRange="2.38835620377E8" downlegRange="2.38857973296E8" rtlt="1593.342951"/>
+	</dish>
+	<timestamp>1549708172928</timestamp>
+</dsn>

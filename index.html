@@ -26,6 +26,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0, shrink-to-fit=no">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <title></title>
+        <script src="/src/plugins/dsn/res/http.js"></script>
         <script src="dist/openmct.js"></script>
         <link rel="icon" type="image/png" href="dist/favicons/favicon-96x96.png" sizes="96x96" type="image/x-icon">
         <link rel="icon" type="image/png" href="dist/favicons/favicon-32x32.png" sizes="32x32" type="image/x-icon">
@@ -82,6 +83,7 @@
         openmct.install(openmct.plugins.Filters(['table', 'telemetry.plot.overlay']));
         openmct.install(openmct.plugins.ObjectMigration());
         openmct.install(openmct.plugins.ClearData(['table', 'telemetry.plot.overlay', 'telemetry.plot.stacked']));
+        openmct.install(openmct.plugins.DsnPlugin());
         openmct.start();
     </script>
 </html>

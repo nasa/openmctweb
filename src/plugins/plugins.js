@@ -52,7 +52,8 @@ define([
     './themes/espresso',
     './themes/maelstrom',
     './themes/snow',
-    './notificationIndicator/plugin'
+    './notificationIndicator/plugin',
+    './dsn/plugin'
 ], function (
     _,
     UTCTimeSystem,
@@ -85,7 +86,8 @@ define([
     Espresso,
     Maelstrom,
     Snow,
-    NotificationIndicator
+    NotificationIndicator,
+    DsnPlugin
 ) {
     var bundleMap = {
         LocalStorage: 'platform/persistence/local',
@@ -195,6 +197,8 @@ define([
     plugins.Condition = ConditionPlugin.default;
     plugins.ConditionWidget = ConditionWidgetPlugin.default;
     plugins.NotificationIndicator = NotificationIndicator.default;
+
+    plugins.DsnPlugin = DsnPlugin;
 
     return plugins;
 });

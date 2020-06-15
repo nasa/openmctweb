@@ -117,6 +117,10 @@ const webpackConfig = {
             {
                 test: /\.vue$/,
                 use: 'vue-loader'
+            },
+            {
+                test: /\.xml$/,
+                use: 'raw-loader'
             }
         ]
     },
