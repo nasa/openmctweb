@@ -4,6 +4,8 @@ const packageDefinition = require('./package.json');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const webpack = require('webpack');
+const TerserJSPlugin = require('terser-webpack-plugin');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
 const devMode = process.env.NODE_ENV !== 'production';
 const VueLoaderPlugin = require('vue-loader/lib/plugin');
@@ -120,6 +122,32 @@ const webpackConfig = {
                 use: 'vue-loader'
             }
         ]
+    },
+    optimization: {
+        minimizer: devMode ? undefined : [
+            new TerserJSPlugin({
+                exclude: /node_modules/,
+                cache: true,
+                parallel: true,
+                sourceMap: true, // Must be set to true if using source-maps in production
+            }),
+            new OptimizeCSSAssetsPlugin({})
+        ],
+        namedModules: devMode ? true : false,
+        namedChunks: devMode ? true : false,
+        nodeEnv:  devMode ? 'development' : 'production',
+        flagIncludedChunks: devMode ? false : true,
+        occurrenceOrder: devMode ? false : true,
+        concatenateModules: devMode ? false : true,
+        splitChunks: {
+            hidePathInfo: devMode ? false : true,
+            minSize: devMode ? 10000 : 30000,
+            maxAsyncRequests: devMode ? Infinity : 5,
+            maxInitialRequests: devMode ? Infinity : 3,
+        },
+        noEmitOnErrors: devMode ? false : true,
+        checkWasmTypes: devMode ? false : true,
+        minimize: devMode ? false : true,
     },
     stats: {
         modules: false,
