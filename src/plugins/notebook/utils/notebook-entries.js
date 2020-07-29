@@ -69,6 +69,7 @@ export const getNotebookDefaultEntries = (notebookStorage, domainObject) => {
 export const createNewEmbed = (snapshotMeta, snapshot = '') => {
     const {
         bounds,
+        viewportBounds,
         link,
         objectPath,
         openmct
@@ -88,6 +89,7 @@ export const createNewEmbed = (snapshotMeta, snapshot = '') => {
 
     return {
         bounds,
+        viewportBounds,
         createdOn: date,
         cssClass,
         domainObject,

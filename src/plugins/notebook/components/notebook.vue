@@ -273,6 +273,7 @@ export default {
             const bounds = this.openmct.time.bounds();
             const snapshotMeta = {
                 bounds,
+                viewportBounds: null,
                 link: null,
                 objectPath,
                 openmct: this.openmct

@@ -31,6 +31,7 @@
 import Snapshot from '../snapshot';
 import { getDefaultNotebook } from '../utils/notebook-storage';
 import { NOTEBOOK_DEFAULT, NOTEBOOK_SNAPSHOT } from '../notebook-constants';
+import ViewportService from '../../plot/src/services/ViewportService';
 
 export default {
     inject: ['openmct'],
@@ -108,15 +109,20 @@ export default {
             this.$nextTick(() => {
                 const element = document.querySelector('.c-overlay__contents')
                     || document.getElementsByClassName('l-shell__main-container')[0];
-
                 const bounds = this.openmct.time.bounds();
                 const link = !this.ignoreLink
                     ? window.location.href
                     : null;
 
                 const objectPath = this.objectPath || this.openmct.router.path;
+
+                //get viewport bounds from mct-plot
+                let svc = new ViewportService(this.openmct);
+                const viewportBounds = svc.getBounds();
+
                 const snapshotMeta = {
                     bounds,
+                    viewportBounds,
                     link,
                     objectPath,
                     openmct: this.openmct

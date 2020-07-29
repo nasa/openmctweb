@@ -36,6 +36,7 @@ define([
     "./src/inspector/PlotSeriesFormController",
     "./src/inspector/HideElementPoolDirective",
     "./src/services/ExportImageService",
+    "./src/services/ViewportService",
     './src/PlotViewPolicy',
     "./res/templates/plot-options.html",
     "./res/templates/plot-options-browse.html",
@@ -56,6 +57,7 @@ define([
     PlotSeriesFormController,
     HideElementPool,
     ExportImageService,
+    ViewportService,
     PlotViewPolicy,
     plotOptionsTemplate,
     plotOptionsBrowseTemplate,
@@ -152,10 +154,12 @@ define([
                             "depends": [
                                 "$scope",
                                 "$element",
+                                "$location",
                                 "formatService",
                                 "openmct",
                                 "objectService",
-                                "exportImageService"
+                                "exportImageService",
+                                "viewportService"
                             ]
                         },
                         {
@@ -212,6 +216,13 @@ define([
                             "implementation": ExportImageService,
                             "depends": [
                                 "dialogService"
+                            ]
+                        },
+                        {
+                            "key": "viewportService",
+                            "implementation": ViewportService,
+                            "depends": [
+                                "openmct"
                             ]
                         }
                     ],
