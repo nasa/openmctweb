@@ -344,7 +344,7 @@ define([
         this.marquee = undefined;
     };
 
-    MCTPlotController.prototype.zoom = function (zoomDirection, zoomFactor) {
+    MCTPlotController.prototype.zoom = function (zoomDirection, zoomFactor, axis) {
         var currentXaxis = this.$scope.xAxis.get('displayRange'),
             currentYaxis = this.$scope.yAxis.get('displayRange');
 
@@ -361,25 +361,33 @@ define([
             yAxisDist = (currentYaxis.max - currentYaxis.min) * zoomFactor;
 
         if (zoomDirection === 'in') {
-            this.$scope.xAxis.set('displayRange', {
-                min: currentXaxis.min + xAxisDist,
-                max: currentXaxis.max - xAxisDist
-            });
+            if(axis === undefined || axis === 'x') {
+                this.$scope.xAxis.set('displayRange', {
+                    min: currentXaxis.min + xAxisDist,
+                    max: currentXaxis.max - xAxisDist
+                });
+            }
 
-            this.$scope.yAxis.set('displayRange', {
-                min: currentYaxis.min + yAxisDist,
-                max: currentYaxis.max - yAxisDist
-            });
+            if(axis === undefined || axis === 'y') {
+                this.$scope.yAxis.set('displayRange', {
+                    min: currentYaxis.min + yAxisDist,
+                    max: currentYaxis.max - yAxisDist
+                });
+            }
         } else if (zoomDirection === 'out') {
-            this.$scope.xAxis.set('displayRange', {
-                min: currentXaxis.min - xAxisDist,
-                max: currentXaxis.max + xAxisDist
-            });
+            if(axis === undefined || axis === 'x') {
+                this.$scope.xAxis.set('displayRange', {
+                    min: currentXaxis.min - xAxisDist,
+                    max: currentXaxis.max + xAxisDist
+                });
+            }
 
-            this.$scope.yAxis.set('displayRange', {
-                min: currentYaxis.min - yAxisDist,
-                max: currentYaxis.max + yAxisDist
-            });
+            if(axis === undefined || axis === 'y') {
+                this.$scope.yAxis.set('displayRange', {
+                    min: currentYaxis.min - yAxisDist,
+                    max: currentYaxis.max + yAxisDist
+                });
+            }
         }
 
         this.$scope.$emit('user:viewport:change:end');

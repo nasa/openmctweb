@@ -269,12 +269,26 @@ mct-plot {
     &__local-controls {
         // Plot local controls
         $m: $interiorMargin;
+        $mxl: $interiorMarginXLg;
         display: flex;
         align-items: center;
         position: absolute;
         top: $m;
         left: $m;
         z-index: 9;
+
+        &-h {
+            position: absolute;
+            top: $m;
+            left: $mxl + 30;
+        }
+
+        &-v {
+            position: absolute;
+            display: inline-grid;
+            top: $m;
+            left: $m;
+        }
 
         &__reset {
             transition: right 100ms;

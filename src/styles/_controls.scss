@@ -829,6 +829,31 @@ select {
             }
         }
     }
+
+    &[class*='--strip-v'] {
+        // Horizontal strip
+        display: inline-grid;
+
+        + .c-button-set {
+            margin-top: $interiorMargin;
+        }
+
+        [class^="c-button"] {
+            + * {
+                margin-top: 1px;
+            }
+
+            &:first-child {
+                border-top-left-radius: $controlCr;
+                border-top-right-radius: $controlCr;
+            }
+
+            &:last-child {
+                border-bottom-left-radius: $controlCr;
+                border-bottom-right-radius: $controlCr;
+            }
+        }
+    }
 }
 
 /******************************************************** STYLE EDITING */
@@ -916,6 +941,16 @@ input[type="range"] {
         align-items: center;
     }
 
+    &--overlay-content {
+        > .c-button {
+            background: $colorLocalControlOvrBg;
+            border-radius: $controlCr;
+            box-shadow: $colorLocalControlOvrBg 0 0 0 2px;
+        }
+    }
+}
+
+.v-local-controls {
     &--overlay-content {
         > .c-button {
             background: $colorLocalControlOvrBg;
