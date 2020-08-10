@@ -345,6 +345,8 @@ define([
     };
 
     MCTPlotController.prototype.zoom = function (zoomDirection, zoomFactor) {
+        let zoomRatio = zoomFactor * 3;
+
         var currentXaxis = this.$scope.xAxis.get('displayRange'),
             currentYaxis = this.$scope.yAxis.get('displayRange');
 
@@ -359,6 +361,11 @@ define([
 
         var xAxisDist = (currentXaxis.max - currentXaxis.min) * zoomFactor,
             yAxisDist = (currentYaxis.max - currentYaxis.min) * zoomFactor;
+
+        if (zoomDirection === 'out') {
+            xAxisDist = xAxisDist / zoomRatio;
+            yAxisDist = yAxisDist / zoomRatio;
+        }
 
         if (zoomDirection === 'in') {
             this.$scope.xAxis.set('displayRange', {
