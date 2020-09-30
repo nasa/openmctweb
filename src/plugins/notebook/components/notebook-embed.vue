@@ -154,8 +154,6 @@ export default {
                             self.embed.snapshot = snapshotObject;
                             self.updateEmbed(self.embed);
                         };
-                    } else {
-                        console.log('You cancelled the annotation!!!');
                     }
 
                     done(true);
