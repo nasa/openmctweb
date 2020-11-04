@@ -33,7 +33,7 @@
     >
         <span class="l-pane__expand-button__label">{{ label }}</span>
     </button>
-    <div class="l-pane__contents">
+    <div class="l-pane__contents js-snapshot-container">
         <slot></slot>
     </div>
 </div>

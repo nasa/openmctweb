@@ -44,8 +44,7 @@ export default {
     },
     data() {
         return {
-            notebookSnapshot: null,
-            notebookTypes: []
+            notebookSnapshot: null
         };
     },
     mounted() {
@@ -55,40 +54,38 @@ export default {
         showMenu(event) {
             const notebookTypes = [];
             const defaultNotebook = getDefaultNotebook();
-            const elementBoundingClientRect = this.$el.getBoundingClientRect();
-            const x = elementBoundingClientRect.x;
-            const y = elementBoundingClientRect.y + elementBoundingClientRect.height;
 
             if (defaultNotebook) {
-                const domainObject = defaultNotebook.domainObject;
+                const name = defaultNotebook.notebookMeta.name;
+                const sectionName = defaultNotebook.section.name;
+                const pageName = defaultNotebook.page.name;
+                const defaultPath = `${name} - ${sectionName} - ${pageName}`;
 
-                if (domainObject.location) {
-                    const defaultPath = `${domainObject.name} - ${defaultNotebook.section.name} - ${defaultNotebook.page.name}`;
-
-                    notebookTypes.push({
-                        cssClass: 'icon-notebook',
-                        name: `Save to Notebook ${defaultPath}`,
-                        callBack: () => {
-                            return this.snapshot(NOTEBOOK_DEFAULT);
-                        }
-                    });
-                }
+                notebookTypes.push({
+                    cssClass: 'icon-notebook',
+                    name: `Save to Notebook ${defaultPath}`,
+                    callBack: () => this.snapshot(NOTEBOOK_DEFAULT, event.target)
+                });
             }
 
             notebookTypes.push({
                 cssClass: 'icon-camera',
                 name: 'Save to Notebook Snapshots',
-                callBack: () => {
-                    return this.snapshot(NOTEBOOK_SNAPSHOT);
-                }
+                callBack: () => this.snapshot(NOTEBOOK_SNAPSHOT, event.target)
             });
 
+            const elementBoundingClientRect = this.$el.getBoundingClientRect();
+            const x = elementBoundingClientRect.x;
+            const y = elementBoundingClientRect.y + elementBoundingClientRect.height;
             this.openmct.menus.showMenu(x, y, notebookTypes);
         },
-        snapshot(notebook) {
+        snapshot(notebookType, target) {
             this.$nextTick(() => {
-                const element = document.querySelector('.c-overlay__contents')
-                    || document.getElementsByClassName('l-shell__main-container')[0];
+                let element = target.closest('.js-snapshot-frame') || target.querySelector('.js-snapshot-frame');
+                if (!element) {
+                    const container = target.closest('.js-snapshot-container');
+                    element = container.querySelector('.js-snapshot-frame');
+                }
 
                 const bounds = this.openmct.time.bounds();
                 const link = !this.ignoreLink
@@ -103,7 +100,7 @@ export default {
                     openmct: this.openmct
                 };
 
-                this.notebookSnapshot.capture(snapshotMeta, notebook.type, element);
+                this.notebookSnapshot.capture(snapshotMeta, notebookType, element);
             });
         }
     }

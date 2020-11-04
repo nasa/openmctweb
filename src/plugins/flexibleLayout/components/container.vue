@@ -22,7 +22,7 @@
 
 <template>
 <div
-    class="c-fl-container"
+    class="c-fl-container js-snapshot-frame"
     :style="[{'flex-basis': sizeString}]"
     :class="{'is-empty': !frames.length}"
 >

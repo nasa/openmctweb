@@ -22,7 +22,7 @@
 
 <template>
 <div
-    class="l-layout__frame c-frame"
+    class="l-layout__frame c-frame js-snapshot-frame"
     :class="{
         'no-frame': !item.hasFrame,
         'u-inspectable': inspectable,

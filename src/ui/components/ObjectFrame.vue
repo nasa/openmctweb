@@ -59,6 +59,11 @@
                 'has-complex-content': complexContent
             }"
         >
+            <NotebookMenuSwitcher v-if="notebookEnabled"
+                                  :domain-object="domainObject"
+                                  :object-path="objectPath"
+                                  class="c-notebook-snapshot-menubutton"
+            />
             <div class="c-so-view__frame-controls__btns">
                 <button
                     v-for="(item, index) in statusBarItems"
@@ -107,6 +112,7 @@
 <script>
 import ObjectView from './ObjectView.vue';
 import PreviewHeader from '@/ui/preview/preview-header.vue';
+import NotebookMenuSwitcher from '@/plugins/notebook/components/NotebookMenuSwitcher.vue';
 import Vue from 'vue';
 
 const SIMPLE_CONTENT_TYPES = [
@@ -120,7 +126,8 @@ const SIMPLE_CONTENT_TYPES = [
 export default {
     inject: ['openmct'],
     components: {
-        ObjectView
+        ObjectView,
+        NotebookMenuSwitcher
     },
     props: {
         domainObject: {
@@ -159,6 +166,7 @@ export default {
         return {
             cssClass,
             complexContent,
+            notebookEnabled: this.openmct.types.get('notebook'),
             viewProvider,
             statusBarItems
         };
