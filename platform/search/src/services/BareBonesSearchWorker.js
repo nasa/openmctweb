@@ -32,7 +32,8 @@
     function indexItem(id, model) {
         indexedItems.push({
             id: id,
-            name: model.name.toLowerCase()
+            name: model.name.toLowerCase(),
+            type: model.type.toLowerCase()
         });
     }
 
@@ -41,15 +42,29 @@
      *   input. Returns matching results from indexedItems
      *
      * @param data An object which contains:
-     *           * input: The original string which we are searching with
+     *           * input: The original string which we are searching with,
+     *           * or an object with 2 properties, searchString and typeFilter
      *           * maxResults: The maximum number of search results desired
      *           * queryId: an id identifying this query, will be returned.
      */
     function search(data) {
+        let searchString,
+            typeFilter;
+
+        if (typeof data.input === 'object') {
+            searchString = data.input.searchString;
+            typeFilter = data.input.typeFilter;
+        } else if (typeof data.input === 'string') {
+            searchString = data.input;
+            typeFilter = '';
+        }
+
+
         // This results dictionary will have domain object ID keys which
         // point to the value the domain object's score.
-        var results,
-            input = data.input.trim().toLowerCase(),
+        let filteredByType,
+            filteredByName,
+            trimmedSearchString = searchString.trim().toLowerCase(),
             message = {
                 request: 'search',
                 results: {},
@@ -57,12 +72,16 @@
                 queryId: data.queryId
             };
 
-        results = indexedItems.filter((indexedItem) => {
-            return indexedItem.name.includes(input);
+        filteredByType = indexedItems.filter((indexedItem) => {
+            return indexedItem.type.includes(typeFilter);
         });
 
-        message.total = results.length;
-        message.results = results
+        filteredByName = filteredByType.filter((indexedItem) => {
+            return indexedItem.name.includes(trimmedSearchString);
+        });
+
+        message.total = filteredByName.length;
+        message.results = filteredByName
             .slice(0, data.maxResults);
 
         return message;
