@@ -171,6 +171,7 @@ export default {
         }
     },
     mounted() {
+        this.removeOrphanedFrames();
         this.composition = this.openmct.composition.get(this.domainObject);
         this.composition.on('remove', this.removeChildObject);
         this.composition.on('add', this.addFrame);
@@ -351,6 +352,27 @@ export default {
             });
 
             this.persist();
+        },
+        removeOrphanedFrames() {
+            let compositionKeys = this.getCompositionIdentifierKeys();
+            let self = this;
+            this.containers.forEach(function (container) {
+                container.frames.forEach(function (frame) {
+                    let frameKey = self.openmct.objects.makeKeyString(frame.domainObjectIdentifier);
+                    if(compositionKeys.indexOf(frameKey) === -1) {
+                        self.removeChildObject(frame.domainObjectIdentifier);
+                    }
+                });
+            });
+        },
+        getCompositionIdentifierKeys() {
+            let keys = [];
+            this.domainObject.composition.forEach(function (item) {
+                if(item && item.key) {
+                    keys.push(item.key);
+                }
+            });
+            return keys;
         }
     }
 };
