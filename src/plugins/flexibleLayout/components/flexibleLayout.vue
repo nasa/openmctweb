@@ -235,11 +235,33 @@ export default {
         setFrameLocation(containerIndex, insertFrameIndex) {
             this.newFrameLocation = [containerIndex, insertFrameIndex];
         },
+        isFrameAlreadyTracked(frame) {
+            let found = false,
+                keyString = this.openmct.objects.makeKeyString(frame.domainObjectIdentifier);
+
+            this.containers.forEach(container => {
+                container.frames.forEach(item => {
+                    if (item.domainObjectIdentifier) {
+                        let itemKeyString = this.openmct.objects.makeKeyString(item.domainObjectIdentifier);
+                        if (itemKeyString === keyString) {
+                            found = true;
+                            return;
+                        }
+                    }
+                });
+            });
+
+            return found;
+        },
         addFrame(domainObject) {
+            let frame = new Frame(domainObject.identifier);
+            if (this.isFrameAlreadyTracked(frame)) {
+                return;
+            }
+
             let containerIndex = this.newFrameLocation.length ? this.newFrameLocation[0] : 0;
             let container = this.containers[containerIndex];
             let frameIndex = this.newFrameLocation.length ? this.newFrameLocation[1] : container.frames.length;
-            let frame = new Frame(domainObject.identifier);
 
             container.frames.splice(frameIndex + 1, 0, frame);
             sizeItems(container.frames, frame);
