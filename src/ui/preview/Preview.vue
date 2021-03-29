@@ -20,7 +20,7 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 <template>
-<div class="l-preview-window">
+<div class="l-preview-window js-preview-window">
     <PreviewHeader
         :current-view="currentView"
         :action-collection="actionCollection"
