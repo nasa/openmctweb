@@ -21,6 +21,8 @@
  *****************************************************************************/
 import PropertiesAction from './PropertiesAction';
 import FormProperties from '../components/Form-properties.vue';
+import CreateWizard from '../CreateWizard';
+import Vue from "vue";
 
 export default class CreateAction extends PropertiesAction {
     constructor(openmct, key, parentDomainObject) {
@@ -34,35 +36,68 @@ export default class CreateAction extends PropertiesAction {
         const definition = this._getTypeDefination(this.key);
 
         console.log('CreateAction invoke, Show form', definition.form);
+        let newModel = {
+            type: this.key,
+            location: this.openmct.objects.makeKeyString(this.parentDomainObject.identifier)
+        };
+        if (definition.initialize) {
+            definition.initialize(newModel);
+        }
 
+        let openmct = this.openmct;
+        newModel.modified = Date.now();
+        let wizard = new CreateWizard(newModel, this.parentDomainObject, openmct);
+        let formStructure = wizard.getFormStructure(true);
+        // let initialFormValue = wizard.getInitialFormValue();
         // if save navigateAndEdit
         // this.openmct.editor.cancel();
+        this.showForm(formStructure);
     }
 
-    showForm(element) {
+    showForm(formStructure) {
+        let vm = new Vue({
+            components: { FormProperties },
+            provide: {
+                openmct: this.openmct
+            },
+            data() {
+                return {
+                    formStructure
+                };
+            },
+            template: '<form-properties :model="formStructure"></form-properties>'
+        }).$mount();
+
+        function dismissDialog(overlay, initialize) {
+            overlay.dismiss();
+        }
+
         let overlay = this.openmct.overlays.overlay({
-            element,   //TODO: create and show new form component
+            element: vm.$el, //TODO: create and show new form component
             size: 'small',
             buttons: [
                 {
-                    label: 'Done',
-                    // TODO: save form values into domain object properties
-                    callback: () => overlay.dismiss()
+                    label: 'OK',
+                    emphasis: 'true',
+                    callback: () => dismissDialog(overlay, true)
+                },
+                {
+                    label: 'Cancel',
+                    callback: () => dismissDialog(overlay, false)
                 }
             ],
-            onDestroy: () => {
-            }
+            onDestroy: () => vm.$destroy()
         });
     }
 
     navigateAndEdit(object) {
-        let objectPath = object.getCapability('context').getPath(),
-            url = '#/browse/' + objectPath
-                .slice(1)
-                .map(function (o) {
-                    return o && openmct.objects.makeKeyString(o.getId());
-                })
-                .join('/');
+        let objectPath = object.getCapability('context').getPath();
+        let url = '#/browse/' + objectPath
+            .slice(1)
+            .map(function (o) {
+                return o && openmct.objects.makeKeyString(o.getId());
+            })
+            .join('/');
 
         window.location.href = url;
 
