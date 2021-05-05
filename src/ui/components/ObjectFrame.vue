@@ -67,15 +67,6 @@
                 >
                     <span class="c-icon-button__label">{{ item.name }}</span>
                 </button>
-
-                <button
-                    class="c-icon-button icon-items-expand"
-                    title="View Large"
-                    @click="expand"
-                >
-                    <span class="c-icon-button__label">View Large</span>
-                </button>
-
             </div>
             <button
                 class="c-icon-button icon-3-dots c-so-view__frame-controls__more"
@@ -87,7 +78,7 @@
 
     <object-view
         ref="objectView"
-        class="c-so-view__object-view"
+        class="c-so-view__object-view js-object-view"
         :show-edit-view="showEditView"
         :object-path="objectPath"
         :layout-font-size="layoutFontSize"
@@ -99,8 +90,6 @@
 
 <script>
 import ObjectView from './ObjectView.vue';
-import PreviewHeader from '@/ui/preview/preview-header.vue';
-import Vue from 'vue';
 
 const SIMPLE_CONTENT_TYPES = [
     'clock',
@@ -170,52 +159,6 @@ export default {
         }
     },
     methods: {
-        expand() {
-            let objectView = this.$refs.objectView;
-            let parentElement = objectView.$el;
-            let childElement = parentElement.children[0];
-
-            this.openmct.overlays.overlay({
-                element: this.getOverlayElement(childElement),
-                size: 'large',
-                onDestroy() {
-                    parentElement.append(childElement);
-                }
-            });
-        },
-        getOverlayElement(childElement) {
-            const fragment = new DocumentFragment();
-            const header = this.getPreviewHeader();
-            const wrapper = document.createElement('div');
-            wrapper.classList.add('l-preview-window__object-view');
-            wrapper.append(childElement);
-            fragment.append(header);
-            fragment.append(wrapper);
-
-            return fragment;
-        },
-        getPreviewHeader() {
-            const domainObject = this.objectPath[0];
-            const actionCollection = this.actionCollection;
-            const preview = new Vue({
-                components: {
-                    PreviewHeader
-                },
-                provide: {
-                    openmct: this.openmct,
-                    objectPath: this.objectPath
-                },
-                data() {
-                    return {
-                        domainObject,
-                        actionCollection
-                    };
-                },
-                template: '<PreviewHeader :actionCollection="actionCollection" :domainObject="domainObject" :hideViewSwitcher="true" :showNotebookMenuSwitcher="true"></PreviewHeader>'
-            });
-
-            return preview.$mount().$el;
-        },
         getSelectionContext() {
             return this.$refs.objectView.getSelectionContext();
         },

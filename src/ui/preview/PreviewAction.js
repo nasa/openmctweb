@@ -75,8 +75,13 @@ export default class PreviewAction {
         PreviewAction.isVisible = true;
     }
 
-    appliesTo(objectPath) {
-        return !PreviewAction.isVisible && !this._isNavigatedObject(objectPath);
+    appliesTo(objectPath, view = {}) {
+        const element = view.element;
+        const isObjectView = element && element.classList.contains('js-object-view');
+
+        return !PreviewAction.isVisible
+            && !this._isNavigatedObject(objectPath)
+            && !isObjectView;
     }
 
     _isNavigatedObject(objectPath) {
@@ -85,6 +90,7 @@ export default class PreviewAction {
 
         return this._openmct.objects.areIdsEqual(targetObject.identifier, navigatedObject.identifier);
     }
+
     _preventPreview(objectPath) {
         const noPreviewTypes = ['folder'];
 

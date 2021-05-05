@@ -283,6 +283,7 @@ define([
         this.install(this.plugins.NotificationIndicator());
         this.install(this.plugins.NewFolderAction());
         this.install(this.plugins.ViewDatumAction());
+        this.install(this.plugins.ViewLargeAction());
         this.install(this.plugins.ObjectInterceptors());
         this.install(this.plugins.NonEditableFolder());
     }

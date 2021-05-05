@@ -224,7 +224,12 @@ export default {
                 this.actionCollection.destroy();
             }
 
-            this.actionCollection = this.openmct.actions._get(this.currentObjectPath || this.objectPath, this.currentView);
+            const options = {
+                element: this.$el,
+                view: this.currentView
+            };
+
+            this.actionCollection = this.openmct.actions.get(this.currentObjectPath || this.objectPath, options);
             this.$emit('change-action-collection', this.actionCollection);
         },
         show(object, viewKey, immediatelySelect, currentObjectPath) {

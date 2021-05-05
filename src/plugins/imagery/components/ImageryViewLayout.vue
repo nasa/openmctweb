@@ -166,12 +166,9 @@
 <script>
 import _ from 'lodash';
 import moment from 'moment';
-import Vue from 'vue';
 
 import RelatedTelemetry from './RelatedTelemetry/RelatedTelemetry';
-
 import Compass from './Compass/Compass.vue';
-import PreviewHeader from '@/ui/preview/preview-header.vue';
 
 const DEFAULT_DURATION_FORMATTER = 'duration';
 const REFRESH_CSS_MS = 500;
@@ -443,63 +440,20 @@ export default {
     },
     methods: {
         expand() {
-            const element = this.$el;
-            const parentElement = element.parentElement;
-
-            // prevent another preview window
-            if (element.closest('.js-preview-window')) {
-                return;
-            }
-
-            this.openmct.overlays.overlay({
-                element: this.getOverlayElement(element),
-                size: 'large',
-                onDestroy() {
-                    parentElement.append(element);
-                }
-            });
-        },
-        getOverlayElement(childElement) {
-            const fragment = new DocumentFragment();
-            const header = this.getPreviewHeader();
-            const wrapper = document.createElement('div');
-            wrapper.classList.add('l-preview-window__object-view', 'js-preview-window');
-            wrapper.append(childElement);
-            fragment.append(header);
-            fragment.append(wrapper);
-
-            return fragment;
-        },
-        getPreviewHeader() {
-            const objectPath = this.openmct.router.path;
-            const domainObject = this.domainObject;
-            const contextualObjectPath = objectPath.slice();
-
-            const actionsViewContext = {
-                getViewContext: () => {
-                    return {
-                    };
-                }
+            const options = {
+                element: this.$el
             };
-            const actionCollection = this.openmct.actions.get(contextualObjectPath, actionsViewContext);
-            const preview = new Vue({
-                components: {
-                    PreviewHeader
-                },
-                provide: {
-                    openmct: this.openmct,
-                    objectPath
-                },
-                data() {
-                    return {
-                        domainObject,
-                        actionCollection
-                    };
-                },
-                template: '<PreviewHeader :actionCollection="actionCollection" :domainObject="domainObject" :hideViewSwitcher="true" :showNotebookMenuSwitcher="true"></PreviewHeader>'
-            });
 
-            return preview.$mount().$el;
+            this.openmct.objects.getOriginalPath(this.domainObject.identifier)
+                .then(objectPath => {
+                    const actionCollection = this.openmct.actions.get(objectPath, options);
+                    const visibleActions = actionCollection.getVisibleActions();
+                    const viewLargeAction = visibleActions
+                        && visibleActions.find(action => action.key === 'large.view');
+                    if (viewLargeAction) {
+                        viewLargeAction.callBack();
+                    }
+                });
         },
         async initializeRelatedTelemetry() {
             this.relatedTelemetry = new RelatedTelemetry(
