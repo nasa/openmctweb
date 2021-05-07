@@ -10,12 +10,14 @@ define([
         let unobserve = undefined;
         let currentObjectPath;
         let isRoutingInProgress = false;
+        let mutable;
 
         openmct.router.route(/^\/browse\/?$/, navigateToFirstChildOfRoot);
 
         openmct.router.route(/^\/browse\/(.*)$/, (path, results, params) => {
             isRoutingInProgress = true;
             let navigatePath = results[1];
+            clearMutationListeners();
             navigateToPath(navigatePath, params.view);
             onParamsChanged(null, null, params);
         });
@@ -36,10 +38,25 @@ define([
         }
 
         function viewObject(object, viewProvider) {
+            if (mutable) {
+                openmct.objects.destroyMutable(mutable);
+                mutable = undefined;
+            }
+
+            if (openmct.objects.supportsMutation(object.identifier)) {
+                mutable = openmct.objects._toMutable(object);
+            }
+
             currentObjectPath = openmct.router.path;
 
-            openmct.layout.$refs.browseObject.show(object, viewProvider.key, true, currentObjectPath);
-            openmct.layout.$refs.browseBar.domainObject = object;
+            if (mutable !== undefined) {
+                openmct.layout.$refs.browseObject.show(mutable, viewProvider.key, true, currentObjectPath);
+                openmct.layout.$refs.browseBar.domainObject = mutable;
+            } else {
+                openmct.layout.$refs.browseObject.show(object, viewProvider.key, true, currentObjectPath);
+                openmct.layout.$refs.browseBar.domainObject = object;
+            }
+
             openmct.layout.$refs.browseBar.viewKey = viewProvider.key;
         }
 
@@ -64,23 +81,14 @@ define([
                     return; // Prevent race.
                 }
 
-                let navigatedObject = objects[objects.length - 1];
+                objects = objects.reverse();
 
-                // FIXME: this is a hack to support create action, intended to
-                // expose the current routed path.  We need to rewrite the
-                // navigation service and router to expose a clear and minimal
-                // API for this.
-                openmct.router.path = objects.reverse();
+                openmct.router.path = objects;
+                browseObject = objects[0];
 
-                unobserve = openmct.objects.observe(openmct.router.path[0], '*', (newObject) => {
-                    openmct.router.path[0] = newObject;
-                    browseObject = newObject;
-                });
+                openmct.layout.$refs.browseBar.domainObject = browseObject;
 
-                openmct.layout.$refs.browseBar.domainObject = navigatedObject;
-                browseObject = navigatedObject;
-
-                if (!navigatedObject) {
+                if (!browseObject) {
                     openmct.layout.$refs.browseObject.clear();
 
                     return;
@@ -92,13 +100,13 @@ define([
 
                 document.title = browseObject.name; //change document title to current object in main view
 
-                if (currentProvider && currentProvider.canView(navigatedObject)) {
-                    viewObject(navigatedObject, currentProvider);
+                if (currentProvider && currentProvider.canView(browseObject, openmct.router.path)) {
+                    viewObject(browseObject, currentProvider);
 
                     return;
                 }
 
-                let defaultProvider = openmct.objectViews.get(navigatedObject)[0];
+                let defaultProvider = openmct.objectViews.get(browseObject, openmct.router.path)[0];
                 if (defaultProvider) {
                     openmct.router.updateParams({
                         view: defaultProvider.key
@@ -114,7 +122,13 @@ define([
 
         function pathToObjects(path) {
             return Promise.all(path.map((keyString) => {
-                return openmct.objects.get(keyString);
+                let identifier = openmct.objects.parseKeyString(keyString);
+
+                if (openmct.objects.supportsMutation(identifier)) {
+                    return openmct.objects.getMutable(identifier);
+                } else {
+                    return openmct.objects.get(identifier);
+                }
             }));
         }
 
@@ -131,6 +145,16 @@ define([
                         }
                     });
             });
+        }
+
+        function clearMutationListeners() {
+            if (openmct.router.path !== undefined) {
+                openmct.router.path.forEach((pathObject) => {
+                    if (pathObject.isMutable) {
+                        openmct.objects.destroyMutable(pathObject);
+                    }
+                });
+            }
         }
     };
 });

@@ -56,7 +56,7 @@
         $handW: 2px;
         $handH: $d * 0.4;
         animation-iteration-count: infinite;
-        animation-timing-function: linear;
+        animation-timing-function: steps(12);
         transform-origin: bottom;
         position: absolute;
         height: $handW;

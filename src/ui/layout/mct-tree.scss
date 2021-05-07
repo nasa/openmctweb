@@ -57,6 +57,14 @@
     overflow-x: hidden;
     overflow-y: auto;
 
+    .icon-arrow-nav-to-parent {
+        visibility: hidden;
+
+        &.is-enabled {
+            visibility: visible;
+        }
+    }
+
     li {
         position: relative;
         &[class*="__item-h"] {
@@ -98,6 +106,14 @@
 
         &.is-context-clicked {
             box-shadow: inset $colorItemTreeSelectedBg 0 0 0 1px;
+        }
+
+        .icon-arrow-nav-to-parent {
+            visibility: hidden;
+
+            &.is-enabled {
+                visibility: visible;
+            }
         }
     }
 }

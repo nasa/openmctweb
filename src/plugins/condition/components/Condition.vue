@@ -1,5 +1,5 @@
 /*****************************************************************************
-* Open MCT, Copyright (c) 2014-2020, United States Government
+* Open MCT, Copyright (c) 2014-2021, United States Government
 * as represented by the Administrator of the National Aeronautics and Space
 * Administration. All rights reserved.
 *
@@ -195,11 +195,11 @@ import { TRIGGER, TRIGGER_LABEL } from "@/plugins/condition/utils/constants";
 import uuid from 'uuid';
 
 export default {
-    inject: ['openmct'],
     components: {
         Criterion,
         ConditionDescription
     },
+    inject: ['openmct'],
     props: {
         currentConditionId: {
             type: String,

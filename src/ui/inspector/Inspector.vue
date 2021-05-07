@@ -29,7 +29,7 @@
                 handle="before"
                 label="Elements"
             >
-                <elements />
+                <elements-pool />
             </pane>
         </multipane>
         <multipane
@@ -55,7 +55,7 @@
 <script>
 import multipane from '../layout/multipane.vue';
 import pane from '../layout/pane.vue';
-import Elements from './Elements.vue';
+import ElementsPool from './ElementsPool.vue';
 import Location from './Location.vue';
 import Properties from './Properties.vue';
 import ObjectName from './ObjectName.vue';
@@ -66,21 +66,21 @@ import StylesInspectorView from '@/ui/inspector/styles/StylesInspectorView.vue';
 import SavedStylesInspectorView from '@/ui/inspector/styles/SavedStylesInspectorView.vue';
 
 export default {
-    provide: {
-        stylesManager: stylesManager
-    },
-    inject: ['openmct'],
     components: {
         StylesInspectorView,
         SavedStylesInspectorView,
         multipane,
         pane,
-        Elements,
+        ElementsPool,
         Properties,
         ObjectName,
         Location,
         InspectorViews
     },
+    provide: {
+        stylesManager: stylesManager
+    },
+    inject: ['openmct'],
     props: {
         isEditing: {
             type: Boolean,

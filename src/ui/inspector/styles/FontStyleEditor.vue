@@ -1,22 +1,29 @@
 <template>
 <div class="c-toolbar">
-    <toolbar-select-menu
-        :options="fontSizeMenuOptions"
-        @change="setFontSize"
-        class="menus-to-left menus-no-icon"
-    />
-    <div class="c-toolbar__separator"></div>
-    <toolbar-select-menu
-        :options="fontMenuOptions"
-        @change="setFont"
-        class="menus-to-left menus-no-icon"
-    />
+    <div ref="fontSizeMenu"
+         class="c-menu-button c-ctrl-wrapper c-ctrl-wrapper--menus-left"
+    >
+        <button
+            class="c-icon-button c-button--menu icon-font-size"
+            @click.prevent.stop="showFontSizeMenu"
+        >
+            <span class="c-button__label">{{ fontSizeLabel }}</span>
+        </button>
+    </div>
+    <div ref="fontMenu"
+         class="c-menu-button c-ctrl-wrapper c-ctrl-wrapper--menus-left"
+    >
+        <button
+            class="c-icon-button c-button--menu icon-font"
+            @click.prevent.stop="showFontMenu"
+        >
+            <span class="c-button__label">{{ fontTypeLable }}</span>
+        </button>
+    </div>
 </div>
 </template>
 
 <script>
-import ToolbarSelectMenu from '@/ui/toolbar/components/toolbar-select-menu.vue';
-
 import {
     FONT_SIZES,
     FONTS
@@ -24,41 +31,73 @@ import {
 
 export default {
     inject: ['openmct'],
-    components: {
-        ToolbarSelectMenu
-    },
     props: {
         fontStyle: {
             type: Object,
-            required: true
+            required: true,
+            default: () => {
+                return {};
+            }
         }
     },
     computed: {
-        fontMenuOptions() {
-            return {
-                control: 'select-menu',
-                icon: "icon-font",
-                title: "Set font style",
-                value: this.fontStyle.font,
-                options: FONTS
-            };
+        fontTypeLable() {
+            const fontType = FONTS.find(f => f.value === this.fontStyle.font);
+            if (!fontType) {
+                return '??';
+            }
+
+            return fontType.name || fontType.value || FONTS[0].name;
         },
-        fontSizeMenuOptions() {
-            return {
-                control: 'select-menu',
-                icon: "icon-font-size",
-                title: "Set font size",
-                value: this.fontStyle.fontSize,
-                options: FONT_SIZES
-            };
+        fontSizeLabel() {
+            const fontSize = FONT_SIZES.find(f => f.value === this.fontStyle.fontSize);
+            if (!fontSize) {
+                return '??';
+            }
+
+            return fontSize.name || fontSize.value || FONT_SIZES[0].name;
+        },
+        fontMenu() {
+            return FONTS.map(font => {
+                return {
+                    cssClass: font.cssClass || '',
+                    name: font.name,
+                    description: font.name,
+                    callBack: () => this.setFont(font.value)
+                };
+            });
+        },
+        fontSizeMenu() {
+            return FONT_SIZES.map(fontSize => {
+                return {
+                    cssClass: fontSize.cssClass || '',
+                    name: fontSize.name,
+                    description: fontSize.name,
+                    callBack: () => this.setFontSize(fontSize.value)
+                };
+            });
         }
     },
     methods: {
         setFont(font) {
-            this.$emit('set-font-property', { font: font });
+            this.$emit('set-font-property', { font });
         },
         setFontSize(fontSize) {
-            this.$emit('set-font-property', { fontSize: fontSize });
+            this.$emit('set-font-property', { fontSize });
+        },
+        showFontMenu() {
+            const elementBoundingClientRect = this.$refs.fontMenu.getBoundingClientRect();
+            const x = elementBoundingClientRect.x;
+            const y = elementBoundingClientRect.bottom;
+
+            this.openmct.menus.showMenu(x, y, this.fontMenu);
+        },
+        showFontSizeMenu() {
+            const elementBoundingClientRect = this.$refs.fontSizeMenu.getBoundingClientRect();
+            const x = elementBoundingClientRect.x;
+            const y = elementBoundingClientRect.bottom;
+
+            this.openmct.menus.showMenu(x, y, this.fontSizeMenu);
         }
     }
 };

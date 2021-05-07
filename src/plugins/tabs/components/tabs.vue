@@ -22,7 +22,7 @@
         <div
             v-for="(tab, index) in tabsList"
             :key="tab.keyString"
-            class="c-tab c-tabs-view__tab"
+            class="c-tab c-tabs-view__tab js-tab"
             :class="{
                 'is-current': isCurrent(tab)
             }"
@@ -53,9 +53,9 @@
         :class="{'c-tabs-view__object-holder--hidden': !isCurrent(tab)}"
     >
         <object-view
-            v-if="internalDomainObject.keep_alive ? currentTab : isCurrent(tab)"
+            v-if="isTabLoaded(tab)"
             class="c-tabs-view__object"
-            :object="tab.domainObject"
+            :default-object="tab.domainObject"
             :object-path="tab.objectPath"
         />
     </div>
@@ -79,10 +79,10 @@ const unknownObjectType = {
 };
 
 export default {
-    inject: ['openmct', 'domainObject', 'composition', 'objectPath'],
     components: {
         ObjectView
     },
+    inject: ['openmct', 'domainObject', 'composition', 'objectPath'],
     props: {
         isEditing: {
             type: Boolean,
@@ -100,7 +100,8 @@ export default {
             setCurrentTab: true,
             isDragging: false,
             allowDrop: false,
-            searchTabKey: `tabs.pos.${keyString}`
+            searchTabKey: `tabs.pos.${keyString}`,
+            loadedTabs: {}
         };
     },
     computed: {
@@ -151,9 +152,12 @@ export default {
         document.removeEventListener('dragend', this.dragend);
     },
     methods: {
+        addTabToLoaded(tab) {
+            this.loadedTabs[tab.keyString] = true;
+        },
         setCurrentTabByIndex(index) {
             if (this.tabsList[index]) {
-                this.currentTab = this.tabsList[index];
+                this.showTab(this.tabsList[index]);
             }
         },
         showTab(tab, index) {
@@ -162,6 +166,7 @@ export default {
             }
 
             this.currentTab = tab;
+            this.addTabToLoaded(tab);
         },
         showRemoveDialog(index) {
             if (!this.tabsList[index]) {
@@ -179,7 +184,7 @@ export default {
                         label: 'Ok',
                         emphasis: 'true',
                         callback: () => {
-                            this.removeFromComposition(childDomainObject);
+                            this.composition.remove(childDomainObject);
                             prompt.dismiss();
                         }
                     },
@@ -191,9 +196,6 @@ export default {
                     }
                 ]
             });
-        },
-        removeFromComposition(childDomainObject) {
-            this.composition.remove(childDomainObject);
         },
         addItem(domainObject) {
             let type = this.openmct.types.get(domainObject.type) || unknownObjectType;
@@ -215,7 +217,7 @@ export default {
             this.tabsList.push(tabItem);
 
             if (this.setCurrentTab) {
-                this.currentTab = tabItem;
+                this.showTab(tabItem);
                 this.setCurrentTab = false;
             }
         },
@@ -224,14 +226,20 @@ export default {
             this.setCurrentTab = true;
         },
         removeItem(identifier) {
-            let pos = this.tabsList.findIndex(tab =>
-                tab.domainObject.identifier.namespace === identifier.namespace && tab.domainObject.identifier.keyString === identifier.keyString
-            );
+            let keyStringToBeRemoved = this.openmct.objects.makeKeyString(identifier);
+
+            let pos = this.tabsList.findIndex(tab => {
+                return tab.keyString === keyStringToBeRemoved;
+            });
+
             let tabToBeRemoved = this.tabsList[pos];
 
             tabToBeRemoved.statusUnsubscribe();
 
             this.tabsList.splice(pos, 1);
+
+            this.loadedTabs[keyStringToBeRemoved] = undefined;
+            delete this.loadedTabs[keyStringToBeRemoved];
 
             if (this.isCurrent(tabToBeRemoved)) {
                 this.showTab(this.tabsList[this.tabsList.length - 1], this.tabsList.length - 1);
@@ -291,10 +299,15 @@ export default {
             let tabPos = this.tabsList.findIndex((tab) => {
                 return tab.keyString === keyString;
             });
+            let tab = this.tabsList[tabPos];
 
-            if (tabPos !== -1) {
-                let tab = this.tabsList[tabPos];
-                this.$set(tab, 'status', status);
+            this.$set(tab, 'status', status);
+        },
+        isTabLoaded(tab) {
+            if (this.internalDomainObject.keep_alive) {
+                return true;
+            } else {
+                return this.loadedTabs[tab.keyString];
             }
         }
     }

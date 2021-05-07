@@ -1,6 +1,6 @@
 {
   "name": "openmct",
-  "version": "1.5.0-SNAPSHOT",
+  "version": "1.7.1-SNAPSHOT",
   "description": "The Open MCT core platform",
   "dependencies": {},
   "devDependencies": {
@@ -23,7 +23,7 @@
     "d3-time": "1.0.x",
     "d3-time-format": "2.1.x",
     "eslint": "7.0.0",
-    "eslint-plugin-vue": "^6.0.0",
+    "eslint-plugin-vue": "^7.5.0",
     "eslint-plugin-you-dont-need-lodash-underscore": "^6.10.0",
     "eventemitter3": "^1.2.0",
     "exports-loader": "^0.7.0",

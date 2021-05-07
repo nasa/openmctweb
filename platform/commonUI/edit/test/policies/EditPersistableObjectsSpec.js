@@ -43,7 +43,8 @@ define(
                 );
 
                 mockObjectAPI = jasmine.createSpyObj('objectAPI', [
-                    'isPersistable'
+                    'isPersistable',
+                    'parseKeyString'
                 ]);
 
                 mockAPI = {

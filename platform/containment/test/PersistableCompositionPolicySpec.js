@@ -33,7 +33,8 @@ define(
 
             beforeEach(function () {
                 objectAPI = jasmine.createSpyObj('objectsAPI', [
-                    'isPersistable'
+                    'isPersistable',
+                    'parseKeyString'
                 ]);
 
                 mockOpenMCT = {

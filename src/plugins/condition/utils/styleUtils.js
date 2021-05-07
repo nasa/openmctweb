@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -104,7 +104,7 @@ export function getConsolidatedStyleValues(multipleItemStyles) {
     const properties = Object.keys(styleProps);
     properties.forEach((property) => {
         const values = aggregatedStyleValues[property];
-        if (values.length) {
+        if (values && values.length) {
             if (values.every(value => value === values[0])) {
                 styleValues[property] = values[0];
             } else {

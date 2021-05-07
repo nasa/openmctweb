@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -76,7 +76,7 @@ mct-plot {
         margin-bottom: $interiorMargin;
     }
 
-    .l-view-section {
+    .l-view-section, .c-plot--stacked-container {
         display: flex;
         flex: 1 1 auto;
         flex-direction: column;
@@ -143,6 +143,14 @@ mct-plot {
             left: 0;
         }
 
+        .gl-plot-chart-area, .gl-plot-chart-wrapper {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+
         .gl-plot-axis-area.gl-plot-x {
             top: auto;
             right: 0;
@@ -194,6 +202,10 @@ mct-plot {
         &:empty {
             display: none;
         }
+    }
+
+    .gl-plot-ticks, .gl-plot-tick-wrapper {
+        height: 100%;
     }
 
     .gl-plot-label,

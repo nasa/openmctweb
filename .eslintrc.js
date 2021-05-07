@@ -54,7 +54,7 @@ module.exports = {
             {
                 "anonymous": "always",
                 "asyncArrow": "always",
-                "named": "never",
+                "named": "never"
             }
         ],
         "array-bracket-spacing": "error",
@@ -178,7 +178,10 @@ module.exports = {
         //https://eslint.org/docs/rules/no-whitespace-before-property
         "no-whitespace-before-property": "error",
         // https://eslint.org/docs/rules/object-curly-newline
-        "object-curly-newline": ["error", {"consistent": true, "multiline": true}],
+        "object-curly-newline": ["error", {
+            "consistent": true,
+            "multiline": true
+        }],
         // https://eslint.org/docs/rules/object-property-newline
         "object-property-newline": "error",
         // https://eslint.org/docs/rules/brace-style
@@ -188,7 +191,7 @@ module.exports = {
         // https://eslint.org/docs/rules/operator-linebreak
         "operator-linebreak": ["error", "before", {"overrides": {"=": "after"}}],
         // https://eslint.org/docs/rules/padding-line-between-statements
-        "padding-line-between-statements":["error", {
+        "padding-line-between-statements": ["error", {
             "blankLine": "always",
             "prev": "multiline-block-like",
             "next": "*"
@@ -200,11 +203,17 @@ module.exports = {
         // https://eslint.org/docs/rules/space-infix-ops
         "space-infix-ops": "error",
         // https://eslint.org/docs/rules/space-unary-ops
-        "space-unary-ops": ["error", {"words": true, "nonwords": false}],
+        "space-unary-ops": ["error", {
+            "words": true,
+            "nonwords": false
+        }],
         // https://eslint.org/docs/rules/arrow-spacing
         "arrow-spacing": "error",
         // https://eslint.org/docs/rules/semi-spacing
-        "semi-spacing": ["error", {"before": false, "after": true}],
+        "semi-spacing": ["error", {
+            "before": false,
+            "after": true
+        }],
 
         "vue/html-indent": [
             "error",
@@ -237,6 +246,7 @@ module.exports = {
         }],
         "vue/multiline-html-element-content-newline": "off",
         "vue/singleline-html-element-content-newline": "off",
+        "vue/no-mutating-props": "off"
 
     },
     "overrides": [

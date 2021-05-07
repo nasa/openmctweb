@@ -119,7 +119,6 @@ import Indicators from './status-bar/Indicators.vue';
 import NotificationBanner from './status-bar/NotificationBanner.vue';
 
 export default {
-    inject: ['openmct'],
     components: {
         Inspector,
         MctTree,
@@ -134,6 +133,7 @@ export default {
         Indicators,
         NotificationBanner
     },
+    inject: ['openmct'],
     data: function () {
         let storedHeadProps = window.localStorage.getItem('openmct-shell-head');
         let headExpanded = true;

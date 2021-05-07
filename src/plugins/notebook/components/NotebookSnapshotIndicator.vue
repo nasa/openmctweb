@@ -69,13 +69,13 @@ export default {
             const divElement = document.querySelector('.l-shell__drawer div');
 
             this.component = new Vue({
-                provide: {
-                    openmct,
-                    snapshotContainer
-                },
                 el: divElement,
                 components: {
                     SnapshotContainerComponent
+                },
+                provide: {
+                    openmct,
+                    snapshotContainer
                 },
                 data() {
                     return {

@@ -65,11 +65,11 @@ import ToggleSwitch from '../../../ui/components/ToggleSwitch.vue';
 import isEmpty from 'lodash/isEmpty';
 
 export default {
-    inject: ['openmct'],
     components: {
         FilterField,
         ToggleSwitch
     },
+    inject: ['openmct'],
     props: {
         filterObject: {
             type: Object,

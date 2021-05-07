@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT Web, Copyright (c) 2014-2020, United States Government
+ * Open MCT Web, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -20,41 +20,16 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 <template>
-<div class="c-ctrl-wrapper c-ctrl-wrapper--menus-up">
-    <button
-        class="c-button--menu c-mode-button"
-        @click.prevent="toggle"
-    >
-        <span class="c-button__label">{{ selectedMode.name }}</span>
-    </button>
-    <div
-        v-if="open"
-        class="c-menu c-super-menu c-conductor__mode-menu"
-    >
-        <div class="c-super-menu__menu">
-            <ul>
-                <li
-                    v-for="mode in modes"
-                    :key="mode.key"
-                    class="menu-item-a"
-                    :class="mode.cssClass"
-                    @click="setOption(mode)"
-                    @mouseover="hoveredMode = mode"
-                    @mouseleave="hoveredMode = {}"
-                >
-                    {{ mode.name }}
-                </li>
-            </ul>
-        </div>
-        <div class="c-super-menu__item-description">
-            <div :class="['l-item-description__icon', 'bg-' + hoveredMode.cssClass]"></div>
-            <div class="l-item-description__name">
-                {{ hoveredMode.name }}
-            </div>
-            <div class="l-item-description__description">
-                {{ hoveredMode.description }}
-            </div>
-        </div>
+<div ref="modeButton"
+     class="c-ctrl-wrapper c-ctrl-wrapper--menus-up"
+>
+    <div class="c-menu-button c-ctrl-wrapper c-ctrl-wrapper--menus-left">
+        <button
+            class="c-button--menu c-mode-button"
+            @click.prevent.stop="showModesMenu"
+        >
+            <span class="c-button__label">{{ selectedMode.name }}</span>
+        </button>
     </div>
 </div>
 </template>
@@ -63,8 +38,8 @@
 import toggleMixin from '../../ui/mixins/toggle-mixin';
 
 export default {
-    inject: ['openmct', 'configuration'],
     mixins: [toggleMixin],
+    inject: ['openmct', 'configuration'],
     data: function () {
         let activeClock = this.openmct.time.clock();
         if (activeClock !== undefined) {
@@ -88,6 +63,19 @@ export default {
         this.openmct.time.off('clock', this.setViewFromClock);
     },
     methods: {
+        showModesMenu() {
+            const elementBoundingClientRect = this.$refs.modeButton.getBoundingClientRect();
+            const x = elementBoundingClientRect.x;
+            const y = elementBoundingClientRect.y;
+
+            const menuOptions = {
+                menuClass: 'c-conductor__mode-menu',
+                placement: this.openmct.menus.menuPlacement.TOP_RIGHT
+            };
+
+            this.openmct.menus.showSuperMenu(x, y, this.modes, menuOptions);
+        },
+
         loadClocksFromConfiguration() {
             let clocks = this.configuration.menuOptions
                 .map(menuOption => menuOption.clock)
@@ -109,19 +97,25 @@ export default {
 
         getModeOptionForClock(clock) {
             if (clock === undefined) {
+                const key = 'fixed';
+
                 return {
-                    key: 'fixed',
+                    key,
                     name: 'Fixed Timespan',
                     description: 'Query and explore data that falls between two fixed datetimes.',
-                    cssClass: 'icon-tabular'
+                    cssClass: 'icon-tabular',
+                    callBack: () => this.setOption(key)
                 };
             } else {
+                const key = clock.key;
+
                 return {
-                    key: clock.key,
+                    key,
                     name: clock.name,
                     description: "Monitor streaming data in real-time. The Time "
                     + "Conductor and displays will automatically advance themselves based on this clock. " + clock.description,
-                    cssClass: clock.cssClass || 'icon-clock'
+                    cssClass: clock.cssClass || 'icon-clock',
+                    callBack: () => this.setOption(key)
                 };
             }
         },
@@ -132,8 +126,7 @@ export default {
             })[0];
         },
 
-        setOption(option) {
-            let clockKey = option.key;
+        setOption(clockKey) {
             if (clockKey === 'fixed') {
                 clockKey = undefined;
             }
@@ -181,6 +174,5 @@ export default {
             this.selectedMode = this.getModeOptionForClock(clock);
         }
     }
-
 };
 </script>

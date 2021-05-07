@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -71,10 +71,10 @@ define(
                 openmct.editor.cancel();
             }
 
-            function isFirstViewEditable(domainObject) {
-                let firstView = openmct.objectViews.get(domainObject)[0];
+            function isFirstViewEditable(domainObject, objectPath) {
+                let firstView = openmct.objectViews.get(domainObject, objectPath)[0];
 
-                return firstView && firstView.canEdit && firstView.canEdit(domainObject);
+                return firstView && firstView.canEdit && firstView.canEdit(domainObject, objectPath);
             }
 
             function navigateAndEdit(object) {
@@ -88,7 +88,7 @@ define(
 
                 window.location.href = url;
 
-                if (isFirstViewEditable(object.useCapability('adapter'))) {
+                if (isFirstViewEditable(object.useCapability('adapter'), objectPath)) {
                     openmct.editor.edit();
                 }
             }

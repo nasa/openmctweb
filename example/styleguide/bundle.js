@@ -138,7 +138,7 @@ define([
                     "id": "styleguide:home",
                     "priority": "preferred",
                     "model": {
-                        "type": "folder",
+                        "type": "noneditable.folder",
                         "name": "Style Guide Home",
                         "location": "ROOT",
                         "composition": [
@@ -155,7 +155,7 @@ define([
                     "id": "styleguide:ui-elements",
                     "priority": "preferred",
                     "model": {
-                        "type": "folder",
+                        "type": "noneditable.folder",
                         "name": "UI Elements",
                         "location": "styleguide:home",
                         "composition": [

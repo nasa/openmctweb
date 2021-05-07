@@ -1,5 +1,5 @@
 /*****************************************************************************
-* Open MCT, Copyright (c) 2014-2020, United States Government
+* Open MCT, Copyright (c) 2014-2021, United States Government
 * as represented by the Administrator of the National Aeronautics and Space
 * Administration. All rights reserved.
 *
@@ -343,6 +343,11 @@ export default {
                 const item = selectionItem[0].context.item;
                 const layoutItem = selectionItem[0].context.layoutItem;
                 const isChildItem = selectionItem.length > 1;
+
+                if (!item && !layoutItem) {
+                    // cases where selection is used for table cells
+                    return;
+                }
 
                 if (!isChildItem) {
                     domainObject = item;

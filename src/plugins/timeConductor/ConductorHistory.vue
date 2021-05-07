@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT Web, Copyright (c) 2014-2020, United States Government
+ * Open MCT Web, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -20,60 +20,31 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 <template>
-<div class="c-ctrl-wrapper c-ctrl-wrapper--menus-up">
-    <button class="c-button--menu c-history-button icon-history"
-            @click.prevent="toggle"
-    >
-        <span class="c-button__label">History</span>
-    </button>
-    <div v-if="open"
-         class="c-menu c-conductor__history-menu"
-    >
-        <ul v-if="hasHistoryPresets">
-            <li
-                v-for="preset in presets"
-                :key="preset.label"
-                class="icon-clock"
-                @click="selectPresetBounds(preset.bounds)"
-            >
-                {{ preset.label }}
-            </li>
-        </ul>
-
-        <div
-            v-if="hasHistoryPresets"
-            class="c-menu__section-separator"
-        ></div>
-
-        <div class="c-menu__section-hint">
-            Past timeframes, ordered by latest first
-        </div>
-
-        <ul>
-            <li
-                v-for="(timespan, index) in historyForCurrentTimeSystem"
-                :key="index"
-                class="icon-history"
-                @click="selectTimespan(timespan)"
-            >
-                {{ formatTime(timespan.start) }} - {{ formatTime(timespan.end) }}
-            </li>
-        </ul>
+<div ref="historyButton"
+     class="c-ctrl-wrapper c-ctrl-wrapper--menus-up"
+>
+    <div class="c-menu-button c-ctrl-wrapper c-ctrl-wrapper--menus-left">
+        <button
+            class="c-button--menu c-history-button icon-history"
+            @click.prevent.stop="showHistoryMenu"
+        >
+            <span class="c-button__label">History</span>
+        </button>
     </div>
 </div>
 </template>
 
 <script>
-import toggleMixin from '../../ui/mixins/toggle-mixin';
-
 const DEFAULT_DURATION_FORMATTER = 'duration';
 const LOCAL_STORAGE_HISTORY_KEY_FIXED = 'tcHistory';
 const LOCAL_STORAGE_HISTORY_KEY_REALTIME = 'tcHistoryRealtime';
 const DEFAULT_RECORDS = 10;
+const ONE_MINUTE = 60 * 1000;
+const ONE_HOUR = ONE_MINUTE * 60;
+const ONE_DAY = ONE_HOUR * 24;
 
 export default {
     inject: ['openmct', 'configuration'],
-    mixins: [toggleMixin],
     props: {
         bounds: {
             type: Object,
@@ -116,9 +87,6 @@ export default {
         },
         isFixed() {
             return this.openmct.time.clock() === undefined;
-        },
-        hasHistoryPresets() {
-            return this.timeSystem.isUTCBased && this.presets.length;
         },
         historyForCurrentTimeSystem() {
             const history = this[this.currentHistory][this.timeSystem.key];
@@ -168,6 +136,81 @@ export default {
         this.initializeHistoryIfNoHistory();
     },
     methods: {
+        getHistoryMenuItems() {
+            const history = this.historyForCurrentTimeSystem.map(timespan => {
+                let name;
+                let startTime = this.formatTime(timespan.start);
+                let description = `${startTime} - ${this.formatTime(timespan.end)}`;
+
+                if (this.timeSystem.isUTCBased && !this.openmct.time.clock()) {
+                    name = `${startTime} ${this.getDuration(timespan.end - timespan.start)}`;
+                } else {
+                    name = description;
+                }
+
+                return {
+                    cssClass: 'icon-history',
+                    name,
+                    description,
+                    callBack: () => this.selectTimespan(timespan)
+                };
+            });
+
+            history.unshift({
+                cssClass: 'c-menu__section-hint',
+                description: 'Past timeframes, ordered by latest first',
+                isDisabled: true,
+                name: 'Past timeframes, ordered by latest first',
+                callBack: () => {}
+            });
+
+            return history;
+        },
+        getPresetMenuItems() {
+            return this.presets.map(preset => {
+                return {
+                    cssClass: 'icon-clock',
+                    name: preset.label,
+                    description: preset.label,
+                    callBack: () => this.selectPresetBounds(preset.bounds)
+                };
+            });
+        },
+        getDuration(numericDuration) {
+            let result;
+            let age;
+
+            if (numericDuration > ONE_DAY - 1) {
+                age = this.normalizeAge((numericDuration / ONE_DAY).toFixed(2));
+                result = `+ ${age} day`;
+
+                if (age !== 1) {
+                    result += 's';
+                }
+            } else if (numericDuration > ONE_HOUR - 1) {
+                age = this.normalizeAge((numericDuration / ONE_HOUR).toFixed(2));
+                result = `+ ${age} hour`;
+
+                if (age !== 1) {
+                    result += 's';
+                }
+            } else {
+                age = this.normalizeAge((numericDuration / ONE_MINUTE).toFixed(2));
+                result = `+ ${age} min`;
+
+                if (age !== 1) {
+                    result += 's';
+                }
+            }
+
+            return result;
+        },
+        normalizeAge(num) {
+            const hundredtized = num * 100;
+            const isWhole = hundredtized % 100 === 0;
+
+            return isWhole ? hundredtized / 100 : num;
+        },
         getHistoryFromLocalStorage() {
             const localStorageHistory = localStorage.getItem(this.storageKey);
             const history = localStorageHistory ? JSON.parse(localStorageHistory) : undefined;
@@ -189,24 +232,16 @@ export default {
                 start: this.isFixed ? this.bounds.start : this.offsets.start,
                 end: this.isFixed ? this.bounds.end : this.offsets.end
             };
-            let self = this;
 
-            function isNotEqual(entry) {
-                const start = entry.start !== self.start;
-                const end = entry.end !== self.end;
+            // no dupes
+            currentHistory = currentHistory.filter(ts => !(ts.start === timespan.start && ts.end === timespan.end));
+            currentHistory.unshift(timespan); // add to front
 
-                return start || end;
+            if (currentHistory.length > this.records) {
+                currentHistory.length = this.records;
             }
 
-            currentHistory = currentHistory.filter(isNotEqual, timespan);
-
-            while (currentHistory.length >= this.records) {
-                currentHistory.pop();
-            }
-
-            currentHistory.unshift(timespan);
             this.$set(this[this.currentHistory], key, currentHistory);
-
             this.persistHistoryToLocalStorage();
         },
         selectTimespan(timespan) {
@@ -265,6 +300,28 @@ export default {
             }).formatter;
 
             return (isNegativeOffset ? '-' : '') + formatter.format(time);
+        },
+        showHistoryMenu() {
+            const elementBoundingClientRect = this.$refs.historyButton.getBoundingClientRect();
+            const x = elementBoundingClientRect.x;
+            const y = elementBoundingClientRect.y;
+
+            const menuOptions = {
+                menuClass: 'c-conductor__history-menu',
+                placement: this.openmct.menus.menuPlacement.TOP_RIGHT
+            };
+
+            const menuActions = [];
+
+            const presets = this.getPresetMenuItems();
+            if (presets.length) {
+                menuActions.push(presets);
+            }
+
+            const history = this.getHistoryMenuItems();
+            menuActions.push(history);
+
+            this.openmct.menus.showMenu(x, y, menuActions, menuOptions);
         }
     }
 };

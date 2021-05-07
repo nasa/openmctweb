@@ -1,0 +1,26 @@
+.c-swimlane {
+    display: grid;
+    grid-template-columns: 100px 100px 1fr;
+    grid-column-gap: 1px;
+    grid-row-gap: 1px;
+    margin-bottom: 1px;
+    width: 100%;
+
+    [class*='__lane-label'] {
+        background: rgba($colorBodyFg, 0.2);
+        color: $colorBodyFg;
+        padding: $interiorMarginSm;
+    }
+
+    [class*='--span-cols'] {
+        grid-column: span 2;
+    }
+
+    &__lane-object {
+        background: rgba(black, 0.1);
+
+        .c-plan {
+            display: contents;
+        }
+    }
+}

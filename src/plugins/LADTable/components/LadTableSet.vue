@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -57,10 +57,10 @@
 import LadRow from './LADRow.vue';
 
 export default {
-    inject: ['openmct', 'domainObject'],
     components: {
         LadRow
     },
+    inject: ['openmct', 'domainObject'],
     data() {
         return {
             ladTableObjects: [],

@@ -1,6 +1,5 @@
 <template>
 <div
-    ref="me"
     :style="{
         'top': virtualScroll ? itemTop : 'auto',
         'position': virtualScroll ? 'absolute' : 'relative'
@@ -14,15 +13,19 @@
             'is-navigated-object': navigated,
             'is-context-clicked': contextClickActive
         }"
+        @click.capture="handleClick"
+        @contextmenu.capture="handleContextMenu"
     >
         <view-control
+            ref="navUp"
             v-model="expanded"
             class="c-tree__item__view-control"
-            :control-class="'c-nav__up'"
+            :control-class="'icon-arrow-nav-to-parent'"
             :enabled="showUp"
             @input="resetTreeHere"
         />
         <object-label
+            ref="objectLabel"
             :domain-object="node.object"
             :object-path="node.objectPath"
             :navigate-to-path="navigationPath"
@@ -30,6 +33,7 @@
             @context-click-active="setContextClickActive"
         />
         <view-control
+            ref="navDown"
             v-model="expanded"
             class="c-tree__item__view-control"
             :control-class="'c-nav__down'"
@@ -45,11 +49,11 @@ import ObjectLabel from '../components/ObjectLabel.vue';
 
 export default {
     name: 'TreeItem',
-    inject: ['openmct'],
     components: {
         viewControl,
         ObjectLabel
     },
+    inject: ['openmct'],
     props: {
         node: {
             type: Object,
@@ -137,6 +141,19 @@ export default {
         this.openmct.router.off('change:path', this.highlightIfNavigated);
     },
     methods: {
+        handleClick(event) {
+            // skip for navigation, let viewControl handle click
+            if ([this.$refs.navUp.$el, this.$refs.navDown.$el].includes(event.target)) {
+                return;
+            }
+
+            event.stopPropagation();
+            this.$refs.objectLabel.navigateOrPreview(event);
+        },
+        handleContextMenu(event) {
+            event.stopPropagation();
+            this.$refs.objectLabel.showContextMenu(event);
+        },
         isNavigated() {
             return this.navigationPath === this.openmct.router.currentLocation.path;
         },

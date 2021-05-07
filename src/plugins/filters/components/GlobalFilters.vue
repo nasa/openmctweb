@@ -41,10 +41,10 @@
 import FilterField from './FilterField.vue';
 
 export default {
-    inject: ['openmct'],
     components: {
         FilterField
     },
+    inject: ['openmct'],
     props: {
         globalMetadata: {
             type: Object,

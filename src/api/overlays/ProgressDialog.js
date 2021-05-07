@@ -7,15 +7,15 @@ let component;
 class ProgressDialog extends Overlay {
     constructor({progressPerc, progressText, iconClass, message, title, hint, timestamp, ...options}) {
         component = new Vue({
+            components: {
+                ProgressDialogComponent: ProgressDialogComponent
+            },
             provide: {
                 iconClass,
                 message,
                 title,
                 hint,
                 timestamp
-            },
-            components: {
-                ProgressDialogComponent: ProgressDialogComponent
             },
             data() {
                 return {

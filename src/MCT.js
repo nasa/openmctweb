@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -219,7 +219,7 @@ define([
          * @memberof module:openmct.MCT#
          * @name objects
          */
-        this.objects = new api.ObjectAPI();
+        this.objects = new api.ObjectAPI.default(this.types, this);
 
         /**
          * An interface for retrieving and interpreting telemetry data associated
@@ -283,6 +283,7 @@ define([
         this.install(this.plugins.NewFolderAction());
         this.install(this.plugins.ViewDatumAction());
         this.install(this.plugins.ObjectInterceptors());
+        this.install(this.plugins.NonEditableFolder());
     }
 
     MCT.prototype = Object.create(EventEmitter.prototype);
@@ -371,7 +372,7 @@ define([
      *        MCT; if undefined, MCT will be run in the body of the document
      */
     MCT.prototype.start = function (domElement = document.body, isHeadlessMode = false) {
-        if (!this.plugins.DisplayLayout._installed) {
+        if (this.types.get('layout') === undefined) {
             this.install(this.plugins.DisplayLayout({
                 showAsView: ['summary-widget']
             }));

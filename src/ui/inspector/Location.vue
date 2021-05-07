@@ -41,10 +41,10 @@
 import ObjectLabel from '../components/ObjectLabel.vue';
 
 export default {
-    inject: ['openmct'],
     components: {
         ObjectLabel
     },
+    inject: ['openmct'],
     data() {
         return {
             domainObject: {},

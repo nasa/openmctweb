@@ -33,10 +33,10 @@ import SnapshotTemplate from './snapshot-template.html';
 import Vue from 'vue';
 
 export default {
-    inject: ['openmct'],
     components: {
         PopupMenu
     },
+    inject: ['openmct'],
     props: {
         embed: {
             type: Object,

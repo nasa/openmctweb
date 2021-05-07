@@ -61,11 +61,11 @@ import PageCollection from './PageCollection.vue';
 import uuid from 'uuid';
 
 export default {
-    inject: ['openmct'],
     components: {
         SectionCollection,
         PageCollection
     },
+    inject: ['openmct'],
     props: {
         defaultPageId: {
             type: String,

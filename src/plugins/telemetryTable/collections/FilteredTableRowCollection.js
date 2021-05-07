@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -46,12 +46,23 @@ define(
                 filter = filter.trim().toLowerCase();
 
                 let rowsToFilter = this.getRowsToFilter(columnKey, filter);
+
                 if (filter.length === 0) {
                     delete this.columnFilters[columnKey];
                 } else {
                     this.columnFilters[columnKey] = filter;
                 }
 
+                this.rows = rowsToFilter.filter(this.matchesFilters, this);
+                this.emit('filter');
+            }
+
+            setColumnRegexFilter(columnKey, filter) {
+                filter = filter.trim();
+
+                let rowsToFilter = this.masterCollection.getRows();
+
+                this.columnFilters[columnKey] = new RegExp(filter);
                 this.rows = rowsToFilter.filter(this.matchesFilters, this);
                 this.emit('filter');
             }
@@ -71,6 +82,10 @@ define(
              * @private
              */
             isSubsetOfCurrentFilter(columnKey, filter) {
+                if (this.columnFilters[columnKey] instanceof RegExp) {
+                    return false;
+                }
+
                 return this.columnFilters[columnKey]
                     && filter.startsWith(this.columnFilters[columnKey])
                     // startsWith check will otherwise fail when filter cleared
@@ -97,7 +112,11 @@ define(
                         return false;
                     }
 
-                    doesMatchFilters = formattedValue.toLowerCase().indexOf(this.columnFilters[key]) !== -1;
+                    if (this.columnFilters[key] instanceof RegExp) {
+                        doesMatchFilters = this.columnFilters[key].test(formattedValue);
+                    } else {
+                        doesMatchFilters = formattedValue.toLowerCase().indexOf(this.columnFilters[key]) !== -1;
+                    }
                 });
 
                 return doesMatchFilters;

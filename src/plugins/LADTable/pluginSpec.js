@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -98,7 +98,7 @@ describe("The LAD Table", () => {
     });
 
     it("should provide a table view only for lad table objects", () => {
-        let applicableViews = openmct.objectViews.get(mockObj.ladTable);
+        let applicableViews = openmct.objectViews.get(mockObj.ladTable, []);
 
         let ladTableView = applicableViews.find(
             (viewProvider) => viewProvider.key === ladTableKey
@@ -185,7 +185,7 @@ describe("The LAD Table", () => {
                 end: bounds.end
             });
 
-            applicableViews = openmct.objectViews.get(mockObj.ladTable);
+            applicableViews = openmct.objectViews.get(mockObj.ladTable, []);
             ladTableViewProvider = applicableViews.find((viewProvider) => viewProvider.key === ladTableKey);
             ladTableView = ladTableViewProvider.view(mockObj.ladTable, [mockObj.ladTable]);
             ladTableView.show(child, true);
@@ -296,7 +296,7 @@ describe("The LAD Table Set", () => {
     });
 
     it("should provide a lad table set view only for lad table set objects", () => {
-        let applicableViews = openmct.objectViews.get(mockObj.ladTableSet);
+        let applicableViews = openmct.objectViews.get(mockObj.ladTableSet, []);
 
         let ladTableSetView = applicableViews.find(
             (viewProvider) => viewProvider.key === ladTableSetKey
@@ -391,7 +391,7 @@ describe("The LAD Table Set", () => {
                 end: bounds.end
             });
 
-            applicableViews = openmct.objectViews.get(mockObj.ladTableSet);
+            applicableViews = openmct.objectViews.get(mockObj.ladTableSet, []);
             ladTableSetViewProvider = applicableViews.find((viewProvider) => viewProvider.key === ladTableSetKey);
             ladTableSetView = ladTableSetViewProvider.view(mockObj.ladTableSet, [mockObj.ladTableSet]);
             ladTableSetView.show(child, true);

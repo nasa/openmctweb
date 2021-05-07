@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT Web, Copyright (c) 2014-2020, United States Government
+ * Open MCT Web, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -20,41 +20,23 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 <template>
-<div
-    v-if="selectedTimeSystem.name"
-    class="c-ctrl-wrapper c-ctrl-wrapper--menus-up"
+<div v-if="selectedTimeSystem.name"
+     ref="timeSystemButton"
+     class="c-ctrl-wrapper c-ctrl-wrapper--menus-up"
 >
     <button
         class="c-button--menu c-time-system-button"
         :class="selectedTimeSystem.cssClass"
-        @click.prevent="toggle"
+        @click.prevent.stop="showTimeSystemMenu"
     >
         <span class="c-button__label">{{ selectedTimeSystem.name }}</span>
     </button>
-    <div
-        v-if="open"
-        class="c-menu"
-    >
-        <ul>
-            <li
-                v-for="timeSystem in timeSystems"
-                :key="timeSystem.key"
-                :class="timeSystem.cssClass"
-                @click="setTimeSystemFromView(timeSystem)"
-            >
-                {{ timeSystem.name }}
-            </li>
-        </ul>
-    </div>
 </div>
 </template>
 
 <script>
-import toggleMixin from '../../ui/mixins/toggle-mixin';
-
 export default {
     inject: ['openmct', 'configuration'],
-    mixins: [toggleMixin],
     data: function () {
         let activeClock = this.openmct.time.clock();
 
@@ -72,10 +54,26 @@ export default {
         this.openmct.time.on('clock', this.setViewFromClock);
     },
     methods: {
+        showTimeSystemMenu() {
+            const elementBoundingClientRect = this.$refs.timeSystemButton.getBoundingClientRect();
+            const x = elementBoundingClientRect.x;
+            const y = elementBoundingClientRect.y;
+
+            const menuOptions = {
+                placement: this.openmct.menus.menuPlacement.TOP_RIGHT
+            };
+
+            this.openmct.menus.showMenu(x, y, this.timeSystems, menuOptions);
+        },
         getValidTimesystemsForClock(clock) {
             return this.configuration.menuOptions
                 .filter(menuOption => menuOption.clock === (clock && clock.key))
-                .map(menuOption => JSON.parse(JSON.stringify(this.openmct.time.timeSystems.get(menuOption.timeSystem))));
+                .map(menuOption => {
+                    const timeSystem = JSON.parse(JSON.stringify(this.openmct.time.timeSystems.get(menuOption.timeSystem)));
+                    timeSystem.callBack = () => this.setTimeSystemFromView(timeSystem);
+
+                    return timeSystem;
+                });
         },
         setTimeSystemFromView(timeSystem) {
             if (timeSystem.key !== this.selectedTimeSystem.key) {

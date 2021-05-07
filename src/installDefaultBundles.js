@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -90,7 +90,6 @@ define([
     '../platform/framework/src/load/Bundle',
     '../platform/identity/bundle',
     '../platform/persistence/aggregator/bundle',
-    '../platform/persistence/couch/bundle',
     '../platform/persistence/elastic/bundle',
     '../platform/persistence/local/bundle',
     '../platform/persistence/queue/bundle',

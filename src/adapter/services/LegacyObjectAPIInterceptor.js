@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -52,7 +52,7 @@ define([
 
             oldStyleObject.getCapability('mutation').mutate(function () {
                 return utils.toOldFormat(newStyleObject);
-            });
+            }, newStyleObject.modified);
 
             removeGeneralTopicListener = this.generalTopic.listen(handleLegacyMutation);
         }.bind(this);
@@ -61,6 +61,7 @@ define([
             const newStyleObject = utils.toNewFormat(legacyObject.getModel(), legacyObject.getId());
             const keystring = utils.makeKeyString(newStyleObject.identifier);
 
+            this.eventEmitter.emit(keystring + ':$_synchronize_model', newStyleObject);
             this.eventEmitter.emit(keystring + ":*", newStyleObject);
             this.eventEmitter.emit('mutation', newStyleObject);
         }.bind(this);
@@ -138,18 +139,26 @@ define([
             });
     };
 
+    ObjectServiceProvider.prototype.superSecretFallbackSearch = function (query, abortSignal) {
+        const searchService = this.$injector.get('searchService');
+
+        // need to pass the abortSignal down, so need to
+        // pass in undefined for maxResults and filter on query
+        return searchService.query(query, undefined, undefined, abortSignal);
+    };
+
     // Injects new object API as a decorator so that it hijacks all requests.
     // Object providers implemented on new API should just work, old API should just work, many things may break.
     function LegacyObjectAPIInterceptor(openmct, ROOTS, instantiate, topic, objectService) {
         const eventEmitter = openmct.objects.eventEmitter;
 
-        this.getObjects = function (keys) {
+        this.getObjects = function (keys, abortSignal) {
             const results = {};
 
             const promises = keys.map(function (keyString) {
                 const key = utils.parseKeyString(keyString);
 
-                return openmct.objects.get(key)
+                return openmct.objects.get(key, abortSignal)
                     .then(function (object) {
                         object = utils.toOldFormat(object);
                         results[keyString] = instantiate(object, keyString);

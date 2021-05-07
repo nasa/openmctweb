@@ -56,11 +56,11 @@ import { NOTEBOOK_SNAPSHOT_MAX_COUNT } from '../snapshot-container';
 import { EVENT_SNAPSHOTS_UPDATED } from '../notebook-constants';
 
 export default {
-    inject: ['openmct', 'snapshotContainer'],
     components: {
         NotebookEmbed,
         PopupMenu
     },
+    inject: ['openmct', 'snapshotContainer'],
     props: {
         toggleSnapshot: {
             type: Function,

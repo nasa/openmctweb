@@ -24,6 +24,13 @@ define([
                     return false;
                 }
 
+                //TODO: Remove this when plots Angular implementation is deprecated
+                let parent = selection[0].length > 1 && selection[0][1].context.item;
+                if (parent && parent.type === 'time-strip') {
+                    return (selectionContext.item.type === typeDefinition.key)
+                            && (typeDefinition.key !== 'telemetry.plot.overlay');
+                }
+
                 return selectionContext.item.type === typeDefinition.key;
             },
             view: function (selection) {

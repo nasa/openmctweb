@@ -1,0 +1,42 @@
+.c-timesystem-axis {
+    $h: 30px;
+    height: $h;
+
+    svg {
+        $lineC: rgba($colorBodyFg, 0.3) !important;
+        text-rendering: geometricPrecision;
+        width: 100%;
+        height: 100%;
+
+        .domain {
+            stroke: $lineC;
+        }
+
+        .tick {
+            line {
+                stroke: $lineC;
+            }
+
+            text {
+                // Tick labels
+                fill: $colorBodyFg;
+                paint-order: stroke;
+                font-weight: bold;
+            }
+        }
+    }
+
+    .nowMarker {
+        width: 2px;
+        position: absolute;
+        z-index: 10;
+        background: gray;
+
+        & .icon-arrow-down {
+            font-size: large;
+            position: absolute;
+            top: -8px;
+            left: -8px;
+        }
+    }
+}

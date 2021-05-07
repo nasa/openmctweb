@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -39,10 +39,16 @@ define(['EventEmitter'], function (EventEmitter) {
     /**
      * @private for platform-internal use
      * @param {*} item the object to be viewed
+     * @param {array} objectPath - The current contextual object path of the view object
+     *                             eg current domainObject is located under MyItems which is under Root
      * @returns {module:openmct.ViewProvider[]} any providers
      *          which can provide views of this object
      */
-    ViewRegistry.prototype.get = function (item) {
+    ViewRegistry.prototype.get = function (item, objectPath) {
+        if (objectPath === undefined) {
+            throw "objectPath must be provided to get applicable views for an object";
+        }
+
         function byPriority(providerA, providerB) {
             let priorityA = providerA.priority ? providerA.priority(item) : DEFAULT_VIEW_PRIORITY;
             let priorityB = providerB.priority ? providerB.priority(item) : DEFAULT_VIEW_PRIORITY;
@@ -52,7 +58,7 @@ define(['EventEmitter'], function (EventEmitter) {
 
         return this.getAllProviders()
             .filter(function (provider) {
-                return provider.canView(item);
+                return provider.canView(item, objectPath);
             }).sort(byPriority);
     };
 
@@ -181,6 +187,8 @@ define(['EventEmitter'], function (EventEmitter) {
      * @memberof module:openmct.ViewProvider#
      * @param {module:openmct.DomainObject} domainObject the domain object
      *        to be viewed
+     * @param {array} objectPath - The current contextual object path of the view object
+     *                             eg current domainObject is located under MyItems which is under Root
      * @returns {boolean} 'true' if the view applies to the provided object,
      *          otherwise 'false'.
      */
@@ -201,6 +209,8 @@ define(['EventEmitter'], function (EventEmitter) {
      * @memberof module:openmct.ViewProvider#
      * @param {module:openmct.DomainObject} domainObject the domain object
      *        to be edited
+     * @param {array} objectPath - The current contextual object path of the view object
+     *                             eg current domainObject is located under MyItems which is under Root
      * @returns {boolean} 'true' if the view can be used to edit the provided object,
      *          otherwise 'false'.
      */

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -20,7 +20,25 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
-import Menu from './menu.js';
+import Menu, { MENU_PLACEMENT } from './menu.js';
+
+/**
+ * Popup Menu options
+ * @typedef {Object} MenuOptions
+ * @property {String} menuClass Class for popup menu
+ * @property {MENU_PLACEMENT} placement Placement for menu relative to click
+ * @property {Function} onDestroy callback function: invoked when menu is destroyed
+ */
+
+/**
+ * Popup Menu Item/action
+ * @typedef {Object} Action
+ * @property {String} cssClass Class for menu item
+ * @property {Boolean} isDisabled adds disable class if true
+ * @property {String} name Menu item text
+ * @property {String} description Menu item description
+ * @property {Function} callBack callback function: invoked when item is clicked
+ */
 
 /**
  * The MenuAPI allows the addition of new context menu actions, and for the context menu to be launched from
@@ -33,12 +51,46 @@ class MenuAPI {
     constructor(openmct) {
         this.openmct = openmct;
 
+        this.menuPlacement = MENU_PLACEMENT;
         this.showMenu = this.showMenu.bind(this);
+        this.showSuperMenu = this.showSuperMenu.bind(this);
+
         this._clearMenuComponent = this._clearMenuComponent.bind(this);
         this._showObjectMenu = this._showObjectMenu.bind(this);
     }
 
-    showMenu(x, y, actions, onDestroy) {
+    /**
+     * Show popup menu
+     * @param {number} x x-coordinates for popup
+     * @param {number} y x-coordinates for popup
+     * @param {Array.<Action>|Array.<Array.<Action>>} actions collection of actions{@link Action} or collection of groups of actions {@link Action}
+     * @param {MenuOptions} [menuOptions] [Optional] The {@link MenuOptions} options for Menu
+     */
+    showMenu(x, y, actions, menuOptions) {
+        this._createMenuComponent(x, y, actions, menuOptions);
+
+        this.menuComponent.showMenu();
+    }
+
+    /**
+     * Show popup menu with description of item on hover
+     * @param {number} x x-coordinates for popup
+     * @param {number} y x-coordinates for popup
+     * @param {Array.<Action>|Array.<Array.<Action>>} actions collection of actions {@link Action} or collection of groups of actions {@link Action}
+     * @param {MenuOptions} [menuOptions] [Optional] The {@link MenuOptions} options for Menu
+     */
+    showSuperMenu(x, y, actions, menuOptions) {
+        this._createMenuComponent(x, y, actions, menuOptions);
+
+        this.menuComponent.showSuperMenu();
+    }
+
+    _clearMenuComponent() {
+        this.menuComponent = undefined;
+        delete this.menuComponent;
+    }
+
+    _createMenuComponent(x, y, actions, menuOptions = {}) {
         if (this.menuComponent) {
             this.menuComponent.dismiss();
         }
@@ -47,16 +99,11 @@ class MenuAPI {
             x,
             y,
             actions,
-            onDestroy
+            ...menuOptions
         };
 
         this.menuComponent = new Menu(options);
         this.menuComponent.once('destroy', this._clearMenuComponent);
-    }
-
-    _clearMenuComponent() {
-        this.menuComponent = undefined;
-        delete this.menuComponent;
     }
 
     _showObjectMenu(objectPath, x, y, actionsToBeIncluded) {

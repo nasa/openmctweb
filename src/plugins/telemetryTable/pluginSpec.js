@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -68,6 +68,10 @@ describe("the plugin", () => {
             end: 4
         });
 
+        openmct.types.addType('test-object', {
+            creatable: true
+        });
+
         spyOnBuiltins(['requestAnimationFrame']);
         window.requestAnimationFrame.and.callFake((callBack) => {
             callBack();
@@ -99,7 +103,7 @@ describe("the plugin", () => {
             }
         };
 
-        const applicableViews = openmct.objectViews.get(testTelemetryObject);
+        const applicableViews = openmct.objectViews.get(testTelemetryObject, []);
         let tableView = applicableViews.find((viewProvider) => viewProvider.key === 'table');
         expect(tableView).toBeDefined();
     });
@@ -109,6 +113,7 @@ describe("the plugin", () => {
         let applicableViews;
         let tableViewProvider;
         let tableView;
+        let tableInstance;
 
         beforeEach(() => {
             testTelemetryObject = {
@@ -170,10 +175,12 @@ describe("the plugin", () => {
 
             openmct.router.path = [testTelemetryObject];
 
-            applicableViews = openmct.objectViews.get(testTelemetryObject);
+            applicableViews = openmct.objectViews.get(testTelemetryObject, []);
             tableViewProvider = applicableViews.find((viewProvider) => viewProvider.key === 'table');
             tableView = tableViewProvider.view(testTelemetryObject, [testTelemetryObject]);
             tableView.show(child, true);
+
+            tableInstance = tableView._getTable();
 
             return telemetryPromise.then(() => Vue.nextTick());
         });
@@ -222,6 +229,42 @@ describe("the plugin", () => {
                 expect(fromColumnText).toEqual(secondColumnText);
                 expect(toColumnText).not.toEqual(secondColumnText);
                 expect(toColumnText).toEqual(firstColumnText);
+            });
+        });
+
+        it("Supports filtering telemetry by regular text search", () => {
+            tableInstance.filteredRows.setColumnFilter("some-key", "1");
+
+            return Vue.nextTick().then(() => {
+                let filteredRowElements = element.querySelectorAll('table.c-telemetry-table__body tr');
+
+                expect(filteredRowElements.length).toEqual(1);
+
+                tableInstance.filteredRows.setColumnFilter("some-key", "");
+
+                return Vue.nextTick().then(() => {
+                    let allRowElements = element.querySelectorAll('table.c-telemetry-table__body tr');
+
+                    expect(allRowElements.length).toEqual(3);
+                });
+            });
+        });
+
+        it("Supports filtering using Regex", () => {
+            tableInstance.filteredRows.setColumnRegexFilter("some-key", "^some-value$");
+
+            return Vue.nextTick().then(() => {
+                let filteredRowElements = element.querySelectorAll('table.c-telemetry-table__body tr');
+
+                expect(filteredRowElements.length).toEqual(0);
+
+                tableInstance.filteredRows.setColumnRegexFilter("some-key", "^some-value");
+
+                return Vue.nextTick().then(() => {
+                    let allRowElements = element.querySelectorAll('table.c-telemetry-table__body tr');
+
+                    expect(allRowElements.length).toEqual(3);
+                });
             });
         });
     });

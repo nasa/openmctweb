@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -22,18 +22,22 @@
 
 define([
     './components/GridView.vue',
+    './constants.js',
     'vue'
 ], function (
     GridViewComponent,
+    constants,
     Vue
 ) {
     function FolderGridView(openmct) {
+        const ALLOWED_FOLDER_TYPES = constants.ALLOWED_FOLDER_TYPES;
+
         return {
             key: 'grid',
             name: 'Grid View',
             cssClass: 'icon-thumbs-strip',
             canView: function (domainObject) {
-                return domainObject.type === 'folder';
+                return ALLOWED_FOLDER_TYPES.includes(domainObject.type);
             },
             view: function (domainObject) {
                 let component;

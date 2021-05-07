@@ -6,15 +6,15 @@ class Dialog extends Overlay {
     constructor({iconClass, message, title, hint, timestamp, ...options}) {
 
         let component = new Vue({
+            components: {
+                DialogComponent: DialogComponent
+            },
             provide: {
                 iconClass,
                 message,
                 title,
                 hint,
                 timestamp
-            },
-            components: {
-                DialogComponent: DialogComponent
             },
             template: '<dialog-component></dialog-component>'
         }).$mount();

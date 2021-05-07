@@ -1,5 +1,5 @@
 <!--
- Open MCT, Copyright (c) 2014-2020, United States Government
+ Open MCT, Copyright (c) 2014-2021, United States Government
  as represented by the Administrator of the National Aeronautics and Space
  Administration. All rights reserved.
 
@@ -34,13 +34,13 @@
          ng-init="hideOptions = true"
          ng-hide="hideOptions"
          mct-click-elsewhere="hideOptions = true">
-        <ul>  
+        <ul>
             <li ng-repeat="opt in filteredOptions"
                 ng-click="fillInput(opt.name)"
                 ng-mouseover="optionMouseover(opt.optionId)"
                 ng-class="optionIndex === opt.optionId ? 'optionPreSelected' : ''">
                 <span class="optionText">{{opt.name}}</span>
             </li>
-        </ul>  
+        </ul>
     </div>
 </div>

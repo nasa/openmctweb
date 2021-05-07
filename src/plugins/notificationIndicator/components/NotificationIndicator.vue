@@ -27,10 +27,10 @@
 import NotificationsList from './NotificationsList.vue';
 
 export default {
-    inject: ['openmct'],
     components: {
         NotificationsList
     },
+    inject: ['openmct'],
     data() {
         return {
             notifications: this.openmct.notifications.notifications,

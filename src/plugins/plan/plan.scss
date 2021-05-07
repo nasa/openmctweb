@@ -1,0 +1,19 @@
+.c-plan {
+  svg {
+    text-rendering: geometricPrecision;
+
+    text {
+      stroke: none;
+    }
+
+      .activity-label {
+          &--outside-rect {
+              fill: $colorBodyFg !important;
+          }
+      }
+  }
+
+  canvas {
+    display: none;
+  }
+}

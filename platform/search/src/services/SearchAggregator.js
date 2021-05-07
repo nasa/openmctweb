@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -80,12 +80,15 @@ define([
      * @param {Function} [filter] if provided, will be called for every
      *   potential modelResult.  If it returns false, the model result will be
      *   excluded from the search results.
+     * @param {AbortController.signal} abortSignal (optional) can pass in an abortSignal to cancel any
+     *   downstream fetch requests.
      * @returns {Promise} A Promise for a search result object.
      */
     SearchAggregator.prototype.query = function (
         inputText,
         maxResults,
-        filter
+        filter,
+        abortSignal
     ) {
 
         var aggregator = this,
@@ -120,7 +123,7 @@ define([
                 modelResults = aggregator.applyFilter(modelResults, filter);
                 modelResults = aggregator.removeDuplicates(modelResults);
 
-                return aggregator.asObjectResults(modelResults);
+                return aggregator.asObjectResults(modelResults, abortSignal);
             });
     };
 
@@ -193,16 +196,19 @@ define([
      * Convert modelResults to objectResults by fetching them from the object
      * service.
      *
+     * @param {Object} modelResults an object containing the results from the search
+     * @param {AbortController.signal} abortSignal (optional) abort signal to cancel any
+     *   downstream fetch requests
      * @returns {Promise} for an objectResults object.
      */
-    SearchAggregator.prototype.asObjectResults = function (modelResults) {
+    SearchAggregator.prototype.asObjectResults = function (modelResults, abortSignal) {
         var objectIds = modelResults.hits.map(function (modelResult) {
             return modelResult.id;
         });
 
         return this
             .objectService
-            .getObjects(objectIds)
+            .getObjects(objectIds, abortSignal)
             .then(function (objects) {
 
                 var objectResults = {

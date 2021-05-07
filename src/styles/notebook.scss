@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -21,6 +21,12 @@
  *****************************************************************************/
 
 /*********************************************** NOTEBOOK */
+@mixin searchHighlight {
+    background: rgba($colorBtnSelectedBg, 0.4);
+    color: $colorBtnSelectedFg;
+    font-weight: bold;
+}
+
 .c-notebook {
     $headerFontSize: 1.3em;
     display: flex;
@@ -189,6 +195,7 @@
         display: flex;
         flex: 1 1 auto;
         flex-direction: column;
+        overflow-y: auto;
 
         > * + * {
             margin-top: 5px;
@@ -274,7 +281,14 @@
 
     &__text {
         min-height: 22px; // Needed in Firefox when field is blank
-        white-space: pre-wrap;
+
+        &:not(.highlight) {
+            white-space: pre-wrap;
+        }
+
+        .search-highlight {
+            @include searchHighlight();
+        }
     }
 
     &__input {
@@ -292,6 +306,8 @@
         &:focus {
             background: $colorInputBg;
         }
+
+        white-space: pre-wrap;
     }
 
     &__section-and-page {
@@ -302,6 +318,10 @@
         align-items: center;
         align-self: flex-start;
         padding: $interiorMargin;
+
+        .search-highlight {
+            @include searchHighlight();
+        }
 
         > * + * {
             margin-left: $interiorMargin;

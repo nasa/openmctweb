@@ -1,5 +1,5 @@
 /*****************************************************************************
-* Open MCT, Copyright (c) 2014-2020, United States Government
+* Open MCT, Copyright (c) 2014-2021, United States Government
 * as represented by the Administrator of the National Aeronautics and Space
 * Administration. All rights reserved.
 *
@@ -41,7 +41,7 @@
         ></div>
         <!-- end loading -->
 
-        <div v-if="(allTreeItems.length === 0) || (searchValue && filteredTreeItems.length === 0)"
+        <div v-if="shouldDisplayNoResultsText"
              class="c-tree-and-search__no-results"
         >
             No results found
@@ -63,7 +63,7 @@
         <!-- end main tree -->
 
         <!-- search tree -->
-        <ul v-if="searchValue"
+        <ul v-if="searchValue && !isLoading"
             class="c-tree-and-search__tree c-tree"
         >
             <condition-set-dialog-tree-item
@@ -80,16 +80,17 @@
 </template>
 
 <script>
+import debounce from 'lodash/debounce';
 import search from '@/ui/components/search.vue';
 import ConditionSetDialogTreeItem from './ConditionSetDialogTreeItem.vue';
 
 export default {
-    inject: ['openmct'],
     name: 'ConditionSetSelectorDialog',
     components: {
         search,
         ConditionSetDialogTreeItem
     },
+    inject: ['openmct'],
     data() {
         return {
             expanded: false,
@@ -100,8 +101,20 @@ export default {
             selectedItem: undefined
         };
     },
+    computed: {
+        shouldDisplayNoResultsText() {
+            if (this.isLoading) {
+                return false;
+            }
+
+            return this.allTreeItems.length === 0
+                || (this.searchValue && this.filteredTreeItems.length === 0);
+        }
+    },
+    created() {
+        this.getDebouncedFilteredChildren = debounce(this.getFilteredChildren, 400);
+    },
     mounted() {
-        this.searchService = this.openmct.$injector.get('searchService');
         this.getAllChildren();
     },
     methods: {
@@ -124,37 +137,44 @@ export default {
                 });
         },
         getFilteredChildren() {
-            this.searchService.query(this.searchValue).then(children => {
-                this.filteredTreeItems = children.hits.map(child => {
+            // clear any previous search results
+            this.filteredTreeItems = [];
 
-                    let context = child.object.getCapability('context');
-                    let object = child.object.useCapability('adapter');
-                    let objectPath = [];
-                    let navigateToParent;
+            const promises = this.openmct.objects.search(this.searchValue)
+                .map(promise => promise
+                    .then(results => this.aggregateFilteredChildren(results)));
 
-                    if (context) {
-                        objectPath = context.getPath().slice(1)
-                            .map(oldObject => oldObject.useCapability('adapter'))
-                            .reverse();
-                        navigateToParent = '/browse/' + objectPath.slice(1)
-                            .map((parent) => this.openmct.objects.makeKeyString(parent.identifier))
-                            .join('/');
-                    }
-
-                    return {
-                        id: this.openmct.objects.makeKeyString(object.identifier),
-                        object,
-                        objectPath,
-                        navigateToParent
-                    };
-                });
+            Promise.all(promises).then(() => {
+                this.isLoading = false;
             });
+        },
+        async aggregateFilteredChildren(results) {
+            for (const object of results) {
+                const objectPath = await this.openmct.objects.getOriginalPath(object.identifier);
+
+                const navigateToParent = '/browse/'
+                    + objectPath.slice(1)
+                        .map(parent => this.openmct.objects.makeKeyString(parent.identifier))
+                        .join('/');
+
+                const filteredChild = {
+                    id: this.openmct.objects.makeKeyString(object.identifier),
+                    object,
+                    objectPath,
+                    navigateToParent
+                };
+
+                this.filteredTreeItems.push(filteredChild);
+            }
         },
         searchTree(value) {
             this.searchValue = value;
+            this.isLoading = true;
 
             if (this.searchValue !== '') {
-                this.getFilteredChildren();
+                this.getDebouncedFilteredChildren();
+            } else {
+                this.isLoading = false;
             }
         },
         handleItemSelection(item, node) {

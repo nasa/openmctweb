@@ -1,6 +1,6 @@
 export const FONT_SIZES = [
     {
-        name: 'Default Size',
+        name: 'Default',
         value: 'default'
     },
     {

@@ -1,6 +1,6 @@
 
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -26,7 +26,7 @@
     class="js-lad-table__body__row"
     @contextmenu.prevent="showContextMenu"
 >
-    <td class="js-first-data">{{ name }}</td>
+    <td class="js-first-data">{{ domainObject.name }}</td>
     <td class="js-second-data">{{ formattedTimestamp }}</td>
     <td
         class="js-third-data"
@@ -50,10 +50,14 @@ const CONTEXT_MENU_ACTIONS = [
 ];
 
 export default {
-    inject: ['openmct', 'objectPath'],
+    inject: ['openmct'],
     props: {
         domainObject: {
             type: Object,
+            required: true
+        },
+        objectPath: {
+            type: Array,
             required: true
         },
         hasUnits: {
@@ -66,7 +70,6 @@ export default {
         currentObjectPath.unshift(this.domainObject);
 
         return {
-            name: this.domainObject.name,
             timestamp: undefined,
             value: '---',
             valueClass: '',
@@ -88,14 +91,6 @@ export default {
         this.limitEvaluator = this.openmct
             .telemetry
             .limitEvaluator(this.domainObject);
-
-        this.stopWatchingMutation = this.openmct
-            .objects
-            .observe(
-                this.domainObject,
-                '*',
-                this.updateName
-            );
 
         this.openmct.time.on('timeSystem', this.updateTimeSystem);
         this.openmct.time.on('bounds', this.updateBounds);
@@ -119,7 +114,6 @@ export default {
         }
     },
     destroyed() {
-        this.stopWatchingMutation();
         this.unsubscribe();
         this.openmct.time.off('timeSystem', this.updateTimeSystem);
         this.openmct.time.off('bounds', this.updateBounds);
@@ -159,9 +153,6 @@ export default {
                     strategy: 'latest'
                 })
                 .then((array) => this.updateValues(array[array.length - 1]));
-        },
-        updateName(name) {
-            this.name = name;
         },
         updateBounds(bounds, isTick) {
             this.bounds = bounds;

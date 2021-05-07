@@ -22,10 +22,10 @@ import { getDefaultNotebook } from '../utils/notebook-storage';
 import Page from './PageComponent.vue';
 
 export default {
-    inject: ['openmct'],
     components: {
         Page
     },
+    inject: ['openmct'],
     props: {
         defaultPageId: {
             type: String,
@@ -69,7 +69,7 @@ export default {
     methods: {
         deletePage(id) {
             const selectedSection = this.sections.find(s => s.isSelected);
-            const page = this.pages.find(p => p.id !== id);
+            const page = this.pages.find(p => p.id === id);
             deleteNotebookEntries(this.openmct, this.domainObject, selectedSection, page);
 
             const selectedPage = this.pages.find(p => p.isSelected);

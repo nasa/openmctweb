@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -101,7 +101,7 @@ describe("Notebook plugin:", () => {
                 creatable: true
             };
 
-            const applicableViews = openmct.objectViews.get(notebookViewObject);
+            const applicableViews = openmct.objectViews.get(notebookViewObject, []);
             notebookViewProvider = applicableViews.find(viewProvider => viewProvider.key === notebookObject.key);
             notebookView = notebookViewProvider.view(notebookViewObject);
 

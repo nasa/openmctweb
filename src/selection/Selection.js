@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -237,15 +237,14 @@ define(
 
             const capture = this.capture.bind(this, selectable);
             const selectCapture = this.selectCapture.bind(this, selectable);
+            let removeMutable = false;
 
             element.addEventListener('click', capture, true);
             element.addEventListener('click', selectCapture);
 
-            let unlisten = undefined;
-            if (context.item) {
-                unlisten = this.openmct.objects.observe(context.item, "*", function (newItem) {
-                    context.item = newItem;
-                });
+            if (context.item && context.item.isMutable !== true) {
+                removeMutable = true;
+                context.item = this.openmct.objects._toMutable(context.item);
             }
 
             if (select) {
@@ -256,14 +255,14 @@ define(
                 }
             }
 
-            return function () {
+            return (function () {
                 element.removeEventListener('click', capture, true);
                 element.removeEventListener('click', selectCapture);
 
-                if (unlisten !== undefined) {
-                    unlisten();
+                if (context.item !== undefined && context.item.isMutable && removeMutable === true) {
+                    this.openmct.objects.destroyMutable(context.item);
                 }
-            };
+            }).bind(this);
         };
 
         return Selection;

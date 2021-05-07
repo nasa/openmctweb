@@ -38,12 +38,12 @@
 
 <script>
 export default {
+    inject: ['dismiss', 'element', 'buttons', 'dismissable'],
     data: function () {
         return {
             focusIndex: -1
         };
     },
-    inject: ['dismiss', 'element', 'buttons', 'dismissable'],
     mounted() {
         const element = this.$refs.element;
         element.appendChild(this.element);

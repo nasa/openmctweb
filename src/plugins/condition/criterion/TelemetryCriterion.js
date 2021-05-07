@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -56,6 +56,10 @@ export default class TelemetryCriterion extends EventEmitter {
         if (this.isValid() && this.isStalenessCheck() && this.isValidInput()) {
             this.subscribeForStaleData();
         }
+    }
+
+    usesTelemetry(id) {
+        return this.telemetryObjectIdAsString && (this.telemetryObjectIdAsString === id);
     }
 
     subscribeForStaleData() {

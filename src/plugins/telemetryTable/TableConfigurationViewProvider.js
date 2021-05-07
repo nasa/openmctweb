@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -53,13 +53,13 @@ define([
                 return {
                     show: function (element) {
                         component = new Vue({
-                            provide: {
-                                openmct,
-                                tableConfiguration
-                            },
                             el: element,
                             components: {
                                 TableConfiguration: TableConfigurationComponent.default
+                            },
+                            provide: {
+                                openmct,
+                                tableConfiguration
                             },
                             template: '<table-configuration></table-configuration>'
                         });

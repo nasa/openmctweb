@@ -46,12 +46,12 @@ const HIDDEN_ACTIONS = [
 ];
 
 export default {
-    inject: [
-        'openmct'
-    ],
     components: {
         ViewSwitcher
     },
+    inject: [
+        'openmct'
+    ],
     props: {
         currentView: {
             type: Object,

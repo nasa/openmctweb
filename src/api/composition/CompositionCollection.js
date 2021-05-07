@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -60,6 +60,17 @@ define([
         };
         this.onProviderAdd = this.onProviderAdd.bind(this);
         this.onProviderRemove = this.onProviderRemove.bind(this);
+        this.mutables = {};
+
+        if (this.domainObject.isMutable) {
+            this.returnMutables = true;
+            let unobserve = this.domainObject.$on('$_destroy', () => {
+                Object.values(this.mutables).forEach(mutable => {
+                    this.publicAPI.objects.destroyMutable(mutable);
+                });
+                unobserve();
+            });
+        }
     }
 
     /**
@@ -73,10 +84,6 @@ define([
     CompositionCollection.prototype.on = function (event, callback, context) {
         if (!this.listeners[event]) {
             throw new Error('Event not supported by composition: ' + event);
-        }
-
-        if (!this.mutationListener) {
-            this._synchronize();
         }
 
         if (this.provider.on && this.provider.off) {
@@ -189,6 +196,13 @@ define([
 
             this.provider.add(this.domainObject, child.identifier);
         } else {
+            if (this.returnMutables && this.publicAPI.objects.supportsMutation(child.identifier)) {
+                let keyString = this.publicAPI.objects.makeKeyString(child.identifier);
+
+                child = this.publicAPI.objects._toMutable(child);
+                this.mutables[keyString] = child;
+            }
+
             this.emit('add', child);
         }
     };
@@ -202,6 +216,8 @@ define([
      * @name load
      */
     CompositionCollection.prototype.load = function () {
+        this.cleanUpMutables();
+
         return this.provider.load(this.domainObject)
             .then(function (children) {
                 return Promise.all(children.map((c) => this.publicAPI.objects.get(c)));
@@ -234,6 +250,14 @@ define([
         if (!skipMutate) {
             this.provider.remove(this.domainObject, child.identifier);
         } else {
+            if (this.returnMutables) {
+                let keyString = this.publicAPI.objects.makeKeyString(child);
+                if (this.mutables[keyString] !== undefined && this.mutables[keyString].isMutable) {
+                    this.publicAPI.objects.destroyMutable(this.mutables[keyString]);
+                    delete this.mutables[keyString];
+                }
+            }
+
             this.emit('remove', child);
         }
     };
@@ -281,12 +305,6 @@ define([
         this.remove(child, true);
     };
 
-    CompositionCollection.prototype._synchronize = function () {
-        this.mutationListener = this.publicAPI.objects.observe(this.domainObject, '*', (newDomainObject) => {
-            this.domainObject = JSON.parse(JSON.stringify(newDomainObject));
-        });
-    };
-
     CompositionCollection.prototype._destroy = function () {
         if (this.mutationListener) {
             this.mutationListener();
@@ -305,6 +323,12 @@ define([
             } else {
                 l.callback(...payload);
             }
+        });
+    };
+
+    CompositionCollection.prototype.cleanUpMutables = function () {
+        Object.values(this.mutables).forEach(mutable => {
+            this.publicAPI.objects.destroyMutable(mutable);
         });
     };
 

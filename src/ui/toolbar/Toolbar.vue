@@ -36,7 +36,6 @@ import toolbarToggleButton from './components/toolbar-toggle-button.vue';
 import _ from 'lodash';
 
 export default {
-    inject: ['openmct'],
     components: {
         toolbarButton,
         toolbarColorPicker,
@@ -47,6 +46,7 @@ export default {
         toolbarSeparator,
         toolbarToggleButton
     },
+    inject: ['openmct'],
     data: function () {
         return {
             structure: []

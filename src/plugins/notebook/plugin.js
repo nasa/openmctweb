@@ -88,12 +88,12 @@ export default function NotebookPlugin() {
 
         const snapshotContainer = new SnapshotContainer(openmct);
         const notebookSnapshotIndicator = new Vue ({
+            components: {
+                NotebookSnapshotIndicator
+            },
             provide: {
                 openmct,
                 snapshotContainer
-            },
-            components: {
-                NotebookSnapshotIndicator
             },
             template: '<NotebookSnapshotIndicator></NotebookSnapshotIndicator>'
         });

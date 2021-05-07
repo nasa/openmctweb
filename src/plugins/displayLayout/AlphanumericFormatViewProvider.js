@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -56,13 +56,13 @@ define([
                 return {
                     show: function (element) {
                         component = new Vue({
-                            provide: {
-                                openmct,
-                                objectPath
-                            },
                             el: element,
                             components: {
                                 AlphanumericFormatView: AlphanumericFormatView.default
+                            },
+                            provide: {
+                                openmct,
+                                objectPath
                             },
                             template: '<alphanumeric-format-view ref="alphanumericFormatView"></alphanumeric-format-view>'
                         });

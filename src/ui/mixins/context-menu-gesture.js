@@ -40,7 +40,11 @@ export default {
             let actions = actionsCollection.getVisibleActions();
             let sortedActions = this.openmct.actions._groupAndSortActions(actions);
 
-            this.openmct.menus.showMenu(event.clientX, event.clientY, sortedActions, this.onContextMenuDestroyed);
+            const menuOptions = {
+                onDestroy: this.onContextMenuDestroyed
+            };
+
+            this.openmct.menus.showMenu(event.clientX, event.clientY, sortedActions, menuOptions);
             this.contextClickActive = true;
             this.$emit('context-click-active', true);
         },

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -413,6 +413,21 @@ define([
             return;
         }
 
+        const isPinchToZoom = event.ctrlKey === true;
+        let isZoomIn = event.wheelDelta < 0;
+        let isZoomOut = event.wheelDelta >= 0;
+
+        //Flip the zoom direction if this is pinch to zoom
+        if (isPinchToZoom) {
+            if (isZoomIn === true) {
+                isZoomOut = true;
+                isZoomIn = false;
+            } else if (isZoomOut === true) {
+                isZoomIn = true;
+                isZoomOut = false;
+            }
+        }
+
         let xDisplayRange = this.$scope.xAxis.get('displayRange');
         let yDisplayRange = this.$scope.yAxis.get('displayRange');
 
@@ -445,7 +460,7 @@ define([
             };
         }
 
-        if (event.wheelDelta < 0) {
+        if (isZoomIn) {
 
             this.$scope.xAxis.set('displayRange', {
                 min: xDisplayRange.min + ((xAxisDist * ZOOM_AMT) * xAxisMinDist),
@@ -456,7 +471,7 @@ define([
                 min: yDisplayRange.min + ((yAxisDist * ZOOM_AMT) * yAxisMinDist),
                 max: yDisplayRange.max - ((yAxisDist * ZOOM_AMT) * yAxisMaxDist)
             });
-        } else if (event.wheelDelta >= 0) {
+        } else if (isZoomOut) {
 
             this.$scope.xAxis.set('displayRange', {
                 min: xDisplayRange.min - ((xAxisDist * ZOOM_AMT) * xAxisMinDist),

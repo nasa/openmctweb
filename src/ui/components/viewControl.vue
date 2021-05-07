@@ -22,10 +22,6 @@ export default {
             type: Boolean,
             default: false
         },
-        propagate: {
-            type: Boolean,
-            default: true
-        },
         controlClass: {
             type: String,
             default: 'c-disclosure-triangle'
@@ -33,10 +29,8 @@ export default {
     },
     methods: {
         handleClick(event) {
+            event.stopPropagation();
             this.$emit('input', !this.value);
-            if (!this.propagate) {
-                event.stopPropagation();
-            }
         }
     }
 };

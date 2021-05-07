@@ -1,5 +1,5 @@
 <!--
- Open MCT, Copyright (c) 2014-2020, United States Government
+ Open MCT, Copyright (c) 2014-2021, United States Government
  as represented by the Administrator of the National Aeronautics and Space
  Administration. All rights reserved.
 
@@ -20,11 +20,11 @@
  at runtime from the About dialog for additional information.
 -->
 
-<a class="s-button {{structure.cssClass}}"
+<button class="c-button {{structure.cssClass}}"
    ng-model="ngModel[field]"
    ng-class="{ labeled: structure.text }"
    mct-file-input>
-    <span class="title-label" ng-if="structure.text">
+    <span class="c-button__label" ng-if="structure.text">
         {{structure.text}}
     </span>
-</a>
+</button>

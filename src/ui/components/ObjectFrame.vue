@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -88,7 +88,6 @@
     <object-view
         ref="objectView"
         class="c-so-view__object-view"
-        :object="domainObject"
         :show-edit-view="showEditView"
         :object-path="objectPath"
         :layout-font-size="layoutFontSize"
@@ -112,10 +111,10 @@ const SIMPLE_CONTENT_TYPES = [
 ];
 
 export default {
-    inject: ['openmct'],
     components: {
         ObjectView
     },
+    inject: ['openmct'],
     props: {
         domainObject: {
             type: Object,
@@ -161,6 +160,7 @@ export default {
     mounted() {
         this.status = this.openmct.status.get(this.domainObject.identifier);
         this.removeStatusListener = this.openmct.status.observe(this.domainObject.identifier, this.setStatus);
+        this.$refs.objectView.show(this.domainObject, undefined, false, this.objectPath);
     },
     beforeDestroy() {
         this.removeStatusListener();

@@ -21,10 +21,10 @@ import PopupMenu from './PopupMenu.vue';
 import RemoveDialog from '../utils/removeDialog';
 
 export default {
-    inject: ['openmct'],
     components: {
         PopupMenu
     },
+    inject: ['openmct'],
     props: {
         defaultSectionId: {
             type: String,

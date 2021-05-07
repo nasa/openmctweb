@@ -1,0 +1,214 @@
+/***************************** THEME/UI CONSTANTS AND MIXINS */
+$interfaceKeyColor: #00B9C5;
+$elemBg: rgba(black, 0.7);
+
+@mixin sun($position: 'circle closest-side') {
+    $color: #ff9900;
+    $gradEdgePerc: 60%;
+    background: radial-gradient(#{$position}, $color, $color $gradEdgePerc, rgba($color, 0.4) $gradEdgePerc + 5%, transparent);
+
+}
+
+.c-compass {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    z-index: 1;
+    @include userSelectNone;
+}
+
+/***************************** COMPASS HUD */
+.c-hud {
+  // To be placed within a imagery view, in the bounding box of the image
+  $m: 1px;
+  $padTB: 2px;
+  $padLR: $padTB;
+  color: $interfaceKeyColor;
+  font-size: 0.8em;
+  position: absolute;
+  top: $m; right: $m; left: $m;
+  height: 18px;
+
+  svg, div {
+    position: absolute;
+  }
+
+  &__display {
+      height: 30px;
+      pointer-events: all;
+      position: absolute;
+      top: 0;
+      right: 0;
+      left: 0;
+  }
+
+  &__range {
+    border: 1px solid $interfaceKeyColor;
+    border-top-color: transparent;
+    position: absolute;
+    top: 50%; right: $padLR; bottom: $padTB; left: $padLR;
+  }
+
+  [class*="__dir"] {
+    // NSEW
+    display: inline-block;
+    font-weight: bold;
+    text-shadow: 0 1px 2px black;
+    top: 50%;
+    transform: translate(-50%,-50%);
+    z-index: 2;
+  }
+
+  [class*="__dir--sub"] {
+    font-weight: normal;
+    opacity: 0.5;
+  }
+
+  &__sun {
+    $s: 10px;
+    @include sun('circle farthest-side at bottom');
+    bottom: $padTB + 2px;
+    height: $s; width: $s*2;
+    opacity: 0.8;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+
+}
+
+/***************************** COMPASS DIRECTIONS */
+.c-nsew {
+  $color: $interfaceKeyColor;
+  $inset: 7%;
+  $tickHeightPerc: 15%;
+  text-shadow: black 0 0 10px;
+  top: $inset; right: $inset; bottom: $inset; left: $inset;
+  z-index: 3;
+
+  &__tick,
+  &__label {
+    fill: $color;
+  }
+
+  &__minor-ticks {
+    opacity: 0.5;
+    transform-origin: center;
+    transform: rotate(45deg);
+  }
+
+  &__label {
+    dominant-baseline: central;
+    font-size: 0.8em;
+    font-weight: bold;
+  }
+
+  .c-label-n {
+    font-size: 1.1em;
+  }
+}
+
+/***************************** CAMERA FIELD ANGLE */
+.c-cam-field {
+  $color: white;
+  opacity: 0.2;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 2;
+
+  .cam-field-half {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    .cam-field-area {
+      background: $color;
+      top: -30%;
+      right: 0;
+      bottom: -30%;
+      left: 0;
+    }
+
+    // clip-paths overlap a bit to avoid a gap between halves
+    &-l {
+      clip-path: polygon(0 0, 50.5% 0, 50.5% 100%, 0 100%);
+      .cam-field-area {
+        transform-origin: left center;
+      }
+    }
+
+    &-r {
+      clip-path: polygon(49.5% 0, 100% 0, 100% 100%, 49.5% 100%);
+      .cam-field-area {
+        transform-origin: right center;
+      }
+    }
+  }
+}
+
+/***************************** SPACECRAFT BODY */
+.c-spacecraft-body {
+  $color: $interfaceKeyColor;
+  $s: 30%;
+  background: $color;
+  border-radius: 3px;
+  height: $s; width: $s;
+  left: 50%; top: 50%;
+  opacity: 0.4;
+  transform-origin: center top;
+
+  &:before {
+    // Direction arrow
+    $color: rgba(black, 0.5);
+    $arwPointerY: 60%;
+    $arwBodyOffset: 25%;
+    background: $color;
+    content: '';
+    display: block;
+    position: absolute;
+    top: 10%; right: 20%; bottom: 50%; left: 20%;
+    clip-path: polygon(50% 0, 100% $arwPointerY, 100%-$arwBodyOffset $arwPointerY, 100%-$arwBodyOffset 100%, $arwBodyOffset 100%, $arwBodyOffset $arwPointerY, 0 $arwPointerY);
+  }
+}
+
+/***************************** DIRECTION ROSE */
+.c-direction-rose {
+  $d: 100px;
+  $c2: rgba(white, 0.1);
+  background: $elemBg;
+  background-image: radial-gradient(circle closest-side, transparent, transparent 80%, $c2);
+  width: $d;
+  height: $d;
+  transform-origin: 0 0;
+  position: absolute;
+  bottom: 10px; left: 10px;
+  clip-path: circle(50% at 50% 50%);
+  border-radius: 100%;
+
+  svg, div {
+    position: absolute;
+  }
+
+  // Sun
+  .c-sun {
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    &:before {
+      $s: 35%;
+      @include sun();
+      content: '';
+      display: block;
+      position: absolute;
+      opacity: 0.7;
+      top: 0; left: 50%;
+      height:$s; width: $s;
+      transform: translate(-50%, -60%);
+    }
+  }
+}

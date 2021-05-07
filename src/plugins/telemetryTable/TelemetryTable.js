@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -94,6 +94,7 @@ define([
         initialize() {
             if (this.domainObject.type === 'table') {
                 this.filterObserver = this.openmct.objects.observe(this.domainObject, 'configuration.filters', this.updateFilters);
+                this.filters = this.domainObject.configuration.filters;
                 this.loadComposition();
             } else {
                 this.addTelemetryObject(this.domainObject);
@@ -138,7 +139,18 @@ define([
             this.emit('object-added', telemetryObject);
         }
 
-        updateFilters() {
+        updateFilters(updatedFilters) {
+            let deepCopiedFilters = JSON.parse(JSON.stringify(updatedFilters));
+
+            if (this.filters && !_.isEqual(this.filters, deepCopiedFilters)) {
+                this.filters = deepCopiedFilters;
+                this.clearAndResubscribe();
+            } else {
+                this.filters = deepCopiedFilters;
+            }
+        }
+
+        clearAndResubscribe() {
             this.filteredRows.clear();
             this.boundedRows.clear();
             Object.keys(this.subscriptions).forEach(this.unsubscribe, this);
@@ -222,11 +234,15 @@ define([
         getColumnMapForObject(objectKeyString) {
             let columns = this.configuration.getColumns();
 
-            return columns[objectKeyString].reduce((map, column) => {
-                map[column.getKey()] = column;
+            if (columns[objectKeyString]) {
+                return columns[objectKeyString].reduce((map, column) => {
+                    map[column.getKey()] = column;
 
-                return map;
-            }, {});
+                    return map;
+                }, {});
+            }
+
+            return {};
         }
 
         addColumnsForObject(telemetryObject) {

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -57,6 +57,7 @@ describe("The Duplicate Action plugin", () => {
             overwrite: {
                 folder: {
                     name: "Parent Folder",
+                    type: "folder",
                     composition: [childObject.identifier]
                 }
             }
@@ -104,6 +105,7 @@ describe("The Duplicate Action plugin", () => {
 
         // already installed by default, but never hurts, just adds to context menu
         openmct.install(DuplicateActionPlugin());
+        openmct.types.addType('folder', {creatable: true});
 
         openmct.on('start', done);
         openmct.startHeadless();

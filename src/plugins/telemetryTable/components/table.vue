@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT, Copyright (c) 2014-2020, United States Government
+ * Open MCT, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -188,7 +188,17 @@
                                 class="c-table__search"
                                 @input="filterChanged(key)"
                                 @clear="clearFilter(key)"
-                            />
+                            >
+
+                                <button
+                                    class="c-search__use-regex"
+                                    :class="{ 'is-active': enableRegexSearch[key] }"
+                                    title="Click to enable regex: enter a string with slashes, like this: /regex_exp/"
+                                    @click="toggleRegex(key)"
+                                >
+                                    /R/
+                                </button>
+                            </search>
                         </table-column-header>
                     </tr>
                 </thead>
@@ -361,6 +371,7 @@ export default {
             paused: false,
             markedRows: [],
             isShowingMarkedRowsOnly: false,
+            enableRegexSearch: {},
             hideHeaders: configuration.hideHeaders,
             totalNumberOfRows: 0
         };
@@ -618,7 +629,16 @@ export default {
             this.headersHolderEl.scrollLeft = this.scrollable.scrollLeft;
         },
         filterChanged(columnKey) {
-            this.table.filteredRows.setColumnFilter(columnKey, this.filters[columnKey]);
+            if (this.enableRegexSearch[columnKey]) {
+                if (this.isCompleteRegex(this.filters[columnKey])) {
+                    this.table.filteredRows.setColumnRegexFilter(columnKey, this.filters[columnKey].slice(1, -1));
+                } else {
+                    return;
+                }
+            } else {
+                this.table.filteredRows.setColumnFilter(columnKey, this.filters[columnKey]);
+            }
+
             this.setHeight();
         },
         clearFilter(columnKey) {
@@ -955,6 +975,18 @@ export default {
             this.isAutosizeEnabled = true;
 
             this.$nextTick().then(this.calculateColumnWidths);
+        },
+        toggleRegex(key) {
+            this.$set(this.filters, key, '');
+
+            if (this.enableRegexSearch[key] === undefined) {
+                this.$set(this.enableRegexSearch, key, true);
+            } else {
+                this.$set(this.enableRegexSearch, key, !this.enableRegexSearch[key]);
+            }
+        },
+        isCompleteRegex(string) {
+            return (string.length > 2 && string[0] === '/' && string[string.length - 1] === '/');
         },
         getViewContext() {
             return {

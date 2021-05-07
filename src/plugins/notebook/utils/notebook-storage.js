@@ -48,14 +48,29 @@ export function getDefaultNotebook() {
     return JSON.parse(notebookStorage);
 }
 
+export async function getDefaultNotebookLink(openmct, domainObject = null) {
+    if (!domainObject) {
+        return null;
+    }
+
+    const path = await openmct.objects.getOriginalPath(domainObject.identifier)
+        .then(objectPath => objectPath
+            .map(o => o && openmct.objects.makeKeyString(o.identifier))
+            .reverse()
+            .join('/')
+        );
+    const { page, section } = getDefaultNotebook();
+
+    return `#/browse/${path}?sectionId=${section.id}&pageId=${page.id}`;
+}
+
 export function setDefaultNotebook(openmct, notebookStorage, domainObject) {
-    observeDefaultNotebookObject(openmct, notebookStorage.notebookMeta, domainObject);
+    observeDefaultNotebookObject(openmct, notebookStorage, domainObject);
     saveDefaultNotebook(notebookStorage);
 }
 
 export function setDefaultNotebookSection(section) {
     const notebookStorage = getDefaultNotebook();
-
     notebookStorage.section = section;
     saveDefaultNotebook(notebookStorage);
 }

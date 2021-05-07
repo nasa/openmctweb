@@ -19,7 +19,8 @@
                 ></span>
             </div>
             <span
-                class="l-browse-bar__object-name c-object-label__name c-input-inline"
+                class="l-browse-bar__object-name c-object-label__name"
+                :class="{ 'c-input-inline' : type.creatable}"
                 :contenteditable="type.creatable"
                 @blur="updateName"
                 @keydown.enter.prevent
@@ -124,11 +125,11 @@ import NotebookMenuSwitcher from '@/plugins/notebook/components/NotebookMenuSwit
 const PLACEHOLDER_OBJECT = {};
 
 export default {
-    inject: ['openmct'],
     components: {
         NotebookMenuSwitcher,
         ViewSwitcher
     },
+    inject: ['openmct'],
     props: {
         actionCollection: {
             type: Object,
@@ -158,10 +159,14 @@ export default {
             return this.views.filter(v => v.key === this.viewKey)[0] || {};
         },
         views() {
+            if (this.domainObject && (this.openmct.router.started !== true)) {
+                return [];
+            }
+
             return this
                 .openmct
                 .objectViews
-                .get(this.domainObject)
+                .get(this.domainObject, this.openmct.router.path)
                 .map((p) => {
                     return {
                         key: p.key,
@@ -196,7 +201,7 @@ export default {
             if (currentViewKey !== undefined) {
                 let currentViewProvider = this.openmct.objectViews.getByProviderKey(currentViewKey);
 
-                return currentViewProvider.canEdit && currentViewProvider.canEdit(this.domainObject);
+                return currentViewProvider.canEdit && currentViewProvider.canEdit(this.domainObject, this.openmct.router.path);
             }
 
             return false;
@@ -211,14 +216,6 @@ export default {
     },
     watch: {
         domainObject() {
-            if (this.mutationObserver) {
-                this.mutationObserver();
-            }
-
-            this.mutationObserver = this.openmct.objects.observe(this.domainObject, '*', (domainObject) => {
-                this.domainObject = domainObject;
-            });
-
             if (this.removeStatusListener) {
                 this.removeStatusListener();
             }
