@@ -24,8 +24,6 @@ import PreviewHeader from '@/ui/preview/preview-header.vue';
 
 import Vue from 'vue';
 
-const NO_PREVIEW_TYPES = ['folder'];
-
 export default class ViewLargeAction {
     constructor(openmct) {
         this.openmct = openmct;
@@ -47,14 +45,18 @@ export default class ViewLargeAction {
         ViewLargeAction.isVisible = true;
 
         let childElement = view.element;
-        if (childElement) {
-            const isObjectFrame = childElement.classList.contains('js-object-view');
-            if (isObjectFrame) {
-                childElement = childElement.children[0];
-            }
-
-            this._expand(objectPath, childElement);
+        if (!childElement) {
+            const message = "ViewLargeAction: missing element";
+            this.openmct.notifications.error(message);
+            throw new Error(message);
         }
+
+        const isObjectFrame = childElement.classList.contains('js-object-view');
+        if (isObjectFrame) {
+            childElement = childElement.children[0];
+        }
+
+        this._expand(objectPath, childElement);
     }
 
     appliesTo(objectPath, view = {}) {
@@ -62,7 +64,6 @@ export default class ViewLargeAction {
 
         return !ViewLargeAction.isVisible
             && element && !element.classList.contains('js-main-container')
-            && !this._preventPreview(objectPath)
             && !this._isNavigatedObject(objectPath);
     }
 
@@ -121,9 +122,5 @@ export default class ViewLargeAction {
         let navigatedObject = this.openmct.router.path[0];
 
         return this.openmct.objects.areIdsEqual(targetObject.identifier, navigatedObject.identifier);
-    }
-
-    _preventPreview(objectPath) {
-        return NO_PREVIEW_TYPES.includes(objectPath[0].type);
     }
 }

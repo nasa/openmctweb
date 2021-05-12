@@ -42,7 +42,7 @@ export default function ImageryViewProvider(openmct) {
         canView: function (domainObject) {
             return hasImageTelemetry(domainObject);
         },
-        view: function (domainObject) {
+        view: function (domainObject, objectPath) {
             let component;
 
             return {
@@ -54,7 +54,8 @@ export default function ImageryViewProvider(openmct) {
                         },
                         provide: {
                             openmct,
-                            domainObject
+                            domainObject,
+                            objectPath
                         },
                         template: '<imagery-view-layout ref="ImageryLayout"></imagery-view-layout>'
                     });

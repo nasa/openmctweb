@@ -192,7 +192,7 @@ export default {
     components: {
         Compass
     },
-    inject: ['openmct', 'domainObject'],
+    inject: ['openmct', 'domainObject', 'objectPath'],
     data() {
         let timeSystem = this.openmct.time.timeSystem();
 
@@ -444,16 +444,13 @@ export default {
                 element: this.$el
             };
 
-            this.openmct.objects.getOriginalPath(this.domainObject.identifier)
-                .then(objectPath => {
-                    const actionCollection = this.openmct.actions.get(objectPath, options);
-                    const visibleActions = actionCollection.getVisibleActions();
-                    const viewLargeAction = visibleActions
-                        && visibleActions.find(action => action.key === 'large.view');
-                    if (viewLargeAction) {
-                        viewLargeAction.callBack();
-                    }
-                });
+            const actionCollection = this.openmct.actions.get(this.objectPath, options);
+            const visibleActions = actionCollection.getVisibleActions();
+            const viewLargeAction = visibleActions
+                && visibleActions.find(action => action.key === 'large.view');
+            if (viewLargeAction) {
+                viewLargeAction.callBack();
+            }
         },
         async initializeRelatedTelemetry() {
             this.relatedTelemetry = new RelatedTelemetry(
