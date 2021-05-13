@@ -76,8 +76,8 @@ export default class PreviewAction {
     }
 
     appliesTo(objectPath, view = {}) {
-        const element = view.element;
-        const isObjectView = element && element.classList.contains('js-object-view');
+        const parentElement = view.parentElement;
+        const isObjectView = parentElement && parentElement.classList.contains('js-object-view');
 
         return !PreviewAction.isVisible
             && !this._isNavigatedObject(objectPath)

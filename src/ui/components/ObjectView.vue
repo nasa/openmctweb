@@ -209,7 +209,6 @@ export default {
                 }
             }
 
-            this.getActionCollection();
             this.currentView.show(this.viewContainer, this.openmct.editor.isEditing());
 
             if (immediatelySelect) {
@@ -218,18 +217,17 @@ export default {
             }
 
             this.openmct.objectViews.on('clearData', this.clearData);
+
+            this.$nextTick(() => {
+                this.getActionCollection();
+            });
         },
         getActionCollection() {
             if (this.actionCollection) {
                 this.actionCollection.destroy();
             }
 
-            const options = {
-                element: this.$el,
-                view: this.currentView
-            };
-
-            this.actionCollection = this.openmct.actions.get(this.currentObjectPath || this.objectPath, options);
+            this.actionCollection = this.openmct.actions.get(this.currentObjectPath || this.objectPath, this.currentView);
             this.$emit('change-action-collection', this.actionCollection);
         },
         show(object, viewKey, immediatelySelect, currentObjectPath) {

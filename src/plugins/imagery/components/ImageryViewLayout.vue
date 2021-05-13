@@ -440,14 +440,15 @@ export default {
     },
     methods: {
         expand() {
-            const options = {
-                element: this.$el
+            const view = {
+                parentElement: this.$el.parentElement
             };
 
-            const actionCollection = this.openmct.actions.get(this.objectPath, options);
+            const actionCollection = this.openmct.actions.get(this.objectPath, view);
             const visibleActions = actionCollection.getVisibleActions();
             const viewLargeAction = visibleActions
                 && visibleActions.find(action => action.key === 'large.view');
+
             if (viewLargeAction) {
                 viewLargeAction.callBack();
             }
