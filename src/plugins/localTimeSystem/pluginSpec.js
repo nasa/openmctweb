@@ -44,8 +44,8 @@ describe("The local time", () => {
 
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     describe("system", function () {

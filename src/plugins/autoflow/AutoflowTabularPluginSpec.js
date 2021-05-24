@@ -50,8 +50,8 @@ describe("AutoflowTabularPlugin", () => {
         plugin(mockmct);
     });
 
-    afterEach(() => {
-        resetApplicationState(mockmct);
+    afterEach(async () => {
+        await resetApplicationState(mockmct);
     });
 
     it("installs a view provider", () => {

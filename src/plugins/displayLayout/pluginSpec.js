@@ -44,8 +44,8 @@ describe('the plugin', function () {
         openmct.startHeadless();
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     it('defines a display layout object type with the correct key', () => {

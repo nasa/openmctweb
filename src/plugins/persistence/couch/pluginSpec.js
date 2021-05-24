@@ -83,8 +83,8 @@ describe('the plugin', () => {
         spyOn(provider, 'update').and.callThrough();
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     describe('the provider', () => {

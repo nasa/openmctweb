@@ -80,8 +80,8 @@ describe("The Move Action plugin", () => {
         openmct.startHeadless(appHolder);
     });
 
-    afterEach(() => {
-        resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     it("should be defined", () => {

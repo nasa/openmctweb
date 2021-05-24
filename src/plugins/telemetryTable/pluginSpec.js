@@ -81,8 +81,8 @@ describe("the plugin", () => {
         openmct.startHeadless();
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     describe("defines a table object", function () {

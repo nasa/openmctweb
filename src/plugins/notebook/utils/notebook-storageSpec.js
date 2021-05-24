@@ -82,8 +82,8 @@ describe('Notebook Storage:', () => {
         done();
     });
 
-    afterEach(() => {
-        resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     it('has empty local Storage', () => {

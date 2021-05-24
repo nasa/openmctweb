@@ -117,9 +117,9 @@ describe('The ActionCollection', () => {
         actionCollection = new ActionCollection(mockApplicableActions, mockObjectPath, mockView, openmct);
     });
 
-    afterEach(() => {
+    afterEach(async () => {
         actionCollection.destroy();
-        resetApplicationState(openmct);
+        await resetApplicationState(openmct);
     });
 
     describe("disable method invoked with action keys", () => {

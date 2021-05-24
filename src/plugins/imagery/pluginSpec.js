@@ -230,8 +230,8 @@ describe("The Imagery View Layout", () => {
         openmct.startHeadless(appHolder);
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     it("should provide an imagery view only for imagery producing objects", () => {

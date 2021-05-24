@@ -46,14 +46,14 @@ define([
         });
 
         // Clean up the dirty singleton.
-        afterEach(function () {
+        afterEach(async function () {
             legacyRegistry.list().forEach(function (bundle) {
                 if (oldBundles.indexOf(bundle) === -1) {
                     legacyRegistry.delete(bundle);
                 }
             });
 
-            return testUtils.resetApplicationState(openmct);
+            await testUtils.resetApplicationState(openmct);
         });
 
         it("exposes plugins", function () {

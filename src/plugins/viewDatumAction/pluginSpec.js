@@ -68,8 +68,8 @@ describe("the plugin", () => {
         done();
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     it('installs the view datum action', () => {

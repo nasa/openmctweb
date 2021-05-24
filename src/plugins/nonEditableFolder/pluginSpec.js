@@ -36,8 +36,8 @@ describe("the plugin", () => {
         openmct.startHeadless();
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     it('adds the new non-editable folder type', () => {

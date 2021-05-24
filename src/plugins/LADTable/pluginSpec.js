@@ -93,8 +93,8 @@ describe("The LAD Table", () => {
         openmct.startHeadless(appHolder);
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     it("should provide a table view only for lad table objects", () => {
@@ -291,8 +291,8 @@ describe("The LAD Table Set", () => {
         openmct.start(appHolder);
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     it("should provide a lad table set view only for lad table set objects", () => {

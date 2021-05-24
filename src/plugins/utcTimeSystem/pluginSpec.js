@@ -38,8 +38,8 @@ describe("The UTC Time System", () => {
         openmct.install(openmct.plugins.UTCTimeSystem());
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     describe("plugin", function () {

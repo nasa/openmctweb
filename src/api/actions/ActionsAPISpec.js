@@ -98,8 +98,8 @@ describe('The Actions API', () => {
         };
     });
 
-    afterEach(() => {
-        resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     describe("register method", () => {

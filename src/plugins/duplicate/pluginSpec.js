@@ -111,8 +111,8 @@ describe("The Duplicate Action plugin", () => {
         openmct.startHeadless();
     });
 
-    afterEach(() => {
-        resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     it("should be defined", () => {

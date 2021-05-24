@@ -21,8 +21,8 @@ describe("The Status API", () => {
         callback = jasmine.createSpy('callback', (statusUpdate) => statusUpdate);
     });
 
-    afterEach(() => {
-        resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     describe("set function", () => {

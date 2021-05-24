@@ -54,8 +54,8 @@ describe('CustomStringFormatter', function () {
         customStringFormatter = new CustomStringFormatter(openmct, valueMetadata);
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     it('adds custom format sclk', () => {

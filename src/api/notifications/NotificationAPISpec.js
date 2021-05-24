@@ -22,17 +22,23 @@
 
 import NotificationAPI from './NotificationAPI';
 
+const DEFAULT_TIMEOUT = 4000;
+
 describe('The Notifiation API', () => {
     let notificationAPIInstance;
-    let defaultTimeout = 4000;
 
     beforeAll(() => {
         notificationAPIInstance = new NotificationAPI();
+        jasmine.clock().install();
+    });
+
+    afterAll(() => {
+        jasmine.clock().uninstall();
     });
 
     describe('the info method', () => {
-        let message = 'Example Notification Message';
-        let severity = 'info';
+        const message = 'Example Notification Message';
+        const severity = 'info';
         let notificationModel;
 
         beforeAll(() => {
@@ -48,17 +54,16 @@ describe('The Notifiation API', () => {
             expect(notificationModel.severity).toEqual(severity);
         });
 
-        it('auto dismisses the notification after a brief timeout', (done) => {
-            window.setTimeout(() => {
-                expect(notificationAPIInstance.notifications.length).toEqual(0);
-                done();
-            }, defaultTimeout);
+        it('auto dismisses the notification after a brief timeout', () => {
+            jasmine.clock().tick(DEFAULT_TIMEOUT);
+
+            expect(notificationAPIInstance.notifications.length).toEqual(0);
         });
     });
 
     describe('the alert method', () => {
-        let message = 'Example alert message';
-        let severity = 'alert';
+        const message = 'Example alert message';
+        const severity = 'alert';
         let notificationModel;
 
         beforeAll(() => {
@@ -74,17 +79,16 @@ describe('The Notifiation API', () => {
             expect(notificationModel.severity).toEqual(severity);
         });
 
-        it('does not auto dismiss the notification', (done) => {
-            window.setTimeout(() => {
-                expect(notificationAPIInstance.notifications.length).toEqual(1);
-                done();
-            }, defaultTimeout);
+        it('does not auto dismiss the notification', () => {
+            jasmine.clock().tick(DEFAULT_TIMEOUT);
+
+            expect(notificationAPIInstance.notifications.length).toEqual(1);
         });
     });
 
     describe('the error method', () => {
-        let message = 'Example error message';
-        let severity = 'error';
+        const message = 'Example error message';
+        const severity = 'error';
         let notificationModel;
 
         beforeAll(() => {
@@ -100,21 +104,20 @@ describe('The Notifiation API', () => {
             expect(notificationModel.severity).toEqual(severity);
         });
 
-        it('does not auto dismiss the notification', (done) => {
-            window.setTimeout(() => {
-                expect(notificationAPIInstance.notifications.length).toEqual(1);
-                done();
-            }, defaultTimeout);
+        it('does not auto dismiss the notification', () => {
+            jasmine.clock().tick(DEFAULT_TIMEOUT);
+
+            expect(notificationAPIInstance.notifications.length).toEqual(1);
         });
     });
 
     describe('the progress method', () => {
-        let title = 'This is a progress notification';
-        let message1 = 'Example progress message 1';
-        let message2 = 'Example progress message 2';
-        let percentage1 = 50;
-        let percentage2 = 99.9;
-        let severity = 'info';
+        const title = 'This is a progress notification';
+        const message1 = 'Example progress message 1';
+        const message2 = 'Example progress message 2';
+        const percentage1 = 50;
+        const percentage2 = 99.9;
+        const severity = 'info';
         let notification;
         let updatedPercentage;
         let updatedMessage;

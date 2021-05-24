@@ -76,8 +76,8 @@ describe('the plugin', function () {
         openmct.startHeadless(appHolder);
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     let mockObject = {

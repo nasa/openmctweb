@@ -102,8 +102,8 @@ describe('the plugin', function () {
         openmct.startHeadless();
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     let mockConditionSetObject = {

@@ -43,8 +43,8 @@ describe("the plugin", () => {
         newFolderAction = openmct.actions._allActions.newFolder;
     });
 
-    afterEach(() => {
-        return resetApplicationState(openmct);
+    afterEach(async () => {
+        await resetApplicationState(openmct);
     });
 
     it('installs the new folder action', () => {
