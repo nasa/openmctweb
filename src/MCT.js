@@ -47,6 +47,7 @@ define([
     './plugins/licenses/plugin',
     './plugins/remove/plugin',
     './plugins/move/plugin',
+    './plugins/linkAction/plugin',
     './plugins/duplicate/plugin',
     'vue'
 ], function (
@@ -76,6 +77,7 @@ define([
     LicensesPlugin,
     RemoveActionPlugin,
     MoveActionPlugin,
+    LinkActionPlugin,
     DuplicateActionPlugin,
     Vue
 ) {
@@ -269,6 +271,7 @@ define([
         this.install(LicensesPlugin.default());
         this.install(RemoveActionPlugin.default());
         this.install(MoveActionPlugin.default());
+        this.install(LinkActionPlugin.default());
         this.install(DuplicateActionPlugin.default());
         this.install(this.plugins.FolderView());
         this.install(this.plugins.Tabs());
