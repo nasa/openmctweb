@@ -26,7 +26,6 @@ define([
     "./src/controllers/EditObjectController",
     "./src/actions/EditAndComposeAction",
     "./src/actions/EditAction",
-    "./src/actions/PropertiesAction",
     "./src/actions/SaveAction",
     "./src/actions/SaveAndStopEditingAction",
     "./src/actions/SaveAsAction",
@@ -55,7 +54,6 @@ define([
     EditObjectController,
     EditAndComposeAction,
     EditAction,
-    PropertiesAction,
     SaveAction,
     SaveAndStopEditingAction,
     SaveAsAction,
@@ -142,22 +140,6 @@ define([
                         "cssClass": "major icon-pencil",
                         "group": "action",
                         "priority": 10
-                    },
-                    {
-                        "key": "properties",
-                        "category": [
-                            "contextual",
-                            "view-control"
-                        ],
-                        "implementation": PropertiesAction,
-                        "cssClass": "major icon-pencil",
-                        "name": "Edit Properties...",
-                        "group": "action",
-                        "priority": 10,
-                        "description": "Edit properties of this object.",
-                        "depends": [
-                            "dialogService"
-                        ]
                     },
                     {
                         "key": "save-and-stop-editing",

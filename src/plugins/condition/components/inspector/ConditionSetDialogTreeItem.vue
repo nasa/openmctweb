@@ -58,6 +58,7 @@
             :node="child"
             :selected-item="selectedItem"
             :handle-item-selected="handleItemSelected"
+            :navigateToParent="navigateToParent"
         />
     </ul>
 </li>
@@ -88,7 +89,13 @@ export default {
             default() {
                 return (item) => {};
             }
-        }
+        },
+        navigateToParent: {
+            type: String,
+            default() {
+                return undefined;
+            }
+        },
     },
     data() {
         return {
@@ -147,6 +154,16 @@ export default {
     },
     mounted() {
         this.domainObject = this.node.object;
+
+        if (this.navigateToParent && this.navigateToParent.includes(this.openmct.objects.makeKeyString(this.domainObject.identifier))) {
+            this.expanded = true;
+        }
+
+        if (this.navigateToParent && this.navigateToParent.endsWith(this.openmct.objects.makeKeyString(this.domainObject.identifier))) {
+            this.handleItemSelected(this.node.object, this.node)
+            this.$el.scrollIntoView();
+        }
+
         let removeListener = this.openmct.objects.observe(this.domainObject, '*', (newObject) => {
             this.domainObject = newObject;
         });

@@ -34,7 +34,6 @@ import uuid from 'uuid';
  * @constructor
  */
 export default class DuplicateTask {
-
     constructor(openmct) {
         this.domainObject = undefined;
         this.parent = undefined;

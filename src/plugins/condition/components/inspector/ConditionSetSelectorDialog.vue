@@ -22,10 +22,14 @@
 
 <template>
 <div class="u-contents">
-    <div class="c-overlay__top-bar">
+    <div v-if="!hideTitle"
+         class="c-overlay__top-bar"
+    >
         <div class="c-overlay__dialog-title">Select Condition Set</div>
     </div>
-    <div class="c-overlay__contents-main c-selector c-tree-and-search">
+    <div class="c-overlay__contents-main c-selector c-tree-and-search"
+         :class="cssClass"
+    >
         <div class="c-tree-and-search__search">
             <search ref="shell-search"
                     class="c-search"
@@ -58,6 +62,7 @@
                 :node="treeItem"
                 :selected-item="selectedItem"
                 :handle-item-selected="handleItemSelection"
+                :navigateToParent="navigateToParent"
             />
         </ul>
         <!-- end main tree -->
@@ -91,6 +96,36 @@ export default {
         ConditionSetDialogTreeItem
     },
     inject: ['openmct'],
+    props: {
+        cssClass: {
+            type: String,
+            required: false,
+            default() {
+                return '';
+            }
+        },
+        hideTitle: {
+            type: Boolean,
+            required: false,
+            default() {
+                return false;
+            }
+        },
+        ignoreTypeCheck: {
+            type: Boolean,
+            required: false,
+            default() {
+                return false;
+            }
+        },
+        parent: {
+            type: Object,
+            required: false,
+            default() {
+                return undefined;
+            }
+        }
+    },
     data() {
         return {
             expanded: false,
@@ -98,7 +133,8 @@ export default {
             allTreeItems: [],
             filteredTreeItems: [],
             isLoading: false,
-            selectedItem: undefined
+            selectedItem: undefined,
+            navigateToParent: undefined
         };
     },
     computed: {
@@ -115,10 +151,24 @@ export default {
         this.getDebouncedFilteredChildren = debounce(this.getFilteredChildren, 400);
     },
     mounted() {
-        this.getAllChildren();
+
+        if (this.parent) {
+            (async () => {
+                const objectPath = await this.openmct.objects.getOriginalPath(this.parent.identifier);
+                this.navigateToParent = '/browse/'
+                        + objectPath
+                            .map(parent => this.openmct.objects.makeKeyString(parent.identifier))
+                            .reverse()
+                            .join('/');
+
+                this.getAllChildren(this.navigateToParent);
+            })();
+        } else {
+            this.getAllChildren();
+        }
     },
     methods: {
-        getAllChildren() {
+        getAllChildren(navigateToParent) {
             this.isLoading = true;
             this.openmct.objects.get('ROOT')
                 .then(root => {
@@ -131,7 +181,7 @@ export default {
                             id: this.openmct.objects.makeKeyString(c.identifier),
                             object: c,
                             objectPath: [c],
-                            navigateToParent: '/browse'
+                            navigateToParent: navigateToParent || '/browse'
                         };
                     });
                 });
@@ -178,7 +228,7 @@ export default {
             }
         },
         handleItemSelection(item, node) {
-            if (item && item.type === 'conditionSet') {
+            if (item && (this.ignoreTypeCheck || item.type === 'conditionSet')) {
                 const parentId = (node.objectPath && node.objectPath.length > 1) ? node.objectPath[1].identifier : undefined;
                 this.selectedItem = {
                     itemId: item.identifier,
