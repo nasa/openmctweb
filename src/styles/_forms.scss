@@ -345,8 +345,8 @@
     }
 }
 
-mct-form.validates {
-    .form-row.validates {
+.mct-form {
+    .form-row {
         > .label {
             padding-right: 1em; // Keep room for validation element
             &:after {
@@ -363,7 +363,7 @@ mct-form.validates {
     }
 }
 
-body.desktop .form-row.validates > .label {
+body.desktop .form-row > .label {
     &:after {
         position: absolute;
         right: $interiorMargin;

@@ -282,7 +282,7 @@ define([
                             }
                         ],
                         "model": {
-                            "timerFormat": "DDD hh:mm:ss"
+                            "timerFormat": "long"
                         }
                     }
                 ],

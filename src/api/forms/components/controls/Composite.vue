@@ -19,25 +19,38 @@
  this source code distribution or the Licensing information page available
  at runtime from the About dialog for additional information.
 -->
-<mct-container key="c-overlay__contents">
-    <div class="c-overlay__top-bar">
-        <div class="c-overlay__dialog-title">{{ngModel.dialog.title}}</div>
-        <div class="c-overlay__dialog-hint hint">{{ngModel.dialog.hint}}</div>
-    </div>
-    <div class='c-overlay__contents-main'>
-        <mct-include key="ngModel.dialog.template"
-                     parameters="ngModel.dialog.parameters"
-                     ng-model="ngModel.dialog.model">
-        </mct-include>
-    </div>
-    <div class="c-overlay__button-bar">
-        <button ng-repeat="option in ngModel.dialog.options"
-           href=''
-           class="s-button lg"
-           title="{{option.description}}"
-           ng-click="ngModel.confirm(option.key)"
-           ng-class="{ major: $first, subtle: !$first }">
-            {{option.name}}
-        </button>
-    </div>
-</mct-container>
+<template>
+<span>
+    <CompositeItem v-for="(item, index) in model.items"
+                    :key="item.name"
+                    :first="index < 1"
+                    :value="JSON.stringify(model.value[index])"
+                    :item="item"
+                    @onChange="onChange"
+    />
+</span>
+</template>
+
+<script>
+import CompositeItem from "@/api/forms/components/controls/CompositeItem.vue";
+
+export default {
+    components: {
+        CompositeItem
+    },
+    props: {
+        model: {
+            type: Object,
+            required: true
+        }
+    },
+    methods: {
+        onChange(data) {
+            this.$emit('onChange', data);
+        }
+    },
+    mounted() {
+        this.model.items.forEach((item, index) => item.key = `${this.model.key}.${index}`);
+    }
+};
+</script>

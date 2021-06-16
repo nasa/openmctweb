@@ -37,7 +37,10 @@ export default function () {
                     control: 'file-input',
                     required: true,
                     text: 'Select File...',
-                    type: 'application/json'
+                    type: 'application/json',
+                    property: [
+                        "selectFile"
+                    ]
                 }
             ],
             initialize: function (domainObject) {

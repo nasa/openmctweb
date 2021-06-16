@@ -19,30 +19,10 @@
  * this source code distribution or the Licensing information page available
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
+import LinkAction from "./LinkAction";
 
-define(
-    ['./AbstractComposeAction'],
-    function (AbstractComposeAction) {
-
-        /**
-         * The LinkAction is available from context menus and allows a user to
-         * link an object to another location of their choosing.
-         *
-         * @implements {Action}
-         * @constructor
-         * @memberof platform/entanglement
-         */
-        function LinkAction(policyService, locationService, linkService, context) {
-            AbstractComposeAction.apply(
-                this,
-                [policyService, locationService, linkService, context, "Link"]
-            );
-        }
-
-        LinkAction.prototype = Object.create(AbstractComposeAction.prototype);
-        LinkAction.appliesTo = AbstractComposeAction.appliesTo;
-
-        return LinkAction;
-    }
-);
-
+export default function () {
+    return function (openmct) {
+        openmct.actions.register(new LinkAction(openmct));
+    };
+}

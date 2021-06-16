@@ -21,11 +21,11 @@
  *****************************************************************************/
 
 define([
-    '../creation/CreateWizard',
+    // '../creation/CreateWizard',
     './SaveInProgressDialog'
 ],
 function (
-    CreateWizard,
+    // CreateWizard,
     SaveInProgressDialog
 ) {
 
@@ -100,7 +100,8 @@ function (
             toUndirty = [];
 
         function doWizardSave(parent) {
-            var wizard = self.createWizard(parent);
+            console.log('SaveAsAction');
+            // var wizard = self.createWizard(parent);
 
             return self.dialogService
                 .getUserInput(wizard.getFormStructure(true),

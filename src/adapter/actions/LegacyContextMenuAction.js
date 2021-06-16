@@ -21,7 +21,7 @@
  *****************************************************************************/
 import _ from 'lodash';
 const INSIDE_EDIT_PATH_BLACKLIST = ["copy", "follow", "link", "locate", "move", "link"];
-const OUTSIDE_EDIT_PATH_BLACKLIST = ["copy", "follow", "properties", "move", "link", "remove", "locate"];
+const OUTSIDE_EDIT_PATH_BLACKLIST = ["copy", "follow", "move", "link", "remove", "locate"];
 
 export default class LegacyContextMenuAction {
     constructor(openmct, LegacyAction) {

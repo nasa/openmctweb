@@ -21,25 +21,21 @@
  *****************************************************************************/
 
 define([
-    "./src/actions/LinkAction",
     "./src/actions/SetPrimaryLocationAction",
     "./src/services/LocatingCreationDecorator",
     "./src/services/LocatingObjectDecorator",
     "./src/policies/CopyPolicy",
     "./src/policies/CrossSpacePolicy",
     "./src/capabilities/LocationCapability",
-    "./src/services/LinkService",
     "./src/services/CopyService",
     "./src/services/LocationService"
 ], function (
-    LinkAction,
     SetPrimaryLocationAction,
     LocatingCreationDecorator,
     LocatingObjectDecorator,
     CopyPolicy,
     CrossSpacePolicy,
     LocationCapability,
-    LinkService,
     CopyService,
     LocationService
 ) {
@@ -52,21 +48,6 @@ define([
             "configuration": {},
             "extensions": {
                 "actions": [
-                    {
-                        "key": "link",
-                        "name": "Create Link",
-                        "description": "Create Link to object in another location.",
-                        "cssClass": "icon-link",
-                        "category": "contextual",
-                        "group": "action",
-                        "priority": 7,
-                        "implementation": LinkAction,
-                        "depends": [
-                            "policyService",
-                            "locationService",
-                            "linkService"
-                        ]
-                    },
                     {
                         "key": "locate",
                         "name": "Set Primary Location",
@@ -115,15 +96,6 @@ define([
                     }
                 ],
                 "services": [
-                    {
-                        "key": "linkService",
-                        "name": "Link Service",
-                        "description": "Provides a service for linking objects",
-                        "implementation": LinkService,
-                        "depends": [
-                            "openmct"
-                        ]
-                    },
                     {
                         "key": "copyService",
                         "name": "Copy Service",

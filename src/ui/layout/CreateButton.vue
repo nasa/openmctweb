@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import CreateAction from '../../../platform/commonUI/edit/src/creation/CreateAction';
+import CreateAction from '@/api/forms/actions/CreateAction';
 import objectUtils from 'objectUtils';
 
 export default {
@@ -74,20 +74,9 @@ export default {
             // 4. perform action.
             return this.openmct.objects.get(this.openmct.router.path[0].identifier)
                 .then((currentObject) => {
-                    let legacyContextualParent = this.convertToLegacy(currentObject);
-                    let legacyType = this.openmct.$injector.get('typeService').getType(key);
-                    let context = {
-                        key: "create",
-                        domainObject: legacyContextualParent // should be same as parent object.
-                    };
-                    let action = new CreateAction(
-                        legacyType,
-                        legacyContextualParent,
-                        context,
-                        this.openmct
-                    );
+                    const createAction = new CreateAction(this.openmct, key, currentObject);
 
-                    return action.perform();
+                    createAction.invoke();
                 });
         },
         convertToLegacy(domainObject) {

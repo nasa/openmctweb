@@ -19,25 +19,53 @@
  this source code distribution or the Licensing information page available
  at runtime from the About dialog for additional information.
 -->
-<mct-container key="c-overlay__contents">
-    <div class="c-overlay__top-bar">
-        <div class="c-overlay__dialog-title">{{ngModel.dialog.title}}</div>
-        <div class="c-overlay__dialog-hint hint">{{ngModel.dialog.hint}}</div>
-    </div>
-    <div class='c-overlay__contents-main'>
-        <mct-include key="ngModel.dialog.template"
-                     parameters="ngModel.dialog.parameters"
-                     ng-model="ngModel.dialog.model">
-        </mct-include>
-    </div>
-    <div class="c-overlay__button-bar">
-        <button ng-repeat="option in ngModel.dialog.options"
-           href=''
-           class="s-button lg"
-           title="{{option.description}}"
-           ng-click="ngModel.confirm(option.key)"
-           ng-class="{ major: $first, subtle: !$first }">
-            {{option.name}}
-        </button>
-    </div>
-</mct-container>
+<template>
+<div :class="compositeCssClass">
+    <FormRow :css-class="item.cssClass"
+             :first="first"
+             :row="row"
+             @onChange="onChange"
+    />
+    <span class="composite-control-label">
+        {{ item.name }}
+    </span>
+</div>
+</template>
+
+<script>
+
+export default {
+    components: {
+        FormRow: () => import('@/api/forms/components/FormRow.vue')
+    },
+    props: {
+        item: {
+            type: Object,
+            required: true
+        },
+        first: {
+            type: Boolean,
+            required: true
+        },
+        value: {
+            type: String
+        }
+    },
+    computed: {
+        compositeCssClass() {
+            return `l-composite-control l-${this.item.control}`;
+        },
+        row() {
+            const row = this.item;
+            row.value = JSON.parse(this.value);
+
+            return row;
+        }
+    },
+    methods: {
+        onChange(data) {
+            this.$emit('onChange', data);
+        }
+    }
+};
+</script>

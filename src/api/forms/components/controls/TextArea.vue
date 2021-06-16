@@ -19,25 +19,42 @@
  this source code distribution or the Licensing information page available
  at runtime from the About dialog for additional information.
 -->
-<mct-container key="c-overlay__contents">
-    <div class="c-overlay__top-bar">
-        <div class="c-overlay__dialog-title">{{ngModel.dialog.title}}</div>
-        <div class="c-overlay__dialog-hint hint">{{ngModel.dialog.hint}}</div>
-    </div>
-    <div class='c-overlay__contents-main'>
-        <mct-include key="ngModel.dialog.template"
-                     parameters="ngModel.dialog.parameters"
-                     ng-model="ngModel.dialog.model">
-        </mct-include>
-    </div>
-    <div class="c-overlay__button-bar">
-        <button ng-repeat="option in ngModel.dialog.options"
-           href=''
-           class="s-button lg"
-           title="{{option.description}}"
-           ng-click="ngModel.confirm(option.key)"
-           ng-class="{ major: $first, subtle: !$first }">
-            {{option.name}}
-        </button>
-    </div>
-</mct-container>
+<template>
+<span class="form-control shell">
+    <span class="field control"
+          :class="model.cssClass"
+    >
+        <textarea v-model="field"
+               type="text"
+               :size="model.size"
+               @blur="blur()"
+        />
+    </span>
+</span>
+</template>
+
+<script>
+export default {
+    props: {
+        model: {
+            type: Object,
+            required: true
+        }
+    },
+    data() {
+        return {
+            field: this.model.value
+        };
+    },
+    methods: {
+        blur() {
+            const data = {
+                model :this.model,
+                value: this.field
+            };
+
+            this.$emit('onChange', data);
+        }
+    }
+};
+</script>
