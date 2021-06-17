@@ -20,7 +20,7 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
-import Layout from './components/DisplayLayout.vue';
+import DisplayLayout from './components/DisplayLayout.vue';
 import Vue from 'vue';
 import objectUtils from 'objectUtils';
 import DisplayLayoutType from './DisplayLayoutType.js';
@@ -41,51 +41,7 @@ export default function DisplayLayoutPlugin(options) {
                 return domainObject.type === 'layout';
             },
             view: function (domainObject, objectPath) {
-                let component;
-
-                return {
-                    show(container) {
-                        component = new Vue({
-                            el: container,
-                            components: {
-                                Layout
-                            },
-                            provide: {
-                                openmct,
-                                objectUtils,
-                                options,
-                                objectPath
-                            },
-                            data() {
-                                return {
-                                    domainObject: domainObject,
-                                    isEditing: openmct.editor.isEditing()
-                                };
-                            },
-                            template: '<layout ref="displayLayout" :domain-object="domainObject" :is-editing="isEditing"></layout>'
-                        });
-                    },
-                    getSelectionContext() {
-                        return {
-                            item: domainObject,
-                            supportsMultiSelect: true,
-                            addElement: component && component.$refs.displayLayout.addElement,
-                            removeItem: component && component.$refs.displayLayout.removeItem,
-                            orderItem: component && component.$refs.displayLayout.orderItem,
-                            duplicateItem: component && component.$refs.displayLayout.duplicateItem,
-                            switchViewType: component && component.$refs.displayLayout.switchViewType,
-                            mergeMultipleTelemetryViews: component && component.$refs.displayLayout.mergeMultipleTelemetryViews,
-                            mergeMultipleOverlayPlots: component && component.$refs.displayLayout.mergeMultipleOverlayPlots,
-                            toggleGrid: component && component.$refs.displayLayout.toggleGrid
-                        };
-                    },
-                    onEditModeChange: function (isEditing) {
-                        component.isEditing = isEditing;
-                    },
-                    destroy() {
-                        component.$destroy();
-                    }
-                };
+                return new DisplayLayoutView(openmct, domainObject, objectPath, options);
             },
             priority() {
                 return 100;
@@ -103,4 +59,70 @@ export default function DisplayLayoutPlugin(options) {
         });
         DisplayLayoutPlugin._installed = true;
     };
+}
+
+class DisplayLayoutView {
+    constructor(openmct, domainObject, objectPath, options) {
+        this.openmct = openmct;
+        this.domainObject = domainObject;
+        this.objectPath = objectPath;
+        this.options = options;
+
+        this.component = undefined;
+    }
+
+    show(container, isEditing) {
+        this.component = new Vue({
+            el: container,
+            components: {
+                DisplayLayout
+            },
+            provide: {
+                openmct: this.openmct,
+                objectPath: this.objectPath,
+                options: this.options,
+                objectUtils,
+                currentView: this
+            },
+            data: () => {
+                return {
+                    domainObject: this.domainObject,
+                    isEditing
+                };
+            },
+            template: '<display-layout ref="displayLayout" :domain-object="domainObject" :is-editing="isEditing"></display-layout>'
+        });
+    }
+
+    getViewContext() {
+        if (!this.component) {
+            return {};
+        }
+
+        return this.component.$refs.displayLayout.getViewContext();
+    }
+
+    getSelectionContext() {
+        return {
+            item: this.domainObject,
+            supportsMultiSelect: true,
+            addElement: this.component && this.component.$refs.displayLayout.addElement,
+            removeItem: this.component && this.component.$refs.displayLayout.removeItem,
+            orderItem: this.component && this.component.$refs.displayLayout.orderItem,
+            duplicateItem: this.component && this.component.$refs.displayLayout.duplicateItem,
+            switchViewType: this.component && this.component.$refs.displayLayout.switchViewType,
+            mergeMultipleTelemetryViews: this.component && this.component.$refs.displayLayout.mergeMultipleTelemetryViews,
+            mergeMultipleOverlayPlots: this.component && this.component.$refs.displayLayout.mergeMultipleOverlayPlots,
+            toggleGrid: this.component && this.component.$refs.displayLayout.toggleGrid
+        };
+    }
+
+    onEditModeChange(isEditing) {
+        this.component.isEditing = isEditing;
+    }
+
+    destroy() {
+        this.component.$destroy();
+        this.component = undefined;
+    }
 }

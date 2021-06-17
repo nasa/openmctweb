@@ -215,7 +215,8 @@ export default {
         },
         isEditing: {
             type: Boolean,
-            required: true
+            required: true,
+            default: false
         },
         telemetry: {
             type: Array,

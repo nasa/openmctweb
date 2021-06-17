@@ -25,16 +25,20 @@ export default class CopyToNotebookAction {
             });
     }
 
-    invoke(objectPath, view = {}) {
-        let viewContext = view.getViewContext && view.getViewContext();
+    invoke(objectPath, view) {
+        const formattedValueForCopy = view.getViewContext.row.formattedValueForCopy;
 
-        this.copyToNotebook(viewContext.formattedValueForCopy());
+        this.copyToNotebook(formattedValueForCopy());
     }
 
-    appliesTo(objectPath, view = {}) {
-        let viewContext = view.getViewContext && view.getViewContext();
+    appliesTo(objectPath, view) {
+        const viewContext = view.getViewContext && view.getViewContext();
+        if (!viewContext || !viewContext.row) {
+            return false;
+        }
 
-        return viewContext && viewContext.formattedValueForCopy
-            && typeof viewContext.formattedValueForCopy === 'function';
+        const formattedValueForCopy = viewContext.row.formattedValueForCopy;
+
+        return formattedValueForCopy && typeof formattedValueForCopy === 'function';
     }
 }

@@ -149,7 +149,8 @@ export default {
     mounted() {
         this.status = this.openmct.status.get(this.domainObject.identifier);
         this.removeStatusListener = this.openmct.status.observe(this.domainObject.identifier, this.setStatus);
-        this.$refs.objectView.show(this.domainObject, undefined, false, this.objectPath);
+        const provider = this.openmct.objectViews.get(this.domainObject, this.objectPath)[0];
+        this.$refs.objectView.show(this.domainObject, provider.key, false, this.objectPath);
     },
     beforeDestroy() {
         this.removeStatusListener();

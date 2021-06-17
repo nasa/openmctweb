@@ -41,7 +41,7 @@ export default class ViewLargeAction {
         }
     }
 
-    invoke(objectPath, view = {}) {
+    invoke(objectPath, view) {
         ViewLargeAction.isVisible = true;
 
         const parentElement = view.parentElement;
@@ -52,10 +52,10 @@ export default class ViewLargeAction {
             throw new Error(message);
         }
 
-        this._expand(objectPath, childElement);
+        this._expand(objectPath, childElement, view);
     }
 
-    appliesTo(objectPath, view = {}) {
+    appliesTo(objectPath, view) {
         const parentElement = view.parentElement;
         const element = parentElement && parentElement.firstChild;
         const viewLargeAction = !ViewLargeAction.isVisible
@@ -65,11 +65,11 @@ export default class ViewLargeAction {
         return viewLargeAction;
     }
 
-    _expand(objectPath, childElement) {
+    _expand(objectPath, childElement, view) {
         const parentElement = childElement.parentElement;
 
         this.overlay = this.openmct.overlays.overlay({
-            element: this._getOverlayElement(objectPath, childElement),
+            element: this._getOverlayElement(objectPath, childElement, view),
             size: 'large',
             onDestroy() {
                 parentElement.append(childElement);
@@ -78,10 +78,9 @@ export default class ViewLargeAction {
         });
     }
 
-    _getOverlayElement(objectPath, childElement) {
+    _getOverlayElement(objectPath, childElement, view) {
         const fragment = new DocumentFragment();
-
-        const header = this._getPreviewHeader(objectPath);
+        const header = this._getPreviewHeader(objectPath, view);
         fragment.append(header);
 
         const wrapper = document.createElement('div');
@@ -92,9 +91,9 @@ export default class ViewLargeAction {
         return fragment;
     }
 
-    _getPreviewHeader(objectPath) {
+    _getPreviewHeader(objectPath, view) {
         const domainObject = objectPath[0];
-        const actionCollection = this.openmct.actions.get(objectPath);
+        const actionCollection = this.openmct.actions.get(objectPath, view);
         const preview = new Vue({
             components: {
                 PreviewHeader

@@ -102,7 +102,7 @@ export default {
         LayoutFrame
     },
     mixins: [conditionalStylesMixin],
-    inject: ['openmct', 'objectPath'],
+    inject: ['openmct', 'objectPath', 'currentView'],
     props: {
         item: {
             type: Object,
@@ -294,16 +294,6 @@ export default {
                 this.requestHistoricalData(this.domainObject);
             }
         },
-        getView() {
-            return {
-                getViewContext: () => {
-                    return {
-                        viewHistoricalData: true,
-                        formattedValueForCopy: this.formattedValueForCopy
-                    };
-                }
-            };
-        },
         setObject(domainObject) {
             this.domainObject = domainObject;
             this.mutablePromise = undefined;
@@ -338,10 +328,16 @@ export default {
 
             this.$emit('formatChanged', this.item, format);
         },
+        updateViewContext() {
+            this.$emit('contextClick', {
+                viewHistoricalData: true,
+                formattedValueForCopy: this.formattedValueForCopy
+            });
+        },
         async getContextMenuActions() {
             const defaultNotebook = getDefaultNotebook();
             const domainObject = defaultNotebook && await this.openmct.objects.get(defaultNotebook.notebookMeta.identifier);
-            const actionCollection = this.openmct.actions.get(this.currentObjectPath, this.getView());
+            const actionCollection = this.openmct.actions.get(this.currentObjectPath, this.currentView);
             const actionsObject = actionCollection.getActionsObject();
 
             let copyToNotebookAction = actionsObject.copyToNotebook;
@@ -359,6 +355,7 @@ export default {
             }).filter(action => action !== undefined);
         },
         async showContextMenu(event) {
+            this.updateViewContext();
             const contextMenuActions = await this.getContextMenuActions();
 
             this.openmct.menus.showMenu(event.x, event.y, contextMenuActions);

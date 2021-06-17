@@ -86,14 +86,14 @@ define(['EventEmitter'], function (EventEmitter) {
             console.warn("Provider already defined for key '%s'. Provider keys must be unique.", key);
         }
 
-        const wrappedView = provider.view;
-        provider.view = function(domainObject, objectPath) {
+        const wrappedView = provider.view.bind(provider);
+        provider.view = (domainObject, objectPath) => {
             const viewObject = wrappedView(domainObject, objectPath);
-            const wrappedShow = viewObject.show;
-            viewObject.show = function(element) {
+            const wrappedShow = viewObject.show.bind(viewObject);
+            viewObject.show = (element, isEditing) => {
                 viewObject.parentElement = element.parentElement;
-                wrappedShow(element);
-            }
+                wrappedShow(element, isEditing);
+            };
 
             return viewObject;
         };

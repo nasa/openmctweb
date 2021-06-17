@@ -50,7 +50,7 @@ const CONTEXT_MENU_ACTIONS = [
 ];
 
 export default {
-    inject: ['openmct'],
+    inject: ['openmct', 'currentView'],
     props: {
         domainObject: {
             type: Object,
@@ -167,21 +167,18 @@ export default {
             this.resetValues();
             this.timestampKey = timeSystem.key;
         },
-        getView() {
-            return {
-                getViewContext: () => {
-                    return {
-                        viewHistoricalData: true,
-                        viewDatumAction: true,
-                        getDatum: () => {
-                            return this.datum;
-                        }
-                    };
+        updateViewContext() {
+            this.$emit('rowContextClick', {
+                viewHistoricalData: true,
+                viewDatumAction: true,
+                getDatum: () => {
+                    return this.datum;
                 }
-            };
+            });
         },
         showContextMenu(event) {
-            let actionCollection = this.openmct.actions.get(this.objectPath, this.getView());
+            this.updateViewContext();
+            let actionCollection = this.openmct.actions.get(this.objectPath, this.currentView);
             let allActions = actionCollection.getActionsObject();
             let applicableActions = CONTEXT_MENU_ACTIONS.map(key => allActions[key]);
 

@@ -49,7 +49,7 @@ export default {
     components: {
         TableCell
     },
-    inject: ['openmct'],
+    inject: ['openmct', 'currentView'],
     props: {
         headers: {
             type: Object,
@@ -102,16 +102,7 @@ export default {
                 selectable[columnKeys] = this.row.columns[columnKeys].selectable;
 
                 return selectable;
-            }, {}),
-            actionsViewContext: {
-                getViewContext: () => {
-                    return {
-                        viewHistoricalData: true,
-                        viewDatumAction: true,
-                        getDatum: this.getDatum
-                    };
-                }
-            }
+            }, {})
         };
     },
     computed: {
@@ -185,19 +176,26 @@ export default {
         showContextMenu: function (event) {
             event.preventDefault();
 
+            this.updateViewContext();
             this.markRow(event);
-
             this.row.getContextualDomainObject(this.openmct, this.row.objectKeyString).then(domainObject => {
                 let contextualObjectPath = this.objectPath.slice();
                 contextualObjectPath.unshift(domainObject);
 
-                let actionsCollection = this.openmct.actions.get(contextualObjectPath, this.actionsViewContext);
+                let actionsCollection = this.openmct.actions.get(contextualObjectPath, this.currentView);
                 let allActions = actionsCollection.getActionsObject();
                 let applicableActions = this.row.getContextMenuActions().map(key => allActions[key]);
 
                 if (applicableActions.length) {
                     this.openmct.menus.showMenu(event.x, event.y, applicableActions);
                 }
+            });
+        },
+        updateViewContext() {
+            this.$emit('rowContextClick', {
+                viewHistoricalData: true,
+                viewDatumAction: true,
+                getDatum: this.getDatum
             });
         }
     }

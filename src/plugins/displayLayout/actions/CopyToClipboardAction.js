@@ -25,7 +25,7 @@ export default class CopyToClipboardAction {
             });
     }
 
-    appliesTo(objectPath, view = {}) {
+    appliesTo(objectPath, view) {
         let viewContext = view.getViewContext && view.getViewContext();
 
         return viewContext && viewContext.formattedValueForCopy

@@ -185,7 +185,7 @@ describe("the plugin", () => {
             tableView = tableViewProvider.view(testTelemetryObject, [testTelemetryObject]);
             tableView.show(child, true);
 
-            tableInstance = tableView._getTable();
+            tableInstance = tableView.getTable();
 
             return telemetryPromise.then(() => Vue.nextTick());
         });

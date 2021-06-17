@@ -233,6 +233,7 @@
                         @mark="markRow"
                         @unmark="unmarkRow"
                         @markMultipleConcurrent="markMultipleConcurrentRows"
+                        @rowContextClick="updateViewContext"
                     />
                 </tbody>
             </table>
@@ -263,6 +264,7 @@
                 :column-widths="configuredColumnWidths"
                 :row="sizingRowData"
                 :object-path="objectPath"
+                @rowContextClick="updateViewContext"
             />
         </table>
         <table-footer-indicator
@@ -298,11 +300,24 @@ export default {
         ToggleSwitch,
         SizingRow
     },
-    inject: ['table', 'openmct', 'objectPath'],
+    inject: ['openmct', 'objectPath', 'table', 'currentView'],
     props: {
         isEditing: {
             type: Boolean,
             default: false
+        },
+        marking: {
+            type: Object,
+            required: true,
+            default() {
+                return {
+                    enable: false,
+                    disableMultiSelect: false,
+                    useAlternateControlBar: false,
+                    rowName: '',
+                    rowNamePlural: ''
+                };
+            }
         },
         allowExport: {
             type: Boolean,
@@ -316,28 +331,9 @@ export default {
             type: Boolean,
             default: true
         },
-        marking: {
-            type: Object,
-            default() {
-                return {
-                    enable: false,
-                    disableMultiSelect: false,
-                    useAlternateControlBar: false,
-                    rowName: '',
-                    rowNamePlural: ""
-                };
-            }
-        },
         enableLegacyToolbar: {
             type: Boolean,
             default: false
-        },
-        view: {
-            type: Object,
-            required: false,
-            default() {
-                return {};
-            }
         }
     },
     data() {
@@ -373,7 +369,8 @@ export default {
             isShowingMarkedRowsOnly: false,
             enableRegexSearch: {},
             hideHeaders: configuration.hideHeaders,
-            totalNumberOfRows: 0
+            totalNumberOfRows: 0,
+            rowContext: {}
         };
     },
     computed: {
@@ -461,7 +458,7 @@ export default {
         this.scroll = _.throttle(this.scroll, 100);
 
         if (!this.marking.useAlternateControlBar && !this.enableLegacyToolbar) {
-            this.viewActionsCollection = this.openmct.actions.get(this.objectPath, this.view);
+            this.viewActionsCollection = this.openmct.actions.get(this.objectPath, this.currentView);
             this.initializeViewActions();
         }
 
@@ -996,7 +993,8 @@ export default {
                 unmarkAllRows: this.unmarkAllRows,
                 togglePauseByButton: this.togglePauseByButton,
                 expandColumns: this.recalculateColumnWidths,
-                autosizeColumns: this.autosizeColumns
+                autosizeColumns: this.autosizeColumns,
+                row: this.rowContext
             };
         },
         initializeViewActions() {
@@ -1027,6 +1025,9 @@ export default {
             this.setHeight();
             this.calculateTableSize();
             this.clearRowsAndRerender();
+        },
+        updateViewContext(rowContext) {
+            this.rowContext = rowContext;
         }
     }
 };

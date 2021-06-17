@@ -108,7 +108,7 @@ let viewActions = [
 
 viewActions.forEach(action => {
     action.appliesTo = (objectPath, viewProvider = {}) => {
-        let viewContext = viewProvider.getViewContext && viewProvider.getViewContext();
+        let viewContext = viewProvider.row && viewProvider.row.getViewContext && viewProvider.row.getViewContext();
 
         if (viewContext) {
             let type = viewContext.type;

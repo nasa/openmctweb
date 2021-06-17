@@ -19,8 +19,52 @@
  * this source code distribution or the Licensing information page available
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
+
 import LadTable from './components/LADTable.vue';
+
 import Vue from 'vue';
+
+class LADTableView {
+    constructor(openmct, domainObject, objectPath) {
+        this.openmct = openmct;
+        this.domainObject = domainObject;
+        this.objectPath = objectPath;
+        this.component = undefined;
+    }
+
+    show(element) {
+        this.component = new Vue({
+            el: element,
+            components: {
+                LadTable
+            },
+            provide: {
+                openmct: this.openmct,
+                currentView: this
+            },
+            data: () => {
+                return {
+                    domainObject: this.domainObject,
+                    objectPath: this.objectPath
+                };
+            },
+            template: '<lad-table ref="ladTable" :domain-object="domainObject" :object-path="objectPath"></lad-table>'
+        });
+    }
+
+    getViewContext() {
+        if (!this.component) {
+            return {};
+        }
+
+        return this.component.$refs.ladTable.getViewContext();
+    }
+
+    destroy(element) {
+        this.component.$destroy();
+        this.component = undefined;
+    }
+}
 
 export default function LADTableViewProvider(openmct) {
     return {
@@ -34,32 +78,7 @@ export default function LADTableViewProvider(openmct) {
             return domainObject.type === 'LadTable';
         },
         view: function (domainObject, objectPath) {
-            let component;
-
-            return {
-                show: function (element) {
-                    component = new Vue({
-                        el: element,
-                        components: {
-                            LadTableComponent: LadTable
-                        },
-                        provide: {
-                            openmct
-                        },
-                        data: () => {
-                            return {
-                                domainObject,
-                                objectPath
-                            };
-                        },
-                        template: '<lad-table-component :domain-object="domainObject" :object-path="objectPath"></lad-table-component>'
-                    });
-                },
-                destroy: function (element) {
-                    component.$destroy();
-                    component = undefined;
-                }
-            };
+            return new LADTableView(openmct, domainObject, objectPath);
         },
         priority: function () {
             return 1;
