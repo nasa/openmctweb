@@ -56,7 +56,9 @@
                 'has-complex-content': complexContent
             }"
         >
-            <div class="c-so-view__frame-controls__btns">
+            <div v-if="statusBarItems.length > 0"
+                 class="c-so-view__frame-controls__btns"
+            >
                 <button
                     v-for="(item, index) in statusBarItems"
                     :key="index"
@@ -177,12 +179,14 @@ export default {
             delete this.actionCollection;
         },
         updateActionItems(actionItems) {
-            this.statusBarItems = this.actionCollection.getStatusBarActions();
+            const statusBarItems = this.actionCollection.getStatusBarActions();
+            this.statusBarItems = this.openmct.menus.actionsToMenuItems(statusBarItems, this.actionCollection.objectPath, this.actionCollection.view);
             this.menuActionItems = this.actionCollection.getVisibleActions();
         },
         showMenuItems(event) {
-            let sortedActions = this.openmct.actions._groupAndSortActions(this.menuActionItems);
-            this.openmct.menus.showMenu(event.x, event.y, sortedActions);
+            const sortedActions = this.openmct.actions._groupAndSortActions(this.menuActionItems);
+            const menuItems = this.openmct.menus.actionsToMenuItems(sortedActions, this.actionCollection.objectPath, this.actionCollection.view);
+            this.openmct.menus.showMenu(event.x, event.y, menuItems);
         },
         setStatus(status) {
             this.status = status;

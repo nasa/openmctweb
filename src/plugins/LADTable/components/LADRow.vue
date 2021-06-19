@@ -178,11 +178,12 @@ export default {
         },
         showContextMenu(event) {
             this.updateViewContext();
-            let actionCollection = this.openmct.actions.get(this.objectPath, this.currentView);
-            let allActions = actionCollection.getActionsObject();
-            let applicableActions = CONTEXT_MENU_ACTIONS.map(key => allActions[key]);
 
-            this.openmct.menus.showMenu(event.x, event.y, applicableActions);
+            const actions = CONTEXT_MENU_ACTIONS.map(key => this.openmct.actions.getAction(key));
+            const menuItems = this.openmct.menus.actionsToMenuItems(actions, this.objectPath, this.currentView);
+            if (menuItems.length) {
+                this.openmct.menus.showMenu(event.x, event.y, menuItems);
+            }
         },
         resetValues() {
             this.value = '---';

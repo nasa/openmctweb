@@ -35,15 +35,9 @@ export default class ViewLargeAction {
         this.name = 'Large View';
         this.priority = 1;
         this.showInStatusBar = true;
-
-        if (ViewLargeAction.isVisible === undefined) {
-            ViewLargeAction.isVisible = false;
-        }
     }
 
     invoke(objectPath, view) {
-        ViewLargeAction.isVisible = true;
-
         const parentElement = view.parentElement;
         let childElement = parentElement && parentElement.firstChild;
         if (!childElement) {
@@ -55,11 +49,10 @@ export default class ViewLargeAction {
         this._expand(objectPath, childElement, view);
     }
 
-    appliesTo(objectPath, view) {
+    appliesTo(objectPath, view = {}) {
         const parentElement = view.parentElement;
         const element = parentElement && parentElement.firstChild;
-        const viewLargeAction = !ViewLargeAction.isVisible
-            && element && !element.classList.contains('js-main-container')
+        const viewLargeAction = element && !element.classList.contains('js-main-container')
             && !this._isNavigatedObject(objectPath);
 
         return viewLargeAction;
@@ -73,7 +66,6 @@ export default class ViewLargeAction {
             size: 'large',
             onDestroy() {
                 parentElement.append(childElement);
-                ViewLargeAction.isVisible = false;
             }
         });
     }
@@ -93,7 +85,7 @@ export default class ViewLargeAction {
 
     _getPreviewHeader(objectPath, view) {
         const domainObject = objectPath[0];
-        const actionCollection = this.openmct.actions.get(objectPath, view);
+        const actionCollection = this.openmct.actions.getActionsCollection(objectPath, view);
         const preview = new Vue({
             components: {
                 PreviewHeader

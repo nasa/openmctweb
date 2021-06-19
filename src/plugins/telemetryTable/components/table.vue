@@ -458,8 +458,10 @@ export default {
         this.scroll = _.throttle(this.scroll, 100);
 
         if (!this.marking.useAlternateControlBar && !this.enableLegacyToolbar) {
-            this.viewActionsCollection = this.openmct.actions.get(this.objectPath, this.currentView);
-            this.initializeViewActions();
+            this.$nextTick(() => {
+                this.viewActionsCollection = this.openmct.actions.getActionsCollection(this.objectPath, this.currentView);
+                this.initializeViewActions();
+            });
         }
 
         this.table.on('object-added', this.addObject);

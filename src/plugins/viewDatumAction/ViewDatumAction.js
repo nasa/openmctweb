@@ -56,7 +56,7 @@ export default class ViewDatumAction {
             }
         });
     }
-    appliesTo(objectPath, view) {
+    appliesTo(objectPath, view = {}) {
         let viewContext = (view.getViewContext && view.getViewContext()) || {};
         const row = viewContext.row;
         if (!row) {

@@ -42,7 +42,8 @@ import ViewSwitcher from '../../ui/layout/ViewSwitcher.vue';
 const HIDDEN_ACTIONS = [
     'remove',
     'move',
-    'preview'
+    'preview',
+    'large.view'
 ];
 
 export default {
@@ -122,7 +123,8 @@ export default {
         },
         showMenuItems(event) {
             let sortedActions = this.openmct.actions._groupAndSortActions(this.menuActionItems);
-            this.openmct.menus.showMenu(event.x, event.y, sortedActions);
+            const menuItems = this.openmct.menus.actionsToMenuItems(sortedActions, this.actionCollection.objectPath, this.actionCollection.view);
+            this.openmct.menus.showMenu(event.x, event.y, menuItems);
         }
     }
 };

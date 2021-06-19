@@ -34,7 +34,7 @@ class ActionsAPI extends EventEmitter {
         this._groupOrder = ['windowing', 'undefined', 'view', 'action', 'json'];
 
         this.register = this.register.bind(this);
-        this.get = this.get.bind(this);
+        this.getActionsCollection = this.getActionsCollection.bind(this);
         this._applicableActions = this._applicableActions.bind(this);
         this._updateCachedActionCollections = this._updateCachedActionCollections.bind(this);
     }
@@ -43,27 +43,20 @@ class ActionsAPI extends EventEmitter {
         this._allActions[actionDefinition.key] = actionDefinition;
     }
 
-    get(objectPath, view) {
-        if (view) {
+    getAction(key) {
+        return this._allActions[key];
+    }
 
+    getActionsCollection(objectPath, view) {
+        if (view) {
             return this._getCachedActionCollection(objectPath, view) || this._newActionCollection(objectPath, view, true);
         } else {
-
             return this._newActionCollection(objectPath, view, true);
         }
     }
 
     updateGroupOrder(groupArray) {
         this._groupOrder = groupArray;
-    }
-
-    _get(objectPath, view) {
-        let actionCollection = this._newActionCollection(objectPath, view);
-
-        this._actionCollections.set(view, actionCollection);
-        actionCollection.on('destroy', this._updateCachedActionCollections);
-
-        return actionCollection;
     }
 
     _getCachedActionCollection(objectPath, view) {
@@ -75,7 +68,17 @@ class ActionsAPI extends EventEmitter {
     _newActionCollection(objectPath, view, skipEnvironmentObservers) {
         let applicableActions = this._applicableActions(objectPath, view);
 
-        return new ActionCollection(applicableActions, objectPath, view, this._openmct, skipEnvironmentObservers);
+        const actionCollection = new ActionCollection(applicableActions, objectPath, view, this._openmct, skipEnvironmentObservers);
+        if (view) {
+            this._cacheActionCollection(view, actionCollection);
+        }
+
+        return actionCollection;
+    }
+
+    _cacheActionCollection(view, actionCollection) {
+        this._actionCollections.set(view, actionCollection);
+        actionCollection.on('destroy', this._updateCachedActionCollections);
     }
 
     _updateCachedActionCollections(key) {

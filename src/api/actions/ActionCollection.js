@@ -46,8 +46,6 @@ class ActionCollection extends EventEmitter {
             this._observeObjectPath();
             this.openmct.editor.on('isEditing', this._updateActions);
         }
-
-        this._initializeActions();
     }
 
     disable(actionKeys) {
@@ -156,19 +154,10 @@ class ActionCollection extends EventEmitter {
         });
     }
 
-    _initializeActions() {
-        Object.keys(this.applicableActions).forEach(key => {
-            this.applicableActions[key].callBack = () => {
-                return this.applicableActions[key].invoke(this.objectPath, this.view);
-            };
-        });
-    }
-
     _updateActions() {
         let newApplicableActions = this.openmct.actions._applicableActions(this.objectPath, this.view);
 
         this.applicableActions = this._mergeOldAndNewActions(this.applicableActions, newApplicableActions);
-        this._initializeActions();
         this._update();
     }
 

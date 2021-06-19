@@ -337,28 +337,29 @@ export default {
         async getContextMenuActions() {
             const defaultNotebook = getDefaultNotebook();
             const domainObject = defaultNotebook && await this.openmct.objects.get(defaultNotebook.notebookMeta.identifier);
-            const actionCollection = this.openmct.actions.get(this.currentObjectPath, this.currentView);
-            const actionsObject = actionCollection.getActionsObject();
 
-            let copyToNotebookAction = actionsObject.copyToNotebook;
-
+            let defaultNotebookName;
             if (defaultNotebook) {
                 const defaultPath = domainObject && `${domainObject.name} - ${defaultNotebook.section.name} - ${defaultNotebook.page.name}`;
-                copyToNotebookAction.name = `Copy to Notebook ${defaultPath}`;
-            } else {
-                actionsObject.copyToNotebook = undefined;
-                delete actionsObject.copyToNotebook;
+                defaultNotebookName = `Copy to Notebook ${defaultPath}`;
             }
 
-            return CONTEXT_MENU_ACTIONS.map(actionKey => {
-                return actionsObject[actionKey];
-            }).filter(action => action !== undefined);
+            return CONTEXT_MENU_ACTIONS
+                .map(actionKey => {
+                    const action = this.openmct.actions.getAction(actionKey);
+                    if (action.key === 'copyToNotebook') {
+                        action.name = defaultNotebookName;
+                    }
+
+                    return action;
+                })
+                .filter(action => action.name !== undefined);
         },
         async showContextMenu(event) {
             this.updateViewContext();
             const contextMenuActions = await this.getContextMenuActions();
-
-            this.openmct.menus.showMenu(event.x, event.y, contextMenuActions);
+            const menuItems = this.openmct.menus.actionsToMenuItems(contextMenuActions, this.currentObjectPath, this.currentView);
+            this.openmct.menus.showMenu(event.x, event.y, menuItems);
         },
         setStatus(status) {
             this.status = status;

@@ -30,15 +30,15 @@ import Menu, { MENU_PLACEMENT } from './menu.js';
  * @property {Function} onDestroy callback function: invoked when menu is destroyed
  */
 
-/**
- * Popup Menu Item/action
- * @typedef {Object} Action
- * @property {String} cssClass Class for menu item
- * @property {Boolean} isDisabled adds disable class if true
- * @property {String} name Menu item text
- * @property {String} description Menu item description
- * @property {Function} callBack callback function: invoked when item is clicked
- */
+// /**
+//  * Popup Menu Item/action
+//  * @typedef {Object} Action
+//  * @property {String} cssClass Class for menu item
+//  * @property {Boolean} isDisabled adds disable class if true
+//  * @property {String} name Menu item text
+//  * @property {String} description Menu item description
+//  * @property {Function} callBack callback function: invoked when item is clicked
+//  */
 
 /**
  * The MenuAPI allows the addition of new context menu actions, and for the context menu to be launched from
@@ -66,10 +66,24 @@ class MenuAPI {
      * @param {Array.<Action>|Array.<Array.<Action>>} actions collection of actions{@link Action} or collection of groups of actions {@link Action}
      * @param {MenuOptions} [menuOptions] [Optional] The {@link MenuOptions} options for Menu
      */
-    showMenu(x, y, actions, menuOptions) {
-        this._createMenuComponent(x, y, actions, menuOptions);
+    showMenu(x, y, items, menuOptions) {
+        this._createMenuComponent(x, y, items, menuOptions);
 
         this.menuComponent.showMenu();
+    }
+
+    actionsToMenuItems(actions, objectPath, view) {
+        return actions.map(action => {
+            if (Array.isArray(action)) {
+                action = this.actionsToMenuItems(action, objectPath, view);
+            } else {
+                action.callBack = () => {
+                    action.invoke(objectPath, view);
+                };
+            }
+
+            return action;
+        });
     }
 
     /**

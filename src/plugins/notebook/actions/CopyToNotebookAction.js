@@ -26,19 +26,19 @@ export default class CopyToNotebookAction {
     }
 
     invoke(objectPath, view) {
-        const formattedValueForCopy = view.getViewContext.row.formattedValueForCopy;
+        const formattedValueForCopy = view.getViewContext().row.formattedValueForCopy;
 
         this.copyToNotebook(formattedValueForCopy());
     }
 
-    appliesTo(objectPath, view) {
+    appliesTo(objectPath, view = {}) {
         const viewContext = view.getViewContext && view.getViewContext();
-        if (!viewContext || !viewContext.row) {
-            return false;
+        const row = viewContext && viewContext.row;
+        if (!row) {
+            return;
         }
 
-        const formattedValueForCopy = viewContext.row.formattedValueForCopy;
-
-        return formattedValueForCopy && typeof formattedValueForCopy === 'function';
+        return row.formattedValueForCopy
+            && typeof row.formattedValueForCopy === 'function';
     }
 }

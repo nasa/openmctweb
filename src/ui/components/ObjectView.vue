@@ -227,7 +227,7 @@ export default {
                 this.actionCollection.destroy();
             }
 
-            this.actionCollection = this.openmct.actions.get(this.currentObjectPath || this.objectPath, this.currentView);
+            this.actionCollection = this.openmct.actions.getActionsCollection(this.currentObjectPath || this.objectPath, this.currentView);
             this.$emit('change-action-collection', this.actionCollection);
         },
         show(object, viewKey, immediatelySelect, currentObjectPath) {
@@ -321,7 +321,6 @@ export default {
             return viewKey;
         },
         getViewProvider() {
-
             let provider = this.openmct.objectViews.getByProviderKey(this.getViewKey());
 
             if (!provider) {
