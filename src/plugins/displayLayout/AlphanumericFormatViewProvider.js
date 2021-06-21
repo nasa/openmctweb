@@ -19,42 +19,10 @@
  * this source code distribution or the Licensing information page available
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
-import Vue from 'vue';
+
 import AlphanumericFormat from './components/AlphanumericFormat.vue';
 
-export default function AlphanumericFormatViewProvider(openmct, options) {
-    function isTelemetryObject(selectionPath) {
-        let selectedObject = selectionPath[0].context.item;
-        let parentObject = selectionPath[1].context.item;
-        let selectedLayoutItem = selectionPath[0].context.layoutItem;
-
-        return parentObject
-            && parentObject.type === 'layout'
-            && selectedObject
-            && selectedLayoutItem
-            && selectedLayoutItem.type === 'telemetry-view'
-            && openmct.telemetry.isTelemetryObject(selectedObject)
-            && !options.showAsView.includes(selectedObject.type);
-    }
-
-    return {
-        key: 'alphanumeric-format',
-        name: 'Alphanumeric Format',
-        canView: function (selection) {
-            if (selection.length === 0 || selection[0].length === 1) {
-                return false;
-            }
-
-            return selection.every(isTelemetryObject);
-        },
-        view: function (domainObject, objectPath) {
-            return new AlphanumericFormatView(openmct, domainObject, objectPath);
-        },
-        priority: function () {
-            return 1;
-        }
-    };
-}
+import Vue from 'vue';
 
 class AlphanumericFormatView {
     constructor(openmct, domainObject, objectPath) {
@@ -91,4 +59,38 @@ class AlphanumericFormatView {
         this.component.$destroy();
         this.component = undefined;
     }
+}
+
+export default function AlphanumericFormatViewProvider(openmct, options) {
+    function isTelemetryObject(selectionPath) {
+        let selectedObject = selectionPath[0].context.item;
+        let parentObject = selectionPath[1].context.item;
+        let selectedLayoutItem = selectionPath[0].context.layoutItem;
+
+        return parentObject
+            && parentObject.type === 'layout'
+            && selectedObject
+            && selectedLayoutItem
+            && selectedLayoutItem.type === 'telemetry-view'
+            && openmct.telemetry.isTelemetryObject(selectedObject)
+            && !options.showAsView.includes(selectedObject.type);
+    }
+
+    return {
+        key: 'alphanumeric-format',
+        name: 'Alphanumeric Format',
+        canView: function (selection) {
+            if (selection.length === 0 || selection[0].length === 1) {
+                return false;
+            }
+
+            return selection.every(isTelemetryObject);
+        },
+        view: function (domainObject, objectPath) {
+            return new AlphanumericFormatView(openmct, domainObject, objectPath);
+        },
+        priority: function () {
+            return 1;
+        }
+    };
 }

@@ -20,46 +20,15 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
-import DisplayLayout from './components/DisplayLayout.vue';
-import Vue from 'vue';
-import objectUtils from 'objectUtils';
-import DisplayLayoutType from './DisplayLayoutType.js';
-import DisplayLayoutToolbar from './DisplayLayoutToolbar.js';
 import AlphaNumericFormatViewProvider from './AlphanumericFormatViewProvider.js';
 import CopyToClipboardAction from './actions/CopyToClipboardAction';
+import DisplayLayout from './components/DisplayLayout.vue';
+import DisplayLayoutToolbar from './DisplayLayoutToolbar.js';
+import DisplayLayoutType from './DisplayLayoutType.js';
 
-export default function DisplayLayoutPlugin(options) {
-    return function (openmct) {
-        openmct.actions.register(new CopyToClipboardAction(openmct));
+import objectUtils from 'objectUtils';
 
-        openmct.objectViews.addProvider({
-            key: 'layout.view',
-            canView: function (domainObject) {
-                return domainObject.type === 'layout';
-            },
-            canEdit: function (domainObject) {
-                return domainObject.type === 'layout';
-            },
-            view: function (domainObject, objectPath) {
-                return new DisplayLayoutView(openmct, domainObject, objectPath, options);
-            },
-            priority() {
-                return 100;
-            }
-        });
-        openmct.types.addType('layout', DisplayLayoutType());
-        openmct.toolbars.addProvider(new DisplayLayoutToolbar(openmct, options));
-        openmct.inspectorViews.addProvider(new AlphaNumericFormatViewProvider(openmct, options));
-        openmct.composition.addPolicy((parent, child) => {
-            if (parent.type === 'layout' && child.type === 'folder') {
-                return false;
-            } else {
-                return true;
-            }
-        });
-        DisplayLayoutPlugin._installed = true;
-    };
-}
+import Vue from 'vue';
 
 class DisplayLayoutView {
     constructor(openmct, domainObject, objectPath, options) {
@@ -125,4 +94,37 @@ class DisplayLayoutView {
         this.component.$destroy();
         this.component = undefined;
     }
+}
+
+export default function DisplayLayoutPlugin(options) {
+    return function (openmct) {
+        openmct.actions.register(new CopyToClipboardAction(openmct));
+
+        openmct.objectViews.addProvider({
+            key: 'layout.view',
+            canView: function (domainObject) {
+                return domainObject.type === 'layout';
+            },
+            canEdit: function (domainObject) {
+                return domainObject.type === 'layout';
+            },
+            view: function (domainObject, objectPath) {
+                return new DisplayLayoutView(openmct, domainObject, objectPath, options);
+            },
+            priority() {
+                return 100;
+            }
+        });
+        openmct.types.addType('layout', DisplayLayoutType());
+        openmct.toolbars.addProvider(new DisplayLayoutToolbar(openmct, options));
+        openmct.inspectorViews.addProvider(new AlphaNumericFormatViewProvider(openmct, options));
+        openmct.composition.addPolicy((parent, child) => {
+            if (parent.type === 'layout' && child.type === 'folder') {
+                return false;
+            } else {
+                return true;
+            }
+        });
+        DisplayLayoutPlugin._installed = true;
+    };
 }
