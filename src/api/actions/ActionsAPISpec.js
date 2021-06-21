@@ -106,7 +106,7 @@ describe('The Actions API', () => {
         it("adds action to ActionsAPI", () => {
             actionsAPI.register(mockAction);
 
-            let actionCollection = actionsAPI.get(mockObjectPath, mockViewContext1);
+            let actionCollection = actionsAPI.getActionsCollection(mockObjectPath, mockViewContext1);
             let action = actionCollection.getActionsObject()[mockAction.key];
 
             expect(action.key).toEqual(mockAction.key);
@@ -121,21 +121,21 @@ describe('The Actions API', () => {
         });
 
         it("returns an ActionCollection when invoked with an objectPath only", () => {
-            let actionCollection = actionsAPI.get(mockObjectPath);
+            let actionCollection = actionsAPI.getActionsCollection(mockObjectPath);
             let instanceOfActionCollection = actionCollection instanceof ActionCollection;
 
             expect(instanceOfActionCollection).toBeTrue();
         });
 
         it("returns an ActionCollection when invoked with an objectPath and view", () => {
-            let actionCollection = actionsAPI.get(mockObjectPath, mockViewContext1);
+            let actionCollection = actionsAPI.getActionsCollection(mockObjectPath, mockViewContext1);
             let instanceOfActionCollection = actionCollection instanceof ActionCollection;
 
             expect(instanceOfActionCollection).toBeTrue();
         });
 
         it("returns relevant actions when invoked with objectPath only", () => {
-            let actionCollection = actionsAPI.get(mockObjectPath);
+            let actionCollection = actionsAPI.getActionsCollection(mockObjectPath);
             let action = actionCollection.getActionsObject()[mockObjectPathAction.key];
 
             expect(action.key).toEqual(mockObjectPathAction.key);
@@ -143,7 +143,7 @@ describe('The Actions API', () => {
         });
 
         it("returns relevant actions when invoked with objectPath and view", () => {
-            let actionCollection = actionsAPI.get(mockObjectPath, mockViewContext1);
+            let actionCollection = actionsAPI.getActionsCollection(mockObjectPath, mockViewContext1);
             let action = actionCollection.getActionsObject()[mockAction.key];
 
             expect(action.key).toEqual(mockAction.key);

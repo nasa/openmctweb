@@ -19,7 +19,7 @@
  * this source code distribution or the Licensing information page available
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
-import Vue from 'Vue';
+import Vue from 'vue';
 import AlphanumericFormat from './components/AlphanumericFormat.vue';
 
 export default function AlphanumericFormatViewProvider(openmct, options) {
