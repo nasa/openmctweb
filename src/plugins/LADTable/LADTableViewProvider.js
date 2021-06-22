@@ -20,68 +20,29 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
-import LadTable from './components/LADTable.vue';
+import LADTableView from './LADTableView';
 
-import Vue from 'vue';
-
-class LADTableView {
-    constructor(openmct, domainObject, objectPath) {
+export default class LADTableViewProvider {
+    constructor(openmct) {
         this.openmct = openmct;
-        this.domainObject = domainObject;
-        this.objectPath = objectPath;
-        this.component = undefined;
+        this.name = 'LAD Table';
+        this.key = 'LadTable';
+        this.cssClass = 'icon-tabular-lad';
     }
 
-    show(element) {
-        this.component = new Vue({
-            el: element,
-            components: {
-                LadTable
-            },
-            provide: {
-                openmct: this.openmct,
-                currentView: this
-            },
-            data: () => {
-                return {
-                    domainObject: this.domainObject,
-                    objectPath: this.objectPath
-                };
-            },
-            template: '<lad-table ref="ladTable" :domain-object="domainObject" :object-path="objectPath"></lad-table>'
-        });
+    canView(domainObject) {
+        return domainObject.type === 'LadTable';
     }
 
-    getViewContext() {
-        if (!this.component) {
-            return {};
-        }
-
-        return this.component.$refs.ladTable.getViewContext();
+    canEdit(domainObject) {
+        return domainObject.type === 'LadTable';
     }
 
-    destroy(element) {
-        this.component.$destroy();
-        this.component = undefined;
+    view(domainObject, objectPath) {
+        return new LADTableView(this.openmct, domainObject, objectPath);
     }
-}
 
-export default function LADTableViewProvider(openmct) {
-    return {
-        key: 'LadTable',
-        name: 'LAD Table',
-        cssClass: 'icon-tabular-lad',
-        canView: function (domainObject) {
-            return domainObject.type === 'LadTable';
-        },
-        canEdit: function (domainObject) {
-            return domainObject.type === 'LadTable';
-        },
-        view: function (domainObject, objectPath) {
-            return new LADTableView(openmct, domainObject, objectPath);
-        },
-        priority: function () {
-            return 1;
-        }
-    };
+    priority(domainObject) {
+        return 1;
+    }
 }
