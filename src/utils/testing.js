@@ -25,13 +25,26 @@ import MCT from 'MCT';
 let nativeFunctions = [];
 let mockObjects = setMockObjects();
 
-export function createOpenMct() {
+const TIME_SYSTEM_OPTIONS = {
+    timeSystemKey: 'utc',
+    bounds: {
+        start: 0,
+        end: 1
+    }
+};
+
+export function createOpenMct(timeSystemOptions = TIME_SYSTEM_OPTIONS) {
     const openmct = new MCT();
     openmct.install(openmct.plugins.LocalStorage());
     openmct.install(openmct.plugins.UTCTimeSystem());
-    openmct.time.timeSystem('utc', {
-        start: 0,
-        end: 1
+
+    const timeSystemKey = timeSystemOptions.timeSystemKey;
+    const start = timeSystemOptions.bounds.start;
+    const end = timeSystemOptions.bounds.end;
+
+    openmct.time.timeSystem(timeSystemKey, {
+        start,
+        end
     });
 
     return openmct;

@@ -31,12 +31,20 @@ describe('the plugin', function () {
     let openmct;
     let appHolder;
 
-    beforeEach((done) => {
+    beforeAll((done) => {
         appHolder = document.createElement('div');
         appHolder.style.width = '640px';
         appHolder.style.height = '480px';
 
-        openmct = createOpenMct();
+        const timeSystemOptions = {
+            timeSystemKey: 'utc',
+            bounds: {
+                start: 1597160002854,
+                end: 1597181232854
+            }
+        };
+
+        openmct = createOpenMct(timeSystemOptions);
         openmct.install(new PlanPlugin());
 
         planDefinition = openmct.types.get('plan').definition;
@@ -48,16 +56,11 @@ describe('the plugin', function () {
         child.style.width = '640px';
         child.style.height = '480px';
         element.appendChild(child);
-
-        openmct.time.timeSystem('utc', {
-            start: 1597160002854,
-            end: 1597181232854
-        });
         openmct.on('start', done);
         openmct.start(appHolder);
     });
 
-    afterEach(() => {
+    afterAll(() => {
         return resetApplicationState(openmct);
     });
 
@@ -76,7 +79,6 @@ describe('the plugin', function () {
     });
 
     describe('the plan view', () => {
-
         it('provides a plan view', () => {
             const testViewObject = {
                 id: "test-object",
@@ -87,7 +89,6 @@ describe('the plugin', function () {
             let planView = applicableViews.find((viewProvider) => viewProvider.key === 'plan.view');
             expect(planView).toBeDefined();
         });
-
     });
 
     describe('the plan view displays activities', () => {
@@ -104,7 +105,7 @@ describe('the plugin', function () {
         ];
         let planView;
 
-        beforeEach(() => {
+        beforeAll(() => {
             planDomainObject = {
                 identifier: {
                     key: 'test-object',
@@ -155,11 +156,19 @@ describe('the plugin', function () {
         });
 
         it('displays the activities and their labels', () => {
-            const rectEls = element.querySelectorAll('.c-plan__contents rect');
-            expect(rectEls.length).toEqual(2);
-            const textEls = element.querySelectorAll('.c-plan__contents text');
-            expect(textEls.length).toEqual(3);
+            const bounds = {
+                start: 1597160002854,
+                end: 1597181232854
+            };
+
+            openmct.time.bounds(bounds);
+
+            Vue.nextTick(() => {
+                const rectEls = element.querySelectorAll('.c-plan__contents rect');
+                expect(rectEls.length).toEqual(2);
+                const textEls = element.querySelectorAll('.c-plan__contents text');
+                expect(textEls.length).toEqual(3);
+            });
         });
     });
-
 });
