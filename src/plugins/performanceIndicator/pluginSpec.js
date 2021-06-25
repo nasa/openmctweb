@@ -34,7 +34,7 @@ describe('the plugin', () => {
     let countFramesPromise;
 
     beforeEach((done) => {
-        openmct = createOpenMct(false);
+        openmct = createOpenMct();
 
         element = document.createElement('div');
         child = document.createElement('div');
