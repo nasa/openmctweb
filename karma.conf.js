@@ -78,7 +78,6 @@ module.exports = (config) => {
             preserveDescribeNesting: true,
             foldAll: false
         },
-        browserConsoleLogOptions: { level: "error",  format: "%b %T: %m",  terminal: true },
         coverageIstanbulReporter: {
             fixWebpackSourcePaths: true,
             dir: process.env.CIRCLE_ARTIFACTS ?

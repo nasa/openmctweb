@@ -31,11 +31,6 @@ define([
         valueMetadata.hints = valueMetadata.hints || {};
 
         if (Object.prototype.hasOwnProperty.call(valueMetadata.hints, 'x')) {
-            console.warn(
-                'DEPRECATION WARNING: `x` hints should be replaced with '
-                + '`domain` hints moving forward.  '
-                + 'https://github.com/nasa/openmct/issues/1546'
-            );
             if (!Object.prototype.hasOwnProperty.call(valueMetadata.hints, 'domain')) {
                 valueMetadata.hints.domain = valueMetadata.hints.x;
             }
@@ -44,11 +39,6 @@ define([
         }
 
         if (Object.prototype.hasOwnProperty.call(valueMetadata.hints, 'y')) {
-            console.warn(
-                'DEPRECATION WARNING: `y` hints should be replaced with '
-                + '`range` hints moving forward.  '
-                + 'https://github.com/nasa/openmct/issues/1546'
-            );
             if (!Object.prototype.hasOwnProperty.call(valueMetadata.hints, 'range')) {
                 valueMetadata.hints.range = valueMetadata.hints.y;
             }
