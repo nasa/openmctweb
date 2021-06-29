@@ -299,18 +299,15 @@ describe("The Imagery View Layout", () => {
             });
         });
 
-        xit("should show that an image is not new", (done) => {
+        it("should show that an image is not new", (done) => {
             const target = imageTelemetry[2].url;
             parent.querySelectorAll(`img[src='${target}']`)[0].click();
 
             Vue.nextTick(() => {
-                // used in code, need to wait to the 500ms here too
-                setTimeout(() => {
-                    const imageIsNew = isNew(parent);
+                const imageIsNew = isNew(parent);
 
-                    expect(imageIsNew).toBeFalse();
-                    done();
-                }, REFRESH_CSS_MS);
+                expect(imageIsNew).toBeFalse();
+                done();
             });
         });
 
