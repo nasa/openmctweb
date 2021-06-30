@@ -32,7 +32,7 @@
     </div>
 
     <div class="l-browse-bar__end">
-        <view-switcher
+        <ViewSwitcher
             v-if="!isEditing"
             :current-view="currentView"
             :views="views"
@@ -49,7 +49,7 @@
                 :key="index"
                 class="c-button"
                 :class="item.cssClass"
-                @click="item.callBack"
+                @click="item.onItemClicked"
             >
             </button>
 
@@ -172,9 +172,7 @@ export default {
                         key: p.key,
                         cssClass: p.cssClass,
                         name: p.name,
-                        callBack: () => {
-                            return this.setView({key: p.key});
-                        }
+                        onItemClicked: () => this.setView({key: p.key})
                     };
                 });
         },

@@ -65,7 +65,7 @@
                     class="c-icon-button"
                     :class="item.cssClass"
                     :title="item.name"
-                    @click="item.callBack"
+                    @click="item.onItemClicked"
                 >
                     <span class="c-icon-button__label">{{ item.name }}</span>
                 </button>

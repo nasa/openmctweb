@@ -63,7 +63,7 @@ export default {
                     cssClass: font.cssClass || '',
                     name: font.name,
                     description: font.name,
-                    callBack: () => this.setFont(font.value)
+                    onItemClicked: () => this.setFont(font.value)
                 };
             });
         },
@@ -73,7 +73,7 @@ export default {
                     cssClass: fontSize.cssClass || '',
                     name: fontSize.name,
                     description: fontSize.name,
-                    callBack: () => this.setFontSize(fontSize.value)
+                    onItemClicked: () => this.setFontSize(fontSize.value)
                 };
             });
         }

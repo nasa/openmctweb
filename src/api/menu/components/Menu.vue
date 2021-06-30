@@ -11,7 +11,7 @@
                 :key="action.name"
                 :class="[action.cssClass, action.isDisabled ? 'disabled' : '']"
                 :title="action.description"
-                @click="action.callBack"
+                @click="action.onItemClicked"
             >
                 {{ action.name }}
             </li>
@@ -36,7 +36,7 @@
             :key="action.name"
             :class="action.cssClass"
             :title="action.description"
-            @click="action.callBack"
+            @click="action.onItemClicked"
         >
             {{ action.name }}
         </li>

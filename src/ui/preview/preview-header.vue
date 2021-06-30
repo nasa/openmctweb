@@ -24,7 +24,7 @@
                 :key="index"
                 class="c-button"
                 :class="item.cssClass"
-                @click="item.callBack"
+                @click="item.onItemClicked"
             >
             </button>
             <button
@@ -118,7 +118,8 @@ export default {
         },
         updateActionItems() {
             this.actionCollection.hide(HIDDEN_ACTIONS);
-            this.statusBarItems = this.actionCollection.getStatusBarActions();
+            const statusBarItems = this.actionCollection.getStatusBarActions();
+            this.statusBarItems = this.openmct.menus.actionsToMenuItems(statusBarItems, this.actionCollection.objectPath, this.actionCollection.view);
             this.menuActionItems = this.actionCollection.getVisibleActions();
         },
         showMenuItems(event) {

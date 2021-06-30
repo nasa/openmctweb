@@ -37,7 +37,7 @@ import Menu, { MENU_PLACEMENT } from './menu.js';
 //  * @property {Boolean} isDisabled adds disable class if true
 //  * @property {String} name Menu item text
 //  * @property {String} description Menu item description
-//  * @property {Function} callBack callback function: invoked when item is clicked
+//  * @property {Function} onItemClicked callback function: invoked when item is clicked
 //  */
 
 /**
@@ -77,7 +77,7 @@ class MenuAPI {
             if (Array.isArray(action)) {
                 action = this.actionsToMenuItems(action, objectPath, view);
             } else {
-                action.callBack = () => {
+                action.onItemClicked = () => {
                     action.invoke(objectPath, view);
                 };
             }

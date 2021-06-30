@@ -446,7 +446,7 @@ export default {
                 && visibleActions.find(action => action.key === 'large.view');
 
             if (viewLargeAction) {
-                viewLargeAction.callBack();
+                viewLargeAction.onItemClicked();
             }
         },
         async initializeRelatedTelemetry() {
