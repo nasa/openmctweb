@@ -241,24 +241,24 @@ describe("the plugin", () => {
             });
         });
 
-        xit("Supports filtering telemetry by regular text search", (done) => {
+        it("Supports filtering telemetry by regular text search", (done) => {
             tableInstance.filteredRows.setColumnFilter("some-key", "1");
 
             Vue.nextTick(() => {
                 expect(tableInstance.filteredRows.getRows().length).toEqual(1);
-                tableInstance.filteredRows.setColumnFilter("some-key", "");
-                expect(tableInstance.filteredRows.getRows().length).toEqual(3);
 
                 done();
             });
         });
 
-        xit("Supports filtering using Regex", () => {
+        it("Supports filtering using Regex", (done) => {
             tableInstance.filteredRows.setColumnRegexFilter("some-key", "^some-value$");
-            expect(tableInstance.filteredRows.getRows().length).toEqual(0);
 
-            tableInstance.filteredRows.setColumnRegexFilter("some-key", "^some-value");
-            expect(tableInstance.filteredRows.getRows().length).toEqual(3);
+            Vue.nextTick(() => {
+                expect(tableInstance.filteredRows.getRows().length).toEqual(0);
+
+                done();
+            });
         });
     });
 });

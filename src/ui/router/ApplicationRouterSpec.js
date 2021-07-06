@@ -38,8 +38,9 @@ describe('Application router utility functions', () => {
 
     it('has initial hash when loaded', (done) => {
         let success;
+
+        openmct.router.setLocationFromUrl();
         resolveFunction = () => {
-            openmct.router.setLocationFromUrl();
             success = window.location.hash !== null;
             if (success) {
                 initialHash = window.location.hash;
