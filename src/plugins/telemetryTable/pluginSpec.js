@@ -190,9 +190,13 @@ describe("the plugin", () => {
             return telemetryPromise.then(() => Vue.nextTick());
         });
 
-        it("Renders a row for every telemetry datum returned", () => {
+        it("Renders a row for every telemetry datum returned", (done) => {
             let rows = element.querySelectorAll('table.c-telemetry-table__body tr');
-            expect(rows.length).toBe(3);
+            Vue.nextTick(() => {
+                expect(rows.length).toBe(3);
+
+                done();
+            });
         });
 
         it("Renders a column for every item in telemetry metadata", () => {
@@ -237,39 +241,23 @@ describe("the plugin", () => {
             });
         });
 
-        it("Supports filtering telemetry by regular text search", () => {
+        it("Supports filtering telemetry by regular text search", (done) => {
             tableInstance.filteredRows.setColumnFilter("some-key", "1");
 
-            return Vue.nextTick().then(() => {
-                let filteredRowElements = element.querySelectorAll('table.c-telemetry-table__body tr');
+            Vue.nextTick(() => {
+                expect(tableInstance.filteredRows.getRows().length).toEqual(1);
 
-                expect(filteredRowElements.length).toEqual(1);
-
-                tableInstance.filteredRows.setColumnFilter("some-key", "");
-
-                return Vue.nextTick().then(() => {
-                    let allRowElements = element.querySelectorAll('table.c-telemetry-table__body tr');
-
-                    expect(allRowElements.length).toEqual(3);
-                });
+                done();
             });
         });
 
-        it("Supports filtering using Regex", () => {
+        it("Supports filtering using Regex", (done) => {
             tableInstance.filteredRows.setColumnRegexFilter("some-key", "^some-value$");
 
-            return Vue.nextTick().then(() => {
-                let filteredRowElements = element.querySelectorAll('table.c-telemetry-table__body tr');
+            Vue.nextTick(() => {
+                expect(tableInstance.filteredRows.getRows().length).toEqual(0);
 
-                expect(filteredRowElements.length).toEqual(0);
-
-                tableInstance.filteredRows.setColumnRegexFilter("some-key", "^some-value");
-
-                return Vue.nextTick().then(() => {
-                    let allRowElements = element.querySelectorAll('table.c-telemetry-table__body tr');
-
-                    expect(allRowElements.length).toEqual(3);
-                });
+                done();
             });
         });
     });

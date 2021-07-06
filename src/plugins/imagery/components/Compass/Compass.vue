@@ -74,7 +74,8 @@ export default {
         },
         lockCompass: {
             type: Boolean,
-            required: true
+            required: true,
+            default: () => {}
         }
     },
     computed: {

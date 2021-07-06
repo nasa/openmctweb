@@ -42,7 +42,8 @@ describe("The Compass component", () => {
             containerWidth: 600,
             containerHeight: 600,
             naturalAspectRatio: 0.9,
-            image: imageDatum
+            image: imageDatum,
+            lockCompass: true
         };
 
         app = new Vue({
@@ -54,7 +55,8 @@ describe("The Compass component", () => {
                 :container-width="containerWidth"
                 :container-height="containerHeight"
                 :natural-aspect-ratio="naturalAspectRatio"
-                :image="image" />`
+                :image="image"
+                :lock-compass="lockCompass" />`
         });
         instance = app.$mount();
 

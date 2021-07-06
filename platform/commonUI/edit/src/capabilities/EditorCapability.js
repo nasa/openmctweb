@@ -50,8 +50,6 @@ define(
          * or finish() are called.
          */
         EditorCapability.prototype.edit = function () {
-            console.warn('DEPRECATED: cannot edit via edit capability, use openmct.editor instead.');
-
             if (!this.openmct.editor.isEditing()) {
                 this.openmct.editor.edit();
                 this.domainObject.getCapability('status').set('editing', true);
@@ -82,8 +80,6 @@ define(
          * @returns {*}
          */
         EditorCapability.prototype.save = function () {
-            console.warn('DEPRECATED: cannot save via edit capability, use openmct.editor instead.');
-
             return Promise.resolve();
         };
 
@@ -95,8 +91,6 @@ define(
          * @returns {*}
          */
         EditorCapability.prototype.finish = function () {
-            console.warn('DEPRECATED: cannot finish via edit capability, use openmct.editor instead.');
-
             return Promise.resolve();
         };
 

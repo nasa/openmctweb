@@ -49,7 +49,7 @@ describe('the plugin', () => {
             filter: {},
             disableObserve: true
         };
-        openmct = createOpenMct(false);
+        openmct = createOpenMct();
 
         openmct.$injector = jasmine.createSpyObj('$injector', ['get']);
         mockIdentifierService = jasmine.createSpyObj(
