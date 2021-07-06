@@ -51,6 +51,10 @@ class ImageryView {
         this.component.$destroy();
         this.component = undefined;
     }
+
+    _getInstance() {
+        return this.component;
+    }
 }
 
 export default function ImageryViewProvider(openmct) {
