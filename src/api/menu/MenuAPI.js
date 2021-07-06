@@ -30,15 +30,15 @@ import Menu, { MENU_PLACEMENT } from './menu.js';
  * @property {Function} onDestroy callback function: invoked when menu is destroyed
  */
 
-// /**
-//  * Popup Menu Item/action
-//  * @typedef {Object} Action
-//  * @property {String} cssClass Class for menu item
-//  * @property {Boolean} isDisabled adds disable class if true
-//  * @property {String} name Menu item text
-//  * @property {String} description Menu item description
-//  * @property {Function} onItemClicked callback function: invoked when item is clicked
-//  */
+/**
+ * Popup Menu Item/action
+ * @typedef {Object} Action
+ * @property {String} cssClass Class for menu item
+ * @property {Boolean} isDisabled adds disable class if true
+ * @property {String} name Menu item text
+ * @property {String} description Menu item description
+ * @property {Function} onItemClicked callback function: invoked when item is clicked
+ */
 
 /**
  * The MenuAPI allows the addition of new context menu actions, and for the context menu to be launched from

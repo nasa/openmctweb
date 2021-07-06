@@ -13,7 +13,7 @@
                 :key="action.name"
                 :class="[action.cssClass, action.isDisabled ? 'disabled' : '']"
                 :title="action.description"
-                @click="action.callBack"
+                @click="action.onItemClicked"
                 @mouseover="toggleItemDescription(action)"
                 @mouseleave="toggleItemDescription()"
             >
@@ -42,7 +42,7 @@
             :key="action.name"
             :class="action.cssClass"
             :title="action.description"
-            @click="action.callBack"
+            @click="action.onItemClicked"
             @mouseover="toggleItemDescription(action)"
             @mouseleave="toggleItemDescription()"
         >
