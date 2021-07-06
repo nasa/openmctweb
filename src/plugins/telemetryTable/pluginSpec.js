@@ -49,7 +49,7 @@ describe("the plugin", () => {
     let element;
     let child;
 
-    beforeAll((done) => {
+    beforeEach((done) => {
         openmct = createOpenMct();
 
         // Table Plugin is actually installed by default, but because installing it
@@ -81,7 +81,7 @@ describe("the plugin", () => {
         openmct.startHeadless();
     });
 
-    afterAll(() => {
+    afterEach(() => {
         openmct.time.timeSystem('utc', {
             start: 0,
             end: 1
@@ -190,10 +190,12 @@ describe("the plugin", () => {
             return telemetryPromise.then(() => Vue.nextTick());
         });
 
-        it("Renders a row for every telemetry datum returned", () => {
+        it("Renders a row for every telemetry datum returned", (done) => {
             let rows = element.querySelectorAll('table.c-telemetry-table__body tr');
             Vue.nextTick(() => {
                 expect(rows.length).toBe(3);
+
+                done();
             });
         });
 

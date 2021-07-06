@@ -31,7 +31,7 @@ describe('the plugin', function () {
     let openmct;
     let appHolder;
 
-    beforeAll((done) => {
+    beforeEach((done) => {
         appHolder = document.createElement('div');
         appHolder.style.width = '640px';
         appHolder.style.height = '480px';
@@ -60,7 +60,7 @@ describe('the plugin', function () {
         openmct.start(appHolder);
     });
 
-    afterAll(() => {
+    afterEach(() => {
         return resetApplicationState(openmct);
     });
 
@@ -105,7 +105,7 @@ describe('the plugin', function () {
         ];
         let planView;
 
-        beforeAll(() => {
+        beforeEach(() => {
             planDomainObject = {
                 identifier: {
                     key: 'test-object',
@@ -155,7 +155,7 @@ describe('the plugin', function () {
             expect(labelEl.innerHTML).toEqual('TEST-GROUP');
         });
 
-        it('displays the activities and their labels', () => {
+        it('displays the activities and their labels', (done) => {
             const bounds = {
                 start: 1597160002854,
                 end: 1597181232854
@@ -168,6 +168,8 @@ describe('the plugin', function () {
                 expect(rectEls.length).toEqual(2);
                 const textEls = element.querySelectorAll('.c-plan__contents text');
                 expect(textEls.length).toEqual(3);
+
+                done();
             });
         });
     });
