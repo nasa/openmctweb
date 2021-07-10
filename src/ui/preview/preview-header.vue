@@ -24,7 +24,7 @@
                 :key="index"
                 class="c-button"
                 :class="item.cssClass"
-                @click="item.callBack"
+                @click="item.onItemClicked"
             >
             </button>
             <button
@@ -42,7 +42,8 @@ import ViewSwitcher from '../../ui/layout/ViewSwitcher.vue';
 const HIDDEN_ACTIONS = [
     'remove',
     'move',
-    'preview'
+    'preview',
+    'large.view'
 ];
 
 export default {
@@ -117,12 +118,14 @@ export default {
         },
         updateActionItems() {
             this.actionCollection.hide(HIDDEN_ACTIONS);
-            this.statusBarItems = this.actionCollection.getStatusBarActions();
+            const statusBarItems = this.actionCollection.getStatusBarActions();
+            this.statusBarItems = this.openmct.menus.actionsToMenuItems(statusBarItems, this.actionCollection.objectPath, this.actionCollection.view);
             this.menuActionItems = this.actionCollection.getVisibleActions();
         },
         showMenuItems(event) {
             let sortedActions = this.openmct.actions._groupAndSortActions(this.menuActionItems);
-            this.openmct.menus.showMenu(event.x, event.y, sortedActions);
+            const menuItems = this.openmct.menus.actionsToMenuItems(sortedActions, this.actionCollection.objectPath, this.actionCollection.view);
+            this.openmct.menus.showMenu(event.x, event.y, menuItems);
         }
     }
 };

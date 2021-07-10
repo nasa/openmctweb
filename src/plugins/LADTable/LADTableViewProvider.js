@@ -19,50 +19,30 @@
  * this source code distribution or the Licensing information page available
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
-import LadTable from './components/LADTable.vue';
-import Vue from 'vue';
 
-export default function LADTableViewProvider(openmct) {
-    return {
-        key: 'LadTable',
-        name: 'LAD Table',
-        cssClass: 'icon-tabular-lad',
-        canView: function (domainObject) {
-            return domainObject.type === 'LadTable';
-        },
-        canEdit: function (domainObject) {
-            return domainObject.type === 'LadTable';
-        },
-        view: function (domainObject, objectPath) {
-            let component;
+import LADTableView from './LADTableView';
 
-            return {
-                show: function (element) {
-                    component = new Vue({
-                        el: element,
-                        components: {
-                            LadTableComponent: LadTable
-                        },
-                        provide: {
-                            openmct
-                        },
-                        data: () => {
-                            return {
-                                domainObject,
-                                objectPath
-                            };
-                        },
-                        template: '<lad-table-component :domain-object="domainObject" :object-path="objectPath"></lad-table-component>'
-                    });
-                },
-                destroy: function (element) {
-                    component.$destroy();
-                    component = undefined;
-                }
-            };
-        },
-        priority: function () {
-            return 1;
-        }
-    };
+export default class LADTableViewProvider {
+    constructor(openmct) {
+        this.openmct = openmct;
+        this.name = 'LAD Table';
+        this.key = 'LadTable';
+        this.cssClass = 'icon-tabular-lad';
+    }
+
+    canView(domainObject) {
+        return domainObject.type === 'LadTable';
+    }
+
+    canEdit(domainObject) {
+        return domainObject.type === 'LadTable';
+    }
+
+    view(domainObject, objectPath) {
+        return new LADTableView(this.openmct, domainObject, objectPath);
+    }
+
+    priority(domainObject) {
+        return 1;
+    }
 }

@@ -34,7 +34,8 @@ export default class ViewDatumAction {
     }
     invoke(objectPath, view) {
         let viewContext = view.getViewContext && view.getViewContext();
-        let attributes = viewContext.getDatum && viewContext.getDatum();
+        const row = viewContext.row;
+        let attributes = row.getDatum && row.getDatum();
         let component = new Vue ({
             provide: {
                 name: this.name,
@@ -57,9 +58,13 @@ export default class ViewDatumAction {
     }
     appliesTo(objectPath, view = {}) {
         let viewContext = (view.getViewContext && view.getViewContext()) || {};
-        let datum = viewContext.getDatum;
-        let enabled = viewContext.viewDatumAction;
+        const row = viewContext.row;
+        if (!row) {
+            return false;
+        }
 
+        let datum = row.getDatum;
+        let enabled = row.viewDatumAction;
         if (enabled && datum) {
             return true;
         }

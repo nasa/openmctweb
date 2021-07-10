@@ -48,6 +48,7 @@
                 :domain-object="ladRow.domainObject"
                 :path-to-table="ladTable.objectPath"
                 :has-units="hasUnits"
+                @rowContextClick="updateViewContext"
             />
         </template>
     </tbody>
@@ -61,7 +62,7 @@ export default {
     components: {
         LadRow
     },
-    inject: ['openmct', 'objectPath'],
+    inject: ['openmct', 'objectPath', 'currentView'],
     props: {
         domainObject: {
             type: Object,
@@ -72,7 +73,8 @@ export default {
         return {
             ladTableObjects: [],
             ladTelemetryObjects: {},
-            compositions: []
+            compositions: [],
+            viewContext: {}
         };
     },
     computed: {
@@ -166,6 +168,12 @@ export default {
 
                 this.$set(this.ladTelemetryObjects, ladTable.key, telemetryObjects);
             };
+        },
+        updateViewContext(rowContext) {
+            this.viewContext.row = rowContext;
+        },
+        getViewContext() {
+            return this.viewContext;
         }
     }
 };

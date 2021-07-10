@@ -32,7 +32,7 @@
     </div>
 
     <div class="l-browse-bar__end">
-        <view-switcher
+        <ViewSwitcher
             v-if="!isEditing"
             :current-view="currentView"
             :views="views"
@@ -49,7 +49,7 @@
                 :key="index"
                 class="c-button"
                 :class="item.cssClass"
-                @click="item.callBack"
+                @click="item.onItemClicked"
             >
             </button>
 
@@ -172,9 +172,7 @@ export default {
                         key: p.key,
                         cssClass: p.cssClass,
                         name: p.name,
-                        callBack: () => {
-                            return this.setView({key: p.key});
-                        }
+                        onItemClicked: () => this.setView({key: p.key})
                     };
                 });
         },
@@ -339,12 +337,14 @@ export default {
             this.openmct.router.navigate(this.parentUrl);
         },
         updateActionItems(actionItems) {
-            this.statusBarItems = this.actionCollection.getStatusBarActions();
+            const statusBarItems = this.actionCollection.getStatusBarActions();
+            this.statusBarItems = this.openmct.menus.actionsToMenuItems(statusBarItems, this.actionCollection.objectPath, this.actionCollection.view);
             this.menuActionItems = this.actionCollection.getVisibleActions();
         },
         showMenuItems(event) {
-            let sortedActions = this.openmct.actions._groupAndSortActions(this.menuActionItems);
-            this.openmct.menus.showMenu(event.x, event.y, sortedActions);
+            const sortedActions = this.openmct.actions._groupAndSortActions(this.menuActionItems);
+            const menuItems = this.openmct.menus.actionsToMenuItems(sortedActions, this.actionCollection.objectPath, this.actionCollection.view);
+            this.openmct.menus.showMenu(event.x, event.y, menuItems);
         },
         unlistenToActionCollection() {
             this.actionCollection.off('update', this.updateActionItems);

@@ -20,7 +20,7 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
-let exportCSV = {
+const exportCSV = {
     name: 'Export Table Data',
     key: 'export-csv-all',
     description: "Export this view's data",
@@ -30,7 +30,8 @@ let exportCSV = {
     },
     group: 'view'
 };
-let exportMarkedDataAsCSV = {
+
+const exportMarkedDataAsCSV = {
     name: 'Export Marked Rows',
     key: 'export-csv-marked',
     description: "Export marked rows as CSV",
@@ -40,7 +41,8 @@ let exportMarkedDataAsCSV = {
     },
     group: 'view'
 };
-let unmarkAllRows = {
+
+const unmarkAllRows = {
     name: 'Unmark All Rows',
     key: 'unmark-all-rows',
     description: 'Unmark all rows',
@@ -51,52 +53,56 @@ let unmarkAllRows = {
     showInStatusBar: true,
     group: 'view'
 };
-let pause = {
+
+const pause = {
     name: 'Pause',
     key: 'pause-data',
     description: 'Pause real-time data flow',
     cssClass: 'icon-pause',
-    invoke: (objectPath, viewProvider) => {
-        viewProvider.getViewContext().togglePauseByButton();
-    },
-    showInStatusBar: true,
-    group: 'view'
-};
-let play = {
-    name: 'Play',
-    key: 'play-data',
-    description: 'Continue real-time data flow',
-    cssClass: 'c-button pause-play is-paused',
-    invoke: (objectPath, viewProvider) => {
-        viewProvider.getViewContext().togglePauseByButton();
-    },
-    showInStatusBar: true,
-    group: 'view'
-};
-let expandColumns = {
-    name: 'Expand Columns',
-    key: 'expand-columns',
-    description: "Increase column widths to fit currently available data.",
-    cssClass: 'icon-arrows-right-left labeled',
-    invoke: (objectPath, viewProvider) => {
-        viewProvider.getViewContext().expandColumns();
-    },
-    showInStatusBar: true,
-    group: 'view'
-};
-let autosizeColumns = {
-    name: 'Autosize Columns',
-    key: 'autosize-columns',
-    description: "Automatically size columns to fit the table into the available space.",
-    cssClass: 'icon-expand labeled',
-    invoke: (objectPath, viewProvider) => {
-        viewProvider.getViewContext().autosizeColumns();
+    invoke: (objectPath, view) => {
+        view.getViewContext().togglePauseByButton();
     },
     showInStatusBar: true,
     group: 'view'
 };
 
-let viewActions = [
+const play = {
+    name: 'Play',
+    key: 'play-data',
+    description: 'Continue real-time data flow',
+    cssClass: 'c-button pause-play is-paused',
+    invoke: (objectPath, view) => {
+        view.getViewContext().togglePauseByButton();
+    },
+    showInStatusBar: true,
+    group: 'view'
+};
+
+const expandColumns = {
+    name: 'Expand Columns',
+    key: 'expand-columns',
+    description: "Increase column widths to fit currently available data.",
+    cssClass: 'icon-arrows-right-left labeled',
+    invoke: (objectPath, view) => {
+        view.getViewContext().expandColumns();
+    },
+    showInStatusBar: true,
+    group: 'view'
+};
+
+const autosizeColumns = {
+    name: 'Autosize Columns',
+    key: 'autosize-columns',
+    description: "Automatically size columns to fit the table into the available space.",
+    cssClass: 'icon-expand labeled',
+    invoke: (objectPath, view) => {
+        view.getViewContext().autosizeColumns();
+    },
+    showInStatusBar: true,
+    group: 'view'
+};
+
+const viewActions = [
     exportCSV,
     exportMarkedDataAsCSV,
     unmarkAllRows,
@@ -107,16 +113,13 @@ let viewActions = [
 ];
 
 viewActions.forEach(action => {
-    action.appliesTo = (objectPath, viewProvider = {}) => {
-        let viewContext = viewProvider.getViewContext && viewProvider.getViewContext();
-
-        if (viewContext) {
-            let type = viewContext.type;
-
-            return type === 'telemetry-table';
+    action.appliesTo = (objectPath, view = {}) => {
+        const viewContext = view.getViewContext && view.getViewContext();
+        if (!viewContext) {
+            return false;
         }
 
-        return false;
+        return viewContext.type === 'telemetry-table';
     };
 });
 

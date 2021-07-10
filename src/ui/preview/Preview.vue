@@ -20,7 +20,7 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 <template>
-<div class="l-preview-window">
+<div class="l-preview-window js-preview-window">
     <PreviewHeader
         :current-view="currentView"
         :action-collection="actionCollection"
@@ -116,7 +116,7 @@ export default {
                 this.actionCollection.destroy();
             }
 
-            this.actionCollection = this.openmct.actions._get(this.objectPath, this.view);
+            this.actionCollection = this.openmct.actions.getActionsCollection(this.objectPath, this.view);
         },
         initObjectStyles() {
             if (!this.styleRuleManager) {

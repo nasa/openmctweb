@@ -52,7 +52,7 @@
 
 <script>
 export default {
-    inject: ['openmct'],
+    inject: ['openmct', 'objectPath'],
     data() {
         return {
             isEditing: this.openmct.editor.isEditing(),

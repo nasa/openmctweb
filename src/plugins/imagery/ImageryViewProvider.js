@@ -23,6 +23,40 @@
 import ImageryViewLayout from './components/ImageryViewLayout.vue';
 import Vue from 'vue';
 
+class ImageryView {
+    constructor(openmct, domainObject, objectPath) {
+        this.openmct = openmct;
+        this.domainObject = domainObject;
+        this.objectPath = objectPath;
+        this.component = undefined;
+    }
+
+    show(element) {
+        this.component = new Vue({
+            el: element,
+            components: {
+                ImageryViewLayout
+            },
+            provide: {
+                openmct: this.openmct,
+                domainObject: this.domainObject,
+                objectPath: this.objectPath,
+                currentView: this
+            },
+            template: '<imagery-view-layout ref="ImageryLayout"></imagery-view-layout>'
+        });
+    }
+
+    destroy() {
+        this.component.$destroy();
+        this.component = undefined;
+    }
+
+    _getInstance() {
+        return this.component;
+    }
+}
+
 export default function ImageryViewProvider(openmct) {
     const type = 'example.imagery';
 
@@ -42,31 +76,8 @@ export default function ImageryViewProvider(openmct) {
         canView: function (domainObject) {
             return hasImageTelemetry(domainObject);
         },
-        view: function (domainObject) {
-            let component;
-
-            return {
-                show: function (element) {
-                    component = new Vue({
-                        el: element,
-                        components: {
-                            ImageryViewLayout
-                        },
-                        provide: {
-                            openmct,
-                            domainObject
-                        },
-                        template: '<imagery-view-layout ref="ImageryLayout"></imagery-view-layout>'
-                    });
-                },
-                destroy: function () {
-                    component.$destroy();
-                    component = undefined;
-                },
-                _getInstance: function () {
-                    return component;
-                }
-            };
+        view: function (domainObject, objectPath) {
+            return new ImageryView(openmct, domainObject, objectPath);
         }
     };
 }

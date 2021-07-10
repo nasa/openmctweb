@@ -209,7 +209,6 @@ export default {
                 }
             }
 
-            this.getActionCollection();
             this.currentView.show(this.viewContainer, this.openmct.editor.isEditing());
 
             if (immediatelySelect) {
@@ -218,13 +217,17 @@ export default {
             }
 
             this.openmct.objectViews.on('clearData', this.clearData);
+
+            this.$nextTick(() => {
+                this.getActionCollection();
+            });
         },
         getActionCollection() {
             if (this.actionCollection) {
                 this.actionCollection.destroy();
             }
 
-            this.actionCollection = this.openmct.actions._get(this.currentObjectPath || this.objectPath, this.currentView);
+            this.actionCollection = this.openmct.actions.getActionsCollection(this.currentObjectPath || this.objectPath, this.currentView);
             this.$emit('change-action-collection', this.actionCollection);
         },
         show(object, viewKey, immediatelySelect, currentObjectPath) {
@@ -318,7 +321,6 @@ export default {
             return viewKey;
         },
         getViewProvider() {
-
             let provider = this.openmct.objectViews.getByProviderKey(this.getViewKey());
 
             if (!provider) {

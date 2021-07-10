@@ -262,7 +262,7 @@ define([
         // Plugins that are installed by default
 
         this.install(this.plugins.Plot());
-        this.install(this.plugins.TelemetryTable());
+        this.install(this.plugins.TelemetryTable.default());
         this.install(PreviewPlugin.default());
         this.install(LegacyIndicatorsPlugin());
         this.install(LicensesPlugin.default());
@@ -283,6 +283,7 @@ define([
         this.install(this.plugins.NotificationIndicator());
         this.install(this.plugins.NewFolderAction());
         this.install(this.plugins.ViewDatumAction());
+        this.install(this.plugins.ViewLargeAction());
         this.install(this.plugins.ObjectInterceptors());
         this.install(this.plugins.NonEditableFolder());
     }

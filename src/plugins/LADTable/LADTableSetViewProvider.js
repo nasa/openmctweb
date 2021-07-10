@@ -19,8 +19,8 @@
  * this source code distribution or the Licensing information page available
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
-import LadTableSet from './components/LadTableSet.vue';
-import Vue from 'vue';
+
+import LadTableSetView from './LadTableSetView';
 
 export default function LADTableSetViewProvider(openmct) {
     return {
@@ -34,32 +34,7 @@ export default function LADTableSetViewProvider(openmct) {
             return domainObject.type === 'LadTableSet';
         },
         view: function (domainObject, objectPath) {
-            let component;
-
-            return {
-                show: function (element) {
-                    component = new Vue({
-                        el: element,
-                        components: {
-                            LadTableSet: LadTableSet
-                        },
-                        provide: {
-                            openmct,
-                            objectPath
-                        },
-                        data() {
-                            return {
-                                domainObject
-                            };
-                        },
-                        template: '<lad-table-set :domain-object="domainObject"></lad-table-set>'
-                    });
-                },
-                destroy: function (element) {
-                    component.$destroy();
-                    component = undefined;
-                }
-            };
+            return new LadTableSetView(openmct, domainObject, objectPath);
         },
         priority: function () {
             return 1;

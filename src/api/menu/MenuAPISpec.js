@@ -57,7 +57,7 @@ describe ('The Menu API', () => {
                 name: 'Test Action 1',
                 cssClass: 'icon-clock',
                 description: 'This is a test action',
-                callBack: () => {
+                onItemClicked: () => {
                     result = 'Test Action 1 Invoked';
                 }
             },
@@ -66,7 +66,7 @@ describe ('The Menu API', () => {
                 name: 'Test Action 2',
                 cssClass: 'icon-clock',
                 description: 'This is a test action',
-                callBack: () => {
+                onItemClicked: () => {
                     result = 'Test Action 2 Invoked';
                 }
             }

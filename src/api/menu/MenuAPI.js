@@ -37,7 +37,7 @@ import Menu, { MENU_PLACEMENT } from './menu.js';
  * @property {Boolean} isDisabled adds disable class if true
  * @property {String} name Menu item text
  * @property {String} description Menu item description
- * @property {Function} callBack callback function: invoked when item is clicked
+ * @property {Function} onItemClicked callback function: invoked when item is clicked
  */
 
 /**
@@ -66,10 +66,24 @@ class MenuAPI {
      * @param {Array.<Action>|Array.<Array.<Action>>} actions collection of actions{@link Action} or collection of groups of actions {@link Action}
      * @param {MenuOptions} [menuOptions] [Optional] The {@link MenuOptions} options for Menu
      */
-    showMenu(x, y, actions, menuOptions) {
-        this._createMenuComponent(x, y, actions, menuOptions);
+    showMenu(x, y, items, menuOptions) {
+        this._createMenuComponent(x, y, items, menuOptions);
 
         this.menuComponent.showMenu();
+    }
+
+    actionsToMenuItems(actions, objectPath, view) {
+        return actions.map(action => {
+            if (Array.isArray(action)) {
+                action = this.actionsToMenuItems(action, objectPath, view);
+            } else {
+                action.onItemClicked = () => {
+                    action.invoke(objectPath, view);
+                };
+            }
+
+            return action;
+        });
     }
 
     /**

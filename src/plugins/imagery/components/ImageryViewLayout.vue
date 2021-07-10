@@ -58,6 +58,7 @@
         <div ref="imageBG"
              class="c-imagery__main-image__bg"
              :class="{'paused unnsynced': isPaused,'stale':false }"
+             @click="expand"
         >
             <div class="image-wrapper"
                  :style="{
@@ -170,8 +171,9 @@
 <script>
 import _ from 'lodash';
 import moment from 'moment';
-import Compass from './Compass/Compass.vue';
+
 import RelatedTelemetry from './RelatedTelemetry/RelatedTelemetry';
+import Compass from './Compass/Compass.vue';
 
 const DEFAULT_DURATION_FORMATTER = 'duration';
 const REFRESH_CSS_MS = 500;
@@ -195,7 +197,7 @@ export default {
     components: {
         Compass
     },
-    inject: ['openmct', 'domainObject'],
+    inject: ['openmct', 'domainObject', 'objectPath', 'currentView'],
     data() {
         let timeSystem = this.openmct.time.timeSystem();
 
@@ -468,6 +470,16 @@ export default {
         }
     },
     methods: {
+        expand() {
+            const actionCollection = this.openmct.actions.getActionsCollection(this.objectPath, this.currentView);
+            const visibleActions = actionCollection.getVisibleActions();
+            const viewLargeAction = visibleActions
+                && visibleActions.find(action => action.key === 'large.view');
+
+            if (viewLargeAction) {
+                viewLargeAction.onItemClicked();
+            }
+        },
         async initializeRelatedTelemetry() {
             this.relatedTelemetry = new RelatedTelemetry(
                 this.openmct,
