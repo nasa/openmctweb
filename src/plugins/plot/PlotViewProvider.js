@@ -24,19 +24,23 @@ import Plot from './Plot.vue';
 import Vue from 'vue';
 
 export default function PlotViewProvider(openmct) {
-    function hasTelemetry(domainObject) {
+    function hasNumericTelemetry(domainObject) {
         if (!Object.prototype.hasOwnProperty.call(domainObject, 'telemetry')) {
             return false;
         }
 
         let metadata = openmct.telemetry.getMetadata(domainObject);
 
-        return metadata.values().length > 0 && hasDomainAndRange(metadata);
+        return metadata.values().length > 0 && hasDomainAndNumericRange(metadata);
     }
 
-    function hasDomainAndRange(metadata) {
-        return (metadata.valuesForHints(['range']).length > 0
-            && metadata.valuesForHints(['domain']).length > 0);
+    function hasDomainAndNumericRange(metadata) {
+        const rangeValues = metadata.valuesForHints(['range']);
+        const domains = metadata.valuesForHints(['domain']);
+
+        return domains.length > 0
+            && rangeValues.length > 0
+            && !rangeValues.every(value => value.format === 'string');
     }
 
     function isCompactView(objectPath) {
@@ -44,11 +48,11 @@ export default function PlotViewProvider(openmct) {
     }
 
     return {
-        key: 'plot-simple',
+        key: 'plot-single',
         name: 'Plot',
         cssClass: 'icon-telemetry',
         canView(domainObject, objectPath) {
-            return hasTelemetry(domainObject, openmct);
+            return hasNumericTelemetry(domainObject);
         },
 
         view: function (domainObject, objectPath) {
