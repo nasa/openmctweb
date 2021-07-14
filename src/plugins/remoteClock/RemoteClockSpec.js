@@ -20,22 +20,27 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
-define([
-    "./UTCTimeSystem",
-    "./LocalClock"
-], function (
-    UTCTimeSystem,
-    LocalClock
-) {
-    /**
-     * Install a time system that supports UTC times. It also installs a local
-     * clock source that ticks every 100ms, providing UTC times.
-     */
-    return function () {
-        return function (openmct) {
-            const timeSystem = new UTCTimeSystem();
-            openmct.time.addTimeSystem(timeSystem);
-            openmct.time.addClock(new LocalClock.default(100));
-        };
-    };
+define(["./RemoteClock"], function (RemoteClock) {
+    describe("The LocalClock class", function () {
+        let clock;
+        // let telemetryObject = {
+        //     name: 'Telemetry Object',
+        //     identifier: {
+        //         namespace: 'telemetry',
+        //         key: 'object'
+        //     }
+        // };
+
+        beforeEach(function () {
+            clock = new RemoteClock();
+            clock.start();
+        });
+
+        it("calls listeners on tick with current time", function () {
+            const mockListener = jasmine.createSpy("listener");
+            clock.on('tick', mockListener);
+            clock.tick();
+            expect(mockListener).toHaveBeenCalledWith(jasmine.any(Number));
+        });
+    });
 });

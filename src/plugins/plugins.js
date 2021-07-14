@@ -23,6 +23,7 @@
 define([
     'lodash',
     './utcTimeSystem/plugin',
+    './remoteClock/plugin',
     './localTimeSystem/plugin',
     './ISOTimeFormat/plugin',
     '../../example/generator/plugin',
@@ -69,6 +70,7 @@ define([
 ], function (
     _,
     UTCTimeSystem,
+    RemoteClock,
     LocalTimeSystem,
     ISOTimeFormat,
     GeneratorPlugin,
@@ -129,6 +131,7 @@ define([
 
     plugins.UTCTimeSystem = UTCTimeSystem;
     plugins.LocalTimeSystem = LocalTimeSystem;
+    plugins.RemoteClock = RemoteClock.default;
 
     plugins.ImportExport = ImportExport;
 

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * Open MCT Web, Copyright (c) 2014-2015, United States Government
+ * Open MCT Web, Copyright (c) 2014-2021, United States Government
  * as represented by the Administrator of the National Aeronautics and Space
  * Administration. All rights reserved.
  *
@@ -20,22 +20,13 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
-define([
-    "./UTCTimeSystem",
-    "./LocalClock"
-], function (
-    UTCTimeSystem,
-    LocalClock
-) {
-    /**
-     * Install a time system that supports UTC times. It also installs a local
-     * clock source that ticks every 100ms, providing UTC times.
-     */
-    return function () {
-        return function (openmct) {
-            const timeSystem = new UTCTimeSystem();
-            openmct.time.addTimeSystem(timeSystem);
-            openmct.time.addClock(new LocalClock.default(100));
-        };
+import RemoteClock from "./RemoteClock";
+/**
+ * Install a clock that uses a configurable telemetry endpoint. 
+ */
+
+export default function (identifier) {
+    return function (openmct) {
+        openmct.time.addClock(new RemoteClock(openmct, identifier));
     };
-});
+}
