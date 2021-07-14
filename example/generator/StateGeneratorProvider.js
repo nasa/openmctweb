@@ -63,7 +63,7 @@ define([
 
     StateGeneratorProvider.prototype.request = function (domainObject, options) {
         var start = options.start;
-        var end = options.end;
+        var end = Math.min(Date.now(), options.end); // no future values
         var duration = domainObject.telemetry.duration * 1000;
         if (options.strategy === 'latest' || options.size === 1) {
             start = end;

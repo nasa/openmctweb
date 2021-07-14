@@ -467,22 +467,21 @@ export default {
 
         this.table.on('object-added', this.addObject);
         this.table.on('object-removed', this.removeObject);
-        this.table.on('outstanding-requests', this.outstandingRequests);
         this.table.on('refresh', this.clearRowsAndRerender);
         this.table.on('historical-rows-processed', this.checkForMarkedRows);
 
-        this.table.filteredRows.on('add', this.rowsAdded);
-        this.table.filteredRows.on('remove', this.rowsRemoved);
-        this.table.filteredRows.on('sort', this.updateVisibleRows);
-        this.table.filteredRows.on('filter', this.updateVisibleRows);
+        this.table.tableRows.on('add', this.rowsAdded);
+        this.table.tableRows.on('remove', this.rowsRemoved);
+        this.table.tableRows.on('sort', this.updateVisibleRows);
+        this.table.tableRows.on('filter', this.updateVisibleRows);
+        this.table.tableRows.on('outstanding-requests', this.outstandingRequests);
 
         //Default sort
-        this.sortOptions = this.table.filteredRows.sortBy();
+        this.sortOptions = this.table.tableRows.sortBy();
         this.scrollable = this.$el.querySelector('.js-telemetry-table__body-w');
         this.contentTable = this.$el.querySelector('.js-telemetry-table__content');
         this.sizingTable = this.$el.querySelector('.js-telemetry-table__sizing');
         this.headersHolderEl = this.$el.querySelector('.js-table__headers-w');
-
         this.table.configuration.on('change', this.updateConfiguration);
 
         this.calculateTableSize();
@@ -494,13 +493,13 @@ export default {
     destroyed() {
         this.table.off('object-added', this.addObject);
         this.table.off('object-removed', this.removeObject);
-        this.table.off('outstanding-requests', this.outstandingRequests);
         this.table.off('refresh', this.clearRowsAndRerender);
 
-        this.table.filteredRows.off('add', this.rowsAdded);
-        this.table.filteredRows.off('remove', this.rowsRemoved);
-        this.table.filteredRows.off('sort', this.updateVisibleRows);
-        this.table.filteredRows.off('filter', this.updateVisibleRows);
+        this.table.tableRows.off('add', this.rowsAdded);
+        this.table.tableRows.off('remove', this.rowsRemoved);
+        this.table.tableRows.off('sort', this.updateVisibleRows);
+        this.table.tableRows.off('filter', this.updateVisibleRows);
+        this.table.tableRows.off('outstanding-requests', this.outstandingRequests);
 
         this.table.configuration.off('change', this.updateConfiguration);
 
@@ -518,13 +517,13 @@ export default {
 
                     let start = 0;
                     let end = VISIBLE_ROW_COUNT;
-                    let filteredRows = this.table.filteredRows.getRows();
-                    let filteredRowsLength = filteredRows.length;
+                    let tableRows = this.table.tableRows.getRows();
+                    let tableRowsLength = tableRows.length;
 
-                    this.totalNumberOfRows = filteredRowsLength;
+                    this.totalNumberOfRows = tableRowsLength;
 
-                    if (filteredRowsLength < VISIBLE_ROW_COUNT) {
-                        end = filteredRowsLength;
+                    if (tableRowsLength < VISIBLE_ROW_COUNT) {
+                        end = tableRowsLength;
                     } else {
                         let firstVisible = this.calculateFirstVisibleRow();
                         let lastVisible = this.calculateLastVisibleRow();
@@ -536,15 +535,15 @@ export default {
 
                         if (start < 0) {
                             start = 0;
-                            end = Math.min(VISIBLE_ROW_COUNT, filteredRowsLength);
-                        } else if (end >= filteredRowsLength) {
-                            end = filteredRowsLength;
+                            end = Math.min(VISIBLE_ROW_COUNT, tableRowsLength);
+                        } else if (end >= tableRowsLength) {
+                            end = tableRowsLength;
                             start = end - VISIBLE_ROW_COUNT + 1;
                         }
                     }
 
                     this.rowOffset = start;
-                    this.visibleRows = filteredRows.slice(start, end);
+                    this.visibleRows = tableRows.slice(start, end);
 
                     this.updatingView = false;
                 });
@@ -631,19 +630,19 @@ export default {
         filterChanged(columnKey) {
             if (this.enableRegexSearch[columnKey]) {
                 if (this.isCompleteRegex(this.filters[columnKey])) {
-                    this.table.filteredRows.setColumnRegexFilter(columnKey, this.filters[columnKey].slice(1, -1));
+                    this.table.tableRows.setColumnRegexFilter(columnKey, this.filters[columnKey].slice(1, -1));
                 } else {
                     return;
                 }
             } else {
-                this.table.filteredRows.setColumnFilter(columnKey, this.filters[columnKey]);
+                this.table.tableRows.setColumnFilter(columnKey, this.filters[columnKey]);
             }
 
             this.setHeight();
         },
         clearFilter(columnKey) {
             this.filters[columnKey] = '';
-            this.table.filteredRows.setColumnFilter(columnKey, '');
+            this.table.tableRows.setColumnFilter(columnKey, '');
             this.setHeight();
         },
         rowsAdded(rows) {
@@ -675,8 +674,8 @@ export default {
          * Calculates height based on total number of rows, and sets table height.
          */
         setHeight() {
-            let filteredRowsLength = this.table.filteredRows.getRows().length;
-            this.totalHeight = this.rowHeight * filteredRowsLength - 1;
+            let tableRowsLength = this.table.tableRows.getRowsLength();
+            this.totalHeight = this.rowHeight * tableRowsLength - 1;
             // Set element height directly to avoid having to wait for Vue to update DOM
             // which causes subsequent scroll to use an out of date height.
             this.contentTable.style.height = this.totalHeight + 'px';
@@ -690,13 +689,13 @@ export default {
             });
         },
         exportAllDataAsCSV() {
-            const justTheData = this.table.filteredRows.getRows()
+            const justTheData = this.table.tableRows.getRows()
                 .map(row => row.getFormattedDatum(this.headers));
 
             this.exportAsCSV(justTheData);
         },
         exportMarkedDataAsCSV() {
-            const data = this.table.filteredRows.getRows()
+            const data = this.table.tableRows.getRows()
                 .filter(row => row.marked === true)
                 .map(row => row.getFormattedDatum(this.headers));
 
@@ -901,7 +900,7 @@ export default {
 
                 let lastRowToBeMarked = this.visibleRows[rowIndex];
 
-                let allRows = this.table.filteredRows.getRows();
+                let allRows = this.table.tableRows.getRows();
                 let firstRowIndex = allRows.indexOf(this.markedRows[0]);
                 let lastRowIndex = allRows.indexOf(lastRowToBeMarked);
 
@@ -924,17 +923,17 @@ export default {
         },
         checkForMarkedRows() {
             this.isShowingMarkedRowsOnly = false;
-            this.markedRows = this.table.filteredRows.getRows().filter(row => row.marked);
+            this.markedRows = this.table.tableRows.getRows().filter(row => row.marked);
         },
         showRows(rows) {
-            this.table.filteredRows.rows = rows;
-            this.table.filteredRows.emit('filter');
+            this.table.tableRows.rows = rows;
+            this.table.tableRows.emit('filter');
         },
         toggleMarkedRows(flag) {
             if (flag) {
                 this.isShowingMarkedRowsOnly = true;
                 this.userScroll = this.scrollable.scrollTop;
-                this.allRows = this.table.filteredRows.getRows();
+                this.allRows = this.table.tableRows.getRows();
 
                 this.showRows(this.markedRows);
                 this.setHeight();

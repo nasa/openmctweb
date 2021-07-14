@@ -29,6 +29,8 @@ define([], function () {
             this.fullDatum = datum;
             this.limitEvaluator = limitEvaluator;
             this.objectKeyString = objectKeyString;
+
+            this.rowId = JSON.stringify(datum);
         }
 
         getFormattedDatum(headers) {
