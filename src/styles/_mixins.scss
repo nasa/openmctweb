@@ -582,6 +582,12 @@
         }
     }
 
+    &[class*='--menus-bottom'] {
+        .c-menu {
+            top: auto; bottom: 100%;
+        }
+    }
+
     &[class*='--menus-left'],
     &[class*='menus-to-left'] {
         .c-menu {

@@ -64,7 +64,8 @@ export default function PlotViewProvider(openmct) {
                         },
                         provide: {
                             openmct,
-                            domainObject
+                            domainObject,
+                            path: objectPath
                         },
                         data() {
                             return {

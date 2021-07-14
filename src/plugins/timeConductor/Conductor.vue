@@ -29,144 +29,37 @@
         isFixed ? 'is-fixed-mode' : 'is-realtime-mode'
     ]"
 >
-    <form
-        ref="conductorForm"
-        class="u-contents"
-        @submit.prevent="updateTimeFromConductor"
-    >
-        <div class="c-conductor__time-bounds">
-            <button
-                ref="submitButton"
-                class="c-input--submit"
-                type="submit"
-            ></button>
-            <ConductorModeIcon class="c-conductor__mode-icon" />
+    <div class="c-conductor__time-bounds">
+        <conductor-delta-input-fixed v-if="isFixed"
+                                     @updated="saveFixedOffsets"
+        />
+        <conductor-delta-input-realtime v-else
+                                        @updated="saveClockOffsets"
+        />
+        <ConductorModeIcon class="c-conductor__mode-icon" />
+        <conductor-axis
+            class="c-conductor__ticks"
+            :view-bounds="viewBounds"
+            :is-fixed="isFixed"
+            :alt-pressed="altPressed"
+            @endPan="endPan"
+            @endZoom="endZoom"
+            @panAxis="pan"
+            @zoomAxis="zoom"
+        />
 
-            <div
-                v-if="isFixed"
-                class="c-ctrl-wrapper c-conductor-input c-conductor__start-fixed"
-            >
-                <!-- Fixed start -->
-                <div class="c-conductor__start-fixed__label">
-                    Start
-                </div>
-                <input
-                    ref="startDate"
-                    v-model="formattedBounds.start"
-                    class="c-input--datetime"
-                    type="text"
-                    autocorrect="off"
-                    spellcheck="false"
-                    @change="validateAllBounds('startDate'); submitForm()"
-                >
-                <date-picker
-                    v-if="isFixed && isUTCBased"
-                    :default-date-time="formattedBounds.start"
-                    :formatter="timeFormatter"
-                    @date-selected="startDateSelected"
-                />
-            </div>
-
-            <div
-                v-if="!isFixed"
-                class="c-ctrl-wrapper c-conductor-input c-conductor__start-delta"
-            >
-                <!-- RT start -->
-                <div class="c-direction-indicator icon-minus"></div>
-                <time-popup
-                    v-if="showTCInputStart"
-                    class="pr-tc-input-menu--start"
-                    :type="'start'"
-                    :offset="offsets.start"
-                    @focus.native="$event.target.select()"
-                    @hide="hideAllTimePopups"
-                    @update="timePopUpdate"
-                />
-                <button
-                    ref="startOffset"
-                    class="c-button c-conductor__delta-button"
-                    @click="showTimePopupStart"
-                >
-                    {{ offsets.start }}
-                </button>
-            </div>
-
-            <div class="c-ctrl-wrapper c-conductor-input c-conductor__end-fixed">
-                <!-- Fixed end and RT 'last update' display -->
-                <div class="c-conductor__end-fixed__label">
-                    {{ isFixed ? 'End' : 'Updated' }}
-                </div>
-                <input
-                    ref="endDate"
-                    v-model="formattedBounds.end"
-                    class="c-input--datetime"
-                    type="text"
-                    autocorrect="off"
-                    spellcheck="false"
-                    :disabled="!isFixed"
-                    @change="validateAllBounds('endDate'); submitForm()"
-                >
-                <date-picker
-                    v-if="isFixed && isUTCBased"
-                    class="c-ctrl-wrapper--menus-left"
-                    :default-date-time="formattedBounds.end"
-                    :formatter="timeFormatter"
-                    @date-selected="endDateSelected"
-                />
-            </div>
-
-            <div
-                v-if="!isFixed"
-                class="c-ctrl-wrapper c-conductor-input c-conductor__end-delta"
-            >
-                <!-- RT end -->
-                <div class="c-direction-indicator icon-plus"></div>
-                <time-popup
-                    v-if="showTCInputEnd"
-                    class="pr-tc-input-menu--end"
-                    :type="'end'"
-                    :offset="offsets.end"
-                    @focus.native="$event.target.select()"
-                    @hide="hideAllTimePopups"
-                    @update="timePopUpdate"
-                />
-                <button
-                    ref="endOffset"
-                    class="c-button c-conductor__delta-button"
-                    @click="showTimePopupEnd"
-                >
-                    {{ offsets.end }}
-                </button>
-            </div>
-
-            <conductor-axis
-                class="c-conductor__ticks"
-                :view-bounds="viewBounds"
-                :is-fixed="isFixed"
-                :alt-pressed="altPressed"
-                @endPan="endPan"
-                @endZoom="endZoom"
-                @panAxis="pan"
-                @zoomAxis="zoom"
-            />
-
-        </div>
-        <div class="c-conductor__controls">
-            <ConductorMode class="c-conductor__mode-select" />
-            <ConductorTimeSystem class="c-conductor__time-system-select" />
-            <ConductorHistory
-                class="c-conductor__history-select"
-                :offsets="openmct.time.clockOffsets()"
-                :bounds="bounds"
-                :time-system="timeSystem"
-                :mode="timeMode"
-            />
-        </div>
-        <input
-            type="submit"
-            class="invisible"
-        >
-    </form>
+    </div>
+    <div class="c-conductor__controls">
+        <ConductorMode class="c-conductor__mode-select" />
+        <ConductorTimeSystem class="c-conductor__time-system-select" />
+        <ConductorHistory
+            class="c-conductor__history-select"
+            :offsets="openmct.time.clockOffsets()"
+            :bounds="bounds"
+            :time-system="timeSystem"
+            :mode="timeMode"
+        />
+    </div>
 </div>
 </template>
 
@@ -174,23 +67,23 @@
 import _ from 'lodash';
 import ConductorMode from './ConductorMode.vue';
 import ConductorTimeSystem from './ConductorTimeSystem.vue';
-import DatePicker from './DatePicker.vue';
 import ConductorAxis from './ConductorAxis.vue';
 import ConductorModeIcon from './ConductorModeIcon.vue';
 import ConductorHistory from './ConductorHistory.vue';
-import TimePopup from './timePopup.vue';
+import ConductorDeltaInputFixed from "@/plugins/timeConductor/ConductorDeltaInputFixed.vue";
+import ConductorDeltaInputRealtime from "@/plugins/timeConductor/ConductorDeltaInputRealtime.vue";
 
 const DEFAULT_DURATION_FORMATTER = 'duration';
 
 export default {
     components: {
+        ConductorDeltaInputRealtime,
+        ConductorDeltaInputFixed,
         ConductorMode,
         ConductorTimeSystem,
-        DatePicker,
         ConductorAxis,
         ConductorModeIcon,
-        ConductorHistory,
-        TimePopup
+        ConductorHistory
     },
     inject: ['openmct', 'configuration'],
     data() {
@@ -242,7 +135,6 @@ export default {
         this.openmct.time.on('bounds', _.throttle(this.handleNewBounds, 300));
         this.openmct.time.on('timeSystem', this.setTimeSystem);
         this.openmct.time.on('clock', this.setViewFromClock);
-        this.openmct.time.on('clockOffsets', this.setViewFromOffsets);
     },
     beforeDestroy() {
         document.removeEventListener('keydown', this.handleKeyDown);
@@ -297,42 +189,8 @@ export default {
                 timeSystem.durationFormat || DEFAULT_DURATION_FORMATTER);
             this.isUTCBased = timeSystem.isUTCBased;
         },
-        setOffsetsFromView($event) {
-            if (this.$refs.conductorForm.checkValidity()) {
-                let startOffset = 0 - this.durationFormatter.parse(this.offsets.start);
-                let endOffset = this.durationFormatter.parse(this.offsets.end);
-
-                this.openmct.time.clockOffsets({
-                    start: startOffset,
-                    end: endOffset
-                });
-            }
-
-            if ($event) {
-                $event.preventDefault();
-
-                return false;
-            }
-        },
-        setBoundsFromView($event) {
-            if (this.$refs.conductorForm.checkValidity()) {
-                let start = this.timeFormatter.parse(this.formattedBounds.start);
-                let end = this.timeFormatter.parse(this.formattedBounds.end);
-
-                this.openmct.time.bounds({
-                    start: start,
-                    end: end
-                });
-            }
-
-            if ($event) {
-                $event.preventDefault();
-
-                return false;
-            }
-        },
         setViewFromClock(clock) {
-            this.clearAllValidation();
+            // this.clearAllValidation();
             this.isFixed = clock === undefined;
         },
         setViewFromBounds(bounds) {
@@ -341,158 +199,16 @@ export default {
             this.viewBounds.start = bounds.start;
             this.viewBounds.end = bounds.end;
         },
-        setViewFromOffsets(offsets) {
-            this.offsets.start = this.durationFormatter.format(Math.abs(offsets.start));
-            this.offsets.end = this.durationFormatter.format(Math.abs(offsets.end));
-        },
-        updateTimeFromConductor() {
-            if (this.isFixed) {
-                this.setBoundsFromView();
-            } else {
-                this.setOffsetsFromView();
-            }
-        },
-        getBoundsLimit() {
-            const configuration = this.configuration.menuOptions
-                .filter(option => option.timeSystem === this.timeSystem.key)
-                .find(option => option.limit);
-
-            const limit = configuration ? configuration.limit : undefined;
-
-            return limit;
-        },
-        clearAllValidation() {
-            if (this.isFixed) {
-                [this.$refs.startDate, this.$refs.endDate].forEach(this.clearValidationForInput);
-            } else {
-                [this.$refs.startOffset, this.$refs.endOffset].forEach(this.clearValidationForInput);
-            }
-        },
-        clearValidationForInput(input) {
-            input.setCustomValidity('');
-            input.title = '';
-        },
-        validateAllBounds(ref) {
-            if (!this.areBoundsFormatsValid()) {
-                return false;
-            }
-
-            let validationResult = true;
-            const currentInput = this.$refs[ref];
-
-            return [this.$refs.startDate, this.$refs.endDate].every((input) => {
-                let boundsValues = {
-                    start: this.timeFormatter.parse(this.formattedBounds.start),
-                    end: this.timeFormatter.parse(this.formattedBounds.end)
-                };
-                const limit = this.getBoundsLimit();
-
-                if (
-                    this.timeSystem.isUTCBased
-                    && limit
-                    && boundsValues.end - boundsValues.start > limit
-                ) {
-                    if (input === currentInput) {
-                        validationResult = "Start and end difference exceeds allowable limit";
-                    }
-                } else {
-                    if (input === currentInput) {
-                        validationResult = this.openmct.time.validateBounds(boundsValues);
-                    }
-                }
-
-                return this.handleValidationResults(input, validationResult);
-            });
-        },
-        areBoundsFormatsValid() {
-            let validationResult = true;
-
-            return [this.$refs.startDate, this.$refs.endDate].every((input) => {
-                const formattedDate = input === this.$refs.startDate
-                    ? this.formattedBounds.start
-                    : this.formattedBounds.end
-                ;
-
-                if (!this.timeFormatter.validate(formattedDate)) {
-                    validationResult = 'Invalid date';
-                }
-
-                return this.handleValidationResults(input, validationResult);
-            });
-        },
-        validateAllOffsets(event) {
-            return [this.$refs.startOffset, this.$refs.endOffset].every((input) => {
-                let validationResult = true;
-                let formattedOffset;
-
-                if (input === this.$refs.startOffset) {
-                    formattedOffset = this.offsets.start;
-                } else {
-                    formattedOffset = this.offsets.end;
-                }
-
-                if (!this.durationFormatter.validate(formattedOffset)) {
-                    validationResult = 'Offsets must be in the format hh:mm:ss and less than 24 hours in duration';
-                } else {
-                    let offsetValues = {
-                        start: 0 - this.durationFormatter.parse(this.offsets.start),
-                        end: this.durationFormatter.parse(this.offsets.end)
-                    };
-                    validationResult = this.openmct.time.validateOffsets(offsetValues);
-                }
-
-                return this.handleValidationResults(input, validationResult);
-            });
-        },
-        handleValidationResults(input, validationResult) {
-            if (validationResult !== true) {
-                input.setCustomValidity(validationResult);
-                input.title = validationResult;
-
-                return false;
-            } else {
-                input.setCustomValidity('');
-                input.title = '';
-
-                return true;
-            }
-        },
-        submitForm() {
-            // Allow Vue model to catch up to user input.
-            // Submitting form will cause validation messages to display (but only if triggered by button click)
-            this.$nextTick(() => this.$refs.submitButton.click());
-        },
         getFormatter(key) {
             return this.openmct.telemetry.getValueFormatter({
                 format: key
             }).formatter;
         },
-        startDateSelected(date) {
-            this.formattedBounds.start = this.timeFormatter.format(date);
-            this.validateAllBounds('startDate');
-            this.submitForm();
+        saveClockOffsets(offsets) {
+            this.openmct.time.clockOffsets(offsets);
         },
-        endDateSelected(date) {
-            this.formattedBounds.end = this.timeFormatter.format(date);
-            this.validateAllBounds('endDate');
-            this.submitForm();
-        },
-        hideAllTimePopups() {
-            this.showTCInputStart = false;
-            this.showTCInputEnd = false;
-        },
-        showTimePopupStart() {
-            this.hideAllTimePopups();
-            this.showTCInputStart = !this.showTCInputStart;
-        },
-        showTimePopupEnd() {
-            this.hideAllTimePopups();
-            this.showTCInputEnd = !this.showTCInputEnd;
-        },
-        timePopUpdate({ type, hours, minutes, seconds }) {
-            this.offsets[type] = [hours, minutes, seconds].join(':');
-            this.setOffsetsFromView();
-            this.hideAllTimePopups();
+        saveFixedOffsets(bounds) {
+            this.openmct.time.bounds(bounds);
         }
     }
 };

@@ -54,7 +54,8 @@ export default function PlanViewProvider(openmct) {
                         },
                         provide: {
                             openmct,
-                            domainObject
+                            domainObject,
+                            path: objectPath
                         },
                         data() {
                             return {

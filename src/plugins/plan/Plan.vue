@@ -67,7 +67,7 @@ export default {
         TimelineAxis,
         SwimLane
     },
-    inject: ['openmct', 'domainObject'],
+    inject: ['openmct', 'domainObject', 'path'],
     props: {
         options: {
             type: Object,
@@ -99,21 +99,59 @@ export default {
         this.canvasContext = this.canvas.getContext('2d');
 
         this.setDimensions();
-        this.updateViewBounds();
-        this.openmct.time.on("timeSystem", this.setScaleAndPlotActivities);
-        this.openmct.time.on("bounds", this.updateViewBounds);
+        this.setTimeContext();
         this.resizeTimer = setInterval(this.resize, RESIZE_POLL_INTERVAL);
         this.unlisten = this.openmct.objects.observe(this.domainObject, '*', this.observeForChanges);
+        this.openmct.time.on("independentTime", this.setTimeContext);
     },
     beforeDestroy() {
         clearInterval(this.resizeTimer);
         this.openmct.time.off("timeSystem", this.setScaleAndPlotActivities);
         this.openmct.time.off("bounds", this.updateViewBounds);
+        this.openmct.time.off("independentTime", this.setTimeContext);
         if (this.unlisten) {
             this.unlisten();
         }
+
+        if (this.unObserve) {
+            this.unObserve();
+        }
+
     },
     methods: {
+        setTimeContext(updatedKey) {
+            this.openmct.time.off("timeSystem", this.setScaleAndPlotActivities);
+            this.openmct.time.off("bounds", this.updateViewBounds);
+            this.path.forEach(item => {
+                const key = this.openmct.objects.makeKeyString(item.identifier);
+                if (updatedKey !== undefined && (key !== updatedKey)) {
+                    return;
+                }
+
+                const bounds = this.openmct.time.getIndependentTime(key);
+                if (bounds) {
+                    this.updateViewBounds(bounds);
+
+                    if (this.unObserve) {
+                        this.unObserve();
+                    }
+
+                    this.unObserve = this.openmct.time.observeIndependentTime(key, this.observeIndependentTime);
+                }
+            });
+            this.followTimeConductor(this.unObserve);
+
+        },
+        observeIndependentTime(event, bounds, isTick) {
+            this.updateViewBounds(bounds, isTick);
+        },
+        followTimeConductor(skipBounds) {
+            this.openmct.time.on("timeSystem", this.setScaleAndPlotActivities);
+            if (skipBounds === undefined) {
+                this.updateViewBounds(this.openmct.time.bounds());
+                this.openmct.time.on("bounds", this.updateViewBounds);
+            }
+        },
         observeForChanges(mutatedObject) {
             this.getPlanData(mutatedObject);
             this.setScaleAndPlotActivities();
@@ -141,8 +179,11 @@ export default {
         getPlanData(domainObject) {
             this.planData = getValidatedPlan(domainObject);
         },
-        updateViewBounds() {
-            this.viewBounds = this.openmct.time.bounds();
+        updateViewBounds(bounds) {
+            if (bounds) {
+                this.viewBounds = Object.assign({}, bounds);
+            }
+
             //Add a 50% padding to the end bounds to look ahead
             let timespan = (this.viewBounds.end - this.viewBounds.start);
             let padding = timespan / 2;

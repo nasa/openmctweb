@@ -24,6 +24,15 @@
 <div ref="timelineHolder"
      class="c-timeline-holder"
 >
+    <div v-if="useIndependentTime"
+         class="c-conductor l-shell__time-conductor"
+    >
+        <div class="c-conductor__time-bounds">
+            <independent-time-conductor :options="timeOptions"
+                                        @updated="saveTimeOptions"
+            />
+        </div>
+    </div>
     <div class="c-timeline">
         <div v-for="timeSystemItem in timeSystems"
              :key="timeSystemItem.timeSystem.key"
@@ -67,6 +76,7 @@ import TimelineObjectView from './TimelineObjectView.vue';
 import TimelineAxis from '../../ui/components/TimeSystemAxis.vue';
 import SwimLane from "@/ui/components/swim-lane/SwimLane.vue";
 import { getValidatedPlan } from "../plan/util";
+import IndependentTimeConductor from "@/plugins/timeConductor/IndependentTimeConductor.vue";
 
 const unknownObjectType = {
     definition: {
@@ -77,6 +87,7 @@ const unknownObjectType = {
 
 export default {
     components: {
+        IndependentTimeConductor,
         TimelineObjectView,
         TimelineAxis,
         SwimLane
@@ -86,7 +97,10 @@ export default {
         return {
             items: [],
             timeSystems: [],
-            height: 0
+            height: 0,
+            useIndependentTime: this.domainObject.configuration ? this.domainObject.configuration.useIndependentTime : false,
+            isFixed: this.openmct.time.clock() === undefined,
+            timeOptions: this.domainObject.configuration ? this.domainObject.configuration.timeOptions : undefined
         };
     },
     beforeDestroy() {
@@ -94,7 +108,13 @@ export default {
         this.composition.off('remove', this.removeItem);
         this.composition.off('reorder', this.reorder);
         this.openmct.time.off("bounds", this.updateViewBounds);
+        if (this.unObserve) {
+            this.unObserve();
+        }
 
+        if (this.unObserveTime) {
+            this.unObserveTime();
+        }
     },
     mounted() {
         if (this.composition) {
@@ -105,7 +125,8 @@ export default {
         }
 
         this.getTimeSystems();
-        this.openmct.time.on("bounds", this.updateViewBounds);
+        this.handleTimeSync(this.useIndependentTime);
+        this.unObserveTime = this.openmct.objects.observe(this.domainObject, 'configuration.useIndependentTime', this.handleTimeSync);
     },
     methods: {
         addItem(domainObject) {
@@ -164,6 +185,29 @@ export default {
             if (currentTimeSystem) {
                 currentTimeSystem.bounds = bounds;
             }
+        },
+        observeIndependentTime(event, bounds, isTick) {
+            this.updateViewBounds(bounds);
+        },
+        handleTimeSync(useIndependentTime) {
+            this.useIndependentTime = useIndependentTime;
+            this.openmct.time.off('bounds', this.updateViewBounds);
+
+            if (useIndependentTime) {
+                const key = this.openmct.objects.makeKeyString(this.domainObject.identifier);
+                this.updateViewBounds(this.openmct.time.getIndependentTime(key));
+                if (this.unObserve) {
+                    this.unObserve();
+                }
+
+                this.unObserve = this.openmct.time.observeIndependentTime(key, this.observeIndependentTime);
+            } else {
+                this.openmct.time.on('bounds', this.updateViewBounds);
+            }
+        },
+        saveTimeOptions(options) {
+            this.timeOptions = options;
+            this.openmct.objects.mutate(this.domainObject, 'configuration.timeOptions', this.timeOptions);
         }
     }
 };

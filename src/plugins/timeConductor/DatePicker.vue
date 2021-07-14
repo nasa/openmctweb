@@ -22,7 +22,8 @@
 <template>
 <div
     ref="calendarHolder"
-    class="c-ctrl-wrapper c-ctrl-wrapper--menus-up c-datetime-picker__wrapper"
+    class="c-ctrl-wrapper c-datetime-picker__wrapper"
+    :class="{'c-ctrl-wrapper--menus-up': bottom !== true, 'c-ctrl-wrapper--menus-down': bottom === true}"
 >
     <a
         class="c-icon-button icon-calendar"
@@ -118,6 +119,12 @@ export default {
         formatter: {
             type: Object,
             required: true
+        },
+        bottom: {
+            type: Boolean,
+            default() {
+                return false;
+            }
         }
     },
     data: function () {

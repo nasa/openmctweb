@@ -53,7 +53,8 @@ export default function OverlayPlotViewProvider(openmct) {
                         },
                         provide: {
                             openmct,
-                            domainObject
+                            domainObject,
+                            path: objectPath
                         },
                         data() {
                             return {

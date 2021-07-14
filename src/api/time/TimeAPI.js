@@ -20,7 +20,7 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
-define(['EventEmitter'], function (EventEmitter) {
+define(['EventEmitter', './independentTimeAPI'], function (EventEmitter, IndependentTimeAPI) {
 
     /**
      * The public API for setting and querying the temporal state of the
@@ -60,6 +60,7 @@ define(['EventEmitter'], function (EventEmitter) {
         this.offsets = undefined;
 
         this.tick = this.tick.bind(this);
+        this.independentTimes = new IndependentTimeAPI.default();
 
     }
 
@@ -234,6 +235,31 @@ define(['EventEmitter'], function (EventEmitter) {
     };
 
     /**
+     * Get or set the an independent time observer which follows the TimeAPI timeSystem,
+     * but with different offsets.
+     * @param {key | string} key to uniquely identify this
+     * @param {ClockOffsets} offsets on each tick these will be used to calculate
+     * the start and end bounds. This maintains a sliding time window of a fixed
+     * width that automatically updates.
+     * @memberof module:openmct.TimeAPI#
+     * @method registerIndependentTime
+     */
+    TimeAPI.prototype.registerIndependentTime = function (key, value) {
+        this.independentTimes.set(key, value, this.activeClock);
+        this.emit('independentTime', key);
+
+        return this.independentTimes;
+    };
+
+    TimeAPI.prototype.getIndependentTime = function (key) {
+        return this.independentTimes.get(key);
+    };
+
+    TimeAPI.prototype.observeIndependentTime = function (key, callback) {
+        return this.independentTimes.observe(key, callback);
+    };
+
+    /**
      * Get or set the time system of the TimeAPI.
      * @param {TimeSystem | string} timeSystem
      * @param {module:openmct.TimeAPI~TimeConductorBounds} bounds
@@ -328,6 +354,8 @@ define(['EventEmitter'], function (EventEmitter) {
      * using current offsets.
      */
     TimeAPI.prototype.tick = function (timestamp) {
+        this.independentTimes.tick(timestamp);
+
         const newBounds = {
             start: timestamp + this.offsets.start,
             end: timestamp + this.offsets.end

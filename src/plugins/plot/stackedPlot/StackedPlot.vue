@@ -74,7 +74,7 @@ export default {
     components: {
         StackedPlotItem
     },
-    inject: ['openmct', 'domainObject', 'composition'],
+    inject: ['openmct', 'domainObject', 'composition', 'path'],
     props: {
         options: {
             type: Object,

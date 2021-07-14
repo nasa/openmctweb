@@ -260,6 +260,11 @@
     &[class*='--end'] {
         right: 0;
     }
+
+    &[class*='--bottom'] {
+        bottom: auto;
+        top: 24px;
+    }
 }
 
 [class^='pr-time'] {

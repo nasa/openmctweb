@@ -28,7 +28,7 @@ import MctPlot from '../MctPlot.vue';
 import Vue from "vue";
 
 export default {
-    inject: ['openmct', 'domainObject'],
+    inject: ['openmct', 'domainObject', 'path'],
     props: {
         object: {
             type: Object,
@@ -94,6 +94,7 @@ export default {
 
             const openmct = this.openmct;
             const object = this.object;
+            const path = this.path;
 
             const getProps = this.getProps;
             let viewContainer = document.createElement('div');
@@ -106,7 +107,8 @@ export default {
                 },
                 provide: {
                     openmct,
-                    domainObject: object
+                    domainObject: object,
+                    path
                 },
                 data() {
                     return {

@@ -1,6 +1,7 @@
 <template>
 <div
     class="pr-tc-input-menu"
+    :class="{'pr-tc-input-menu--bottom' : bottom === true}"
     @keydown.enter.prevent
     @keyup.enter.prevent="submit"
     @keydown.esc.prevent
@@ -88,6 +89,12 @@ export default {
         offset: {
             type: String,
             required: true
+        },
+        bottom: {
+            type: Boolean,
+            default() {
+                return false;
+            }
         }
     },
     data() {
