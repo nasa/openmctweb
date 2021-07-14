@@ -126,12 +126,14 @@ export default {
             document.body.addEventListener('mousemove', this.updatePosition);
             document.body.addEventListener('mouseup', this.end);
             this.resizing = true;
+            this.$emit('start-resizing');
             this.trackSize();
         },
         end: function (event) {
             document.body.removeEventListener('mousemove', this.updatePosition);
             document.body.removeEventListener('mouseup', this.end);
             this.resizing = false;
+            this.$emit('end-resizing');
             this.trackSize();
         }
     }
