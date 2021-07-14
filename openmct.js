@@ -23,15 +23,9 @@
 
 const matcher = /\/openmct.js$/;
 if (document.currentScript) {
-    let src = document.currentScript.src;
-    if (src && matcher.test(src)) {
-        // eslint-disable-next-line no-undef
-        __webpack_public_path__ = src.replace(matcher, '') + '/';
-    }
+    let e = document.currentScript.src;
+    e && matcher.test(e) && (__webpack_public_path__ = e.replace(matcher, "") + "/")
 }
-
-const MCT = require('./src/MCT');
-
-const openmct = new MCT();
-
+const MCT = require("./src/MCT"),
+    openmct = new MCT;
 module.exports = openmct;
