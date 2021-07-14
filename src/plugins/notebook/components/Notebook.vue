@@ -138,6 +138,7 @@ import SearchResults from './SearchResults.vue';
 import Sidebar from './Sidebar.vue';
 import { clearDefaultNotebook, getDefaultNotebook, setDefaultNotebook, setDefaultNotebookSection, setDefaultNotebookPage } from '../utils/notebook-storage';
 import { addNotebookEntry, createNewEmbed, getEntryPosById, getNotebookEntries, mutateObject } from '../utils/notebook-entries';
+import { saveNotebookImageDomainObject, updateNamespaceOfDomainObject } from '../utils/notebook-image';
 import { NOTEBOOK_VIEW_TYPE } from '../notebook-constants';
 import objectUtils from 'objectUtils';
 
@@ -370,8 +371,12 @@ export default {
             const snapshotId = event.dataTransfer.getData('openmct/snapshot/id');
             if (snapshotId.length) {
                 const snapshot = this.snapshotContainer.getSnapshot(snapshotId);
-                this.newEntry(snapshot);
+                this.newEntry(snapshot.embedObject);
                 this.snapshotContainer.removeSnapshot(snapshotId);
+
+                const namespace = this.domainObject.identifier.namespace;
+                const notebookImageDomainObject = updateNamespaceOfDomainObject(snapshot.notebookImageDomainObject, namespace);
+                saveNotebookImageDomainObject(this.openmct, notebookImageDomainObject);
 
                 return;
             }

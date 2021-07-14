@@ -1,7 +1,7 @@
 import { addNotebookEntry, createNewEmbed } from './utils/notebook-entries';
 import { getDefaultNotebook, getDefaultNotebookLink, setDefaultNotebook } from './utils/notebook-storage';
 import { NOTEBOOK_DEFAULT } from '@/plugins/notebook/notebook-constants';
-import { createNotebookImageDomainObject, DEFAULT_SIZE } from './utils/notebook-image';
+import { createNotebookImageDomainObject, saveNotebookImageDomainObject, updateNamespaceOfDomainObject, DEFAULT_SIZE } from './utils/notebook-image';
 
 import SnapshotContainer from './snapshot-container';
 
@@ -35,29 +35,30 @@ export default class Snapshot {
      * @private
      */
     _saveSnapShot(notebookType, fullSizeImageURL, thumbnailImageURL, snapshotMeta) {
-        createNotebookImageDomainObject(this.openmct, fullSizeImageURL)
-            .then(object => {
-                const thumbnailImage = { src: thumbnailImageURL || '' };
-                const snapshot = {
-                    fullSizeImageObjectIdentifier: object.identifier,
-                    thumbnailImage
-                };
-                const embed = createNewEmbed(snapshotMeta, snapshot);
-                if (notebookType === NOTEBOOK_DEFAULT) {
-                    this._saveToDefaultNoteBook(embed);
+        const object = createNotebookImageDomainObject(fullSizeImageURL);
+        const thumbnailImage = { src: thumbnailImageURL || '' };
+        const snapshot = {
+            fullSizeImageObjectIdentifier: object.identifier,
+            thumbnailImage
+        };
+        const embed = createNewEmbed(snapshotMeta, snapshot);
+        if (notebookType === NOTEBOOK_DEFAULT) {
+            const notebookStorage = getDefaultNotebook();
 
-                    return;
-                }
+            this._saveToDefaultNoteBook(notebookStorage, embed);
+            const notebookImageDomainObject = updateNamespaceOfDomainObject(object, notebookStorage.notebookMeta.identifier.namespace);
+            saveNotebookImageDomainObject(this.openmct, notebookImageDomainObject);
 
-                this._saveToNotebookSnapshots(embed);
-            });
+            return;
+        }
+
+        this._saveToNotebookSnapshots(object, embed);
     }
 
     /**
      * @private
      */
-    _saveToDefaultNoteBook(embed) {
-        const notebookStorage = getDefaultNotebook();
+    _saveToDefaultNoteBook(notebookStorage, embed) {
         this.openmct.objects.get(notebookStorage.notebookMeta.identifier)
             .then(async (domainObject) => {
                 addNotebookEntry(this.openmct, domainObject, notebookStorage, embed);
@@ -80,8 +81,8 @@ export default class Snapshot {
     /**
      * @private
      */
-    _saveToNotebookSnapshots(embed) {
-        this.snapshotContainer.addSnapshot(embed);
+    _saveToNotebookSnapshots(notebookImageDomainObject, embed) {
+        this.snapshotContainer.addSnapshot(notebookImageDomainObject, embed);
     }
 
     _showNotification(msg, url) {

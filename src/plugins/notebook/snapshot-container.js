@@ -18,13 +18,18 @@ export default class SnapshotContainer extends EventEmitter {
         return SnapshotContainer.instance;
     }
 
-    addSnapshot(embedObject) {
+    addSnapshot(notebookImageDomainObject, embedObject) {
         const snapshots = this.getSnapshots();
         if (snapshots.length >= NOTEBOOK_SNAPSHOT_MAX_COUNT) {
             snapshots.pop();
         }
 
-        snapshots.unshift(embedObject);
+        const snapshotObject = {
+            notebookImageDomainObject,
+            embedObject
+        };
+
+        snapshots.unshift(snapshotObject);
 
         return this.saveSnapshots(snapshots);
     }
@@ -32,7 +37,7 @@ export default class SnapshotContainer extends EventEmitter {
     getSnapshot(id) {
         const snapshots = this.getSnapshots();
 
-        return snapshots.find(s => s.id === id);
+        return snapshots.find(s => s.embedObject.id === id);
     }
 
     getSnapshots() {
@@ -47,7 +52,7 @@ export default class SnapshotContainer extends EventEmitter {
         }
 
         const snapshots = this.getSnapshots();
-        const filteredsnapshots = snapshots.filter(snapshot => snapshot.id !== id);
+        const filteredsnapshots = snapshots.filter(snapshot => snapshot.embedObject.id !== id);
 
         return this.saveSnapshots(filteredsnapshots);
     }
@@ -73,7 +78,7 @@ export default class SnapshotContainer extends EventEmitter {
     updateSnapshot(snapshot) {
         const snapshots = this.getSnapshots();
         const updatedSnapshots = snapshots.map(s => {
-            return s.id === snapshot.id
+            return s.embedObject.id === snapshot.embedObject.id
                 ? snapshot
                 : s;
         });

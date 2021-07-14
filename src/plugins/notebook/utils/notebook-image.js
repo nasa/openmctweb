@@ -5,14 +5,14 @@ export const DEFAULT_SIZE = {
     height: 30
 };
 
-export function createNotebookImageDomainObject(openmct, fullSizeImageURL) {
+export function createNotebookImageDomainObject(fullSizeImageURL) {
     const identifier = {
         key: uuid(),
         namespace: ''
     };
     const viewType = 'notebookSnapshotImage';
 
-    const object = {
+    return {
         name: 'Notebook Snapshot Image',
         type: viewType,
         identifier,
@@ -20,21 +20,6 @@ export function createNotebookImageDomainObject(openmct, fullSizeImageURL) {
             fullSizeImageURL
         }
     };
-
-    return new Promise((resolve, reject) => {
-        openmct.objects.save(object)
-            .then(result => {
-                if (result) {
-                    resolve(object);
-                }
-
-                reject();
-            })
-            .catch(e => {
-                console.error(e);
-                reject();
-            });
-    });
 }
 
 export function getThumbnailURLFromCanvas(canvas, size = DEFAULT_SIZE) {
@@ -67,6 +52,23 @@ export function getThumbnailURLFromimageUrl(imageUrl, size = DEFAULT_SIZE) {
     });
 }
 
+export function saveNotebookImageDomainObject(openmct, object) {
+    return new Promise((resolve, reject) => {
+        openmct.objects.save(object)
+            .then(result => {
+                if (result) {
+                    resolve(object);
+                } else {
+                    reject();
+                }
+            })
+            .catch(e => {
+                console.error(e);
+                reject();
+            });
+    });
+}
+
 export function updateNotebookImageDomainObject(openmct, identifier, fullSizeImage) {
     openmct.objects.get(identifier)
         .then(domainObject => {
@@ -75,4 +77,10 @@ export function updateNotebookImageDomainObject(openmct, identifier, fullSizeIma
 
             openmct.objects.mutate(domainObject, 'configuration', configuration);
         });
+}
+
+export function updateNamespaceOfDomainObject(object, namespace) {
+    object.identifier.namespace = namespace;
+
+    return object;
 }
