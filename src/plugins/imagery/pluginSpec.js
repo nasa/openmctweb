@@ -125,20 +125,6 @@ describe("The Imagery View Layout", () => {
                                 "valueKey": "value"
                             }
                         },
-                        "roll": {
-                            "comparisonFunction": comparisonFunction,
-                            "historical": {
-                                "telemetryObjectId": "roll",
-                                "valueKey": "value"
-                            }
-                        },
-                        "pitch": {
-                            "comparisonFunction": comparisonFunction,
-                            "historical": {
-                                "telemetryObjectId": "pitch",
-                                "valueKey": "value"
-                            }
-                        },
                         "cameraPan": {
                             "comparisonFunction": comparisonFunction,
                             "historical": {

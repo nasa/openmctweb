@@ -32,8 +32,6 @@ describe("The Compass component", () => {
     beforeEach(() => {
         let imageDatum = {
             heading: 100,
-            roll: 90,
-            pitch: 90,
             cameraTilt: 100,
             cameraPan: 90,
             sunAngle: 30
