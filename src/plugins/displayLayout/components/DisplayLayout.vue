@@ -30,6 +30,8 @@
     @dragover="handleDragOver"
     @click.capture="bypassSelection"
     @drop="handleDrop"
+    @mousedown.right="mouseHandler"
+    @mouseup.right="mouseHandler"
 >
     <display-layout-grid
         v-if="isEditing"
@@ -226,6 +228,9 @@ export default {
             return this.selection.some(selectionPath =>
                 selectionPath[0].context.layoutItem && selectionPath[0].context.layoutItem.id === item.id);
         },
+        mouseHandler(){
+            this.mouseRightKeyCatch = !this.mouseRightKeyCatch;
+        },
         bypassSelection($event) {
             if (this.dragInProgress) {
                 if ($event) {
@@ -275,29 +280,31 @@ export default {
             this.mutate("configuration.items", this.layoutItems);
         },
         move(gridDelta) {
-            this.dragInProgress = true;
+            if(!this.mouseRightKeyCatch){
+                this.dragInProgress = true;
 
-            if (!this.initialPositions) {
-                this.initialPositions = {};
-                _.cloneDeep(this.selectedLayoutItems).forEach(selectedItem => {
-                    if (selectedItem.type === 'line-view') {
-                        this.initialPositions[selectedItem.id] = [selectedItem.x, selectedItem.y, selectedItem.x2, selectedItem.y2];
-                        this.startingMinX2 = this.startingMinX2 !== undefined ? Math.min(this.startingMinX2, selectedItem.x2) : selectedItem.x2;
-                        this.startingMinY2 = this.startingMinY2 !== undefined ? Math.min(this.startingMinY2, selectedItem.y2) : selectedItem.y2;
-                    } else {
-                        this.initialPositions[selectedItem.id] = [selectedItem.x, selectedItem.y];
+                if (!this.initialPositions) {
+                    this.initialPositions = {};
+                    _.cloneDeep(this.selectedLayoutItems).forEach(selectedItem => {
+                        if (selectedItem.type === 'line-view') {
+                            this.initialPositions[selectedItem.id] = [selectedItem.x, selectedItem.y, selectedItem.x2, selectedItem.y2];
+                            this.startingMinX2 = this.startingMinX2 !== undefined ? Math.min(this.startingMinX2, selectedItem.x2) : selectedItem.x2;
+                            this.startingMinY2 = this.startingMinY2 !== undefined ? Math.min(this.startingMinY2, selectedItem.y2) : selectedItem.y2;
+                        } else {
+                            this.initialPositions[selectedItem.id] = [selectedItem.x, selectedItem.y];
+                        }
+
+                        this.startingMinX = this.startingMinX !== undefined ? Math.min(this.startingMinX, selectedItem.x) : selectedItem.x;
+                        this.startingMinY = this.startingMinY !== undefined ? Math.min(this.startingMinY, selectedItem.y) : selectedItem.y;
+                    });
+                }
+
+                this.layoutItems.forEach(item => {
+                    if (this.initialPositions[item.id]) {
+                        this.updateItemPosition(item, gridDelta);
                     }
-
-                    this.startingMinX = this.startingMinX !== undefined ? Math.min(this.startingMinX, selectedItem.x) : selectedItem.x;
-                    this.startingMinY = this.startingMinY !== undefined ? Math.min(this.startingMinY, selectedItem.y) : selectedItem.y;
                 });
             }
-
-            this.layoutItems.forEach(item => {
-                if (this.initialPositions[item.id]) {
-                    this.updateItemPosition(item, gridDelta);
-                }
-            });
         },
         updateItemPosition(item, gridDelta) {
             let startingPosition = this.initialPositions[item.id];
