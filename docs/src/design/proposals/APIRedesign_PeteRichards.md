@@ -3,7 +3,7 @@
 **Table of Contents**  *generated with [DocToc](https://github.com/thlorenz/doctoc)*
 
 - [Reducing interface depth (the bundle.json version)](#reducing-interface-depth-the-bundlejson-version)
-  - [Imperitive component registries](#imperative-component-registries)
+  - [Imperative component registries](#imperative-component-registries)
   - [Get rid of "extension category" concept.](#get-rid-of-extension-category-concept)
   - [Reduce number and depth of extension points](#reduce-number-and-depth-of-extension-points)
   - [Composite services should not be the default](#composite-services-should-not-be-the-default)
@@ -145,7 +145,7 @@ Then, if we're using imperative methods for extending the application we can use
 <script>
 // can configure from object
 var myApp = new OpenMCTWeb({
-  persitence: {
+  persistence: {
     providers: [
       {
         type: 'elastic',

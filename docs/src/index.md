@@ -25,7 +25,7 @@
 ## Legacy Documentation
 
 As we transition to a new API, the following documentation for the old API
-(which is supported during the transtion) may be useful as well:
+(which is supported during the transition) may be useful as well:
 
  * The [Architecture Overview](architecture/) describes the concepts used
  throughout Open MCT, and gives a high level overview of the platform's design.
