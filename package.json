@@ -96,6 +96,10 @@
     "docs": "npm run jsdoc ; npm run otherdoc",
     "prepare": "npm run build:prod"
   },
+  "engines": {
+    "node": "8.x",
+    "npm": "6.x"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/nasa/openmct.git"
