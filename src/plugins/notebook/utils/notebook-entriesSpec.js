@@ -23,28 +23,13 @@ import * as NotebookEntries from './notebook-entries';
 import { createOpenMct, resetApplicationState } from 'utils/testing';
 
 const notebookStorage = {
-    notebookMeta: {
-        name: 'notebook',
-        identifier: {
-            namespace: '',
-            key: 'test-notebook'
-        }
+    name: 'notebook',
+    identifier: {
+        namespace: '',
+        key: 'test-notebook'
     },
-    section: {
-        id: '03a79b6a-971c-4e56-9892-ec536332c3f0',
-        isDefault: true,
-        isSelected: true,
-        name: 'section',
-        pages: [],
-        sectionTitle: 'Section'
-    },
-    page: {
-        id: '8b548fd9-2b8a-4b02-93a9-4138e22eba00',
-        isDefault: true,
-        isSelected: true,
-        name: 'page',
-        pageTitle: 'Page'
-    }
+    defaultSectionId: '03a79b6a-971c-4e56-9892-ec536332c3f0',
+    defaultPageId: '8b548fd9-2b8a-4b02-93a9-4138e22eba00'
 };
 
 const notebookEntries = {

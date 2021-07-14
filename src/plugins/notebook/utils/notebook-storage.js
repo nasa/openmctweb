@@ -19,18 +19,22 @@ function defaultNotebookObjectChanged(newDomainObject) {
     clearDefaultNotebook();
 }
 
-function observeDefaultNotebookObject(openmct, notebookMeta, domainObject) {
+function observeDefaultNotebookObject(openmct, notebookStorage, domainObject) {
     if (currentNotebookObjectIdentifier
-            && objectUtils.makeKeyString(currentNotebookObjectIdentifier) === objectUtils.makeKeyString(notebookMeta.identifier)) {
+            && objectUtils.makeKeyString(currentNotebookObjectIdentifier) === objectUtils.makeKeyString(notebookStorage.identifier)) {
         return;
     }
 
+    removeListener();
+
+    unlisten = openmct.objects.observe(domainObject, '*', defaultNotebookObjectChanged);
+}
+
+function removeListener() {
     if (unlisten) {
         unlisten();
         unlisten = null;
     }
-
-    unlisten = openmct.objects.observe(domainObject, '*', defaultNotebookObjectChanged);
 }
 
 function saveDefaultNotebook(notebookStorage) {
@@ -39,6 +43,8 @@ function saveDefaultNotebook(notebookStorage) {
 
 export function clearDefaultNotebook() {
     currentNotebookObjectIdentifier = null;
+    removeListener();
+
     window.localStorage.setItem(NOTEBOOK_LOCAL_STORAGE, null);
 }
 
@@ -46,6 +52,24 @@ export function getDefaultNotebook() {
     const notebookStorage = window.localStorage.getItem(NOTEBOOK_LOCAL_STORAGE);
 
     return JSON.parse(notebookStorage);
+}
+
+export function getNotebookSectionAndPage(domainObject, sectionId, pageId) {
+    const section = domainObject.configuration.sections.find(s => s.id === sectionId);
+    const page = section && section.pages.find(p => p.id === pageId);
+
+    if (!section || !page) {
+        console.warn('Clearing default notebook due to missing Section or Page from default Notebook');
+        console.warn('Section:', section);
+        console.warn('Page:', page);
+
+        clearDefaultNotebook();
+    }
+
+    return {
+        section,
+        page
+    };
 }
 
 export async function getDefaultNotebookLink(openmct, domainObject = null) {
@@ -59,9 +83,9 @@ export async function getDefaultNotebookLink(openmct, domainObject = null) {
             .reverse()
             .join('/')
         );
-    const { page, section } = getDefaultNotebook();
+    const { defaultPageId, defaultSectionId } = getDefaultNotebook();
 
-    return `#/browse/${path}?sectionId=${section.id}&pageId=${page.id}`;
+    return `#/browse/${path}?sectionId=${defaultSectionId}&pageId=${defaultPageId}`;
 }
 
 export function setDefaultNotebook(openmct, notebookStorage, domainObject) {
@@ -69,15 +93,15 @@ export function setDefaultNotebook(openmct, notebookStorage, domainObject) {
     saveDefaultNotebook(notebookStorage);
 }
 
-export function setDefaultNotebookSection(section) {
+export function setDefaultNotebookSectionId(sectionId) {
     const notebookStorage = getDefaultNotebook();
-    notebookStorage.section = section;
+    notebookStorage.defaultSectionId = sectionId;
     saveDefaultNotebook(notebookStorage);
 }
 
-export function setDefaultNotebookPage(page) {
+export function setDefaultNotebookPageId(pageId) {
     const notebookStorage = getDefaultNotebook();
-    notebookStorage.page = page;
+    notebookStorage.defaultPageId = pageId;
     saveDefaultNotebook(notebookStorage);
 }
 

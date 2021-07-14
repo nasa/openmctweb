@@ -17,7 +17,7 @@
 
 <script>
 import Snapshot from '../snapshot';
-import { getDefaultNotebook, validateNotebookStorageObject } from '../utils/notebook-storage';
+import { getDefaultNotebook, getNotebookSectionAndPage, validateNotebookStorageObject } from '../utils/notebook-storage';
 import { NOTEBOOK_DEFAULT, NOTEBOOK_SNAPSHOT } from '../notebook-constants';
 
 export default {
@@ -58,7 +58,7 @@ export default {
     methods: {
         async getDefaultNotebookObject() {
             const defaultNotebook = getDefaultNotebook();
-            const defaultNotebookObject = defaultNotebook && await this.openmct.objects.get(defaultNotebook.notebookMeta.identifier);
+            const defaultNotebookObject = defaultNotebook && await this.openmct.objects.get(defaultNotebook.identifier);
 
             return defaultNotebookObject;
         },
@@ -70,20 +70,22 @@ export default {
 
             const defaultNotebookObject = await this.getDefaultNotebookObject();
             if (defaultNotebookObject) {
-                const name = defaultNotebookObject.name;
-
                 const defaultNotebook = getDefaultNotebook();
-                const sectionName = defaultNotebook.section.name;
-                const pageName = defaultNotebook.page.name;
-                const defaultPath = `${name} - ${sectionName} - ${pageName}`;
+                const { section, page } = getNotebookSectionAndPage(defaultNotebookObject, defaultNotebook.defaultSectionId, defaultNotebook.defaultPageId);
+                if (section && page) {
+                    const name = defaultNotebookObject.name;
+                    const sectionName = section.name;
+                    const pageName = page.name;
+                    const defaultPath = `${name} - ${sectionName} - ${pageName}`;
 
-                notebookTypes.push({
-                    cssClass: 'icon-notebook',
-                    name: `Save to Notebook ${defaultPath}`,
-                    callBack: () => {
-                        return this.snapshot(NOTEBOOK_DEFAULT);
-                    }
-                });
+                    notebookTypes.push({
+                        cssClass: 'icon-notebook',
+                        name: `Save to Notebook ${defaultPath}`,
+                        callBack: () => {
+                            return this.snapshot(NOTEBOOK_DEFAULT);
+                        }
+                    });
+                }
             }
 
             notebookTypes.push({
@@ -120,8 +122,8 @@ export default {
         setDefaultNotebookStatus() {
             let defaultNotebookObject = getDefaultNotebook();
 
-            if (defaultNotebookObject && defaultNotebookObject.notebookMeta) {
-                let notebookIdentifier = defaultNotebookObject.notebookMeta.identifier;
+            if (defaultNotebookObject && defaultNotebookObject) {
+                let notebookIdentifier = defaultNotebookObject.identifier;
 
                 this.openmct.status.set(notebookIdentifier, 'notebook-default');
             }

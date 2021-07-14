@@ -23,37 +23,44 @@
 import * as NotebookStorage from './notebook-storage';
 import { createOpenMct, resetApplicationState } from 'utils/testing';
 
+const notebookSection = {
+    id: 'temp-section',
+    isDefault: false,
+    isSelected: true,
+    name: 'section',
+    pages: [
+        {
+            id: 'temp-page',
+            isDefault: false,
+            isSelected: true,
+            name: 'page',
+            pageTitle: 'Page'
+        }
+    ],
+    sectionTitle: 'Section'
+};
+
 const domainObject = {
     name: 'notebook',
     identifier: {
         namespace: '',
         key: 'test-notebook'
+    },
+    configuration: {
+        sections: [
+            notebookSection
+        ]
     }
 };
 
 const notebookStorage = {
-    notebookMeta: {
-        name: 'notebook',
-        identifier: {
-            namespace: '',
-            key: 'test-notebook'
-        }
+    name: 'notebook',
+    identifier: {
+        namespace: '',
+        key: 'test-notebook'
     },
-    section: {
-        id: 'temp-section',
-        isDefault: false,
-        isSelected: true,
-        name: 'section',
-        pages: [],
-        sectionTitle: 'Section'
-    },
-    page: {
-        id: 'temp-page',
-        isDefault: false,
-        isSelected: true,
-        name: 'page',
-        pageTitle: 'Page'
-    }
+    defaultSectionId: 'temp-section',
+    defaultPageId: 'temp-page'
 };
 
 let openmct;
@@ -104,7 +111,7 @@ describe('Notebook Storage:', () => {
         expect(JSON.stringify(defaultNotebook)).toBe(JSON.stringify(notebookStorage));
     });
 
-    it('has correct section on setDefaultNotebookSection', () => {
+    it('has correct section on setDefaultNotebookSectionId', () => {
         const section = {
             id: 'new-temp-section',
             isDefault: true,
@@ -115,14 +122,14 @@ describe('Notebook Storage:', () => {
         };
 
         NotebookStorage.setDefaultNotebook(openmct, notebookStorage, domainObject);
-        NotebookStorage.setDefaultNotebookSection(section);
+        NotebookStorage.setDefaultNotebookSectionId(section.id);
 
         const defaultNotebook = NotebookStorage.getDefaultNotebook();
-        const newSection = defaultNotebook.section;
-        expect(JSON.stringify(section)).toBe(JSON.stringify(newSection));
+        const defaultSectionId = defaultNotebook.defaultSectionId;
+        expect(section.id).toBe(defaultSectionId);
     });
 
-    it('has correct page on setDefaultNotebookPage', () => {
+    it('has correct page on setDefaultNotebookPageId', () => {
         const page = {
             id: 'new-temp-page',
             isDefault: true,
@@ -132,10 +139,86 @@ describe('Notebook Storage:', () => {
         };
 
         NotebookStorage.setDefaultNotebook(openmct, notebookStorage, domainObject);
-        NotebookStorage.setDefaultNotebookPage(page);
+        NotebookStorage.setDefaultNotebookPageId(page.id);
 
         const defaultNotebook = NotebookStorage.getDefaultNotebook();
-        const newPage = defaultNotebook.page;
-        expect(JSON.stringify(page)).toBe(JSON.stringify(newPage));
+        const newPageId = defaultNotebook.defaultPageId;
+        expect(page.id).toBe(newPageId);
+    });
+
+    describe('is getNotebookSectionAndPage function searches and returns correct,', () => {
+        let section;
+        let page;
+
+        beforeEach(() => {
+            const sectionId = 'temp-section';
+            const pageId = 'temp-page';
+
+            const sectionAndpage = NotebookStorage.getNotebookSectionAndPage(domainObject, sectionId, pageId);
+            section = sectionAndpage.section;
+            page = sectionAndpage.page;
+        });
+
+        it('id for section from notebook domain object', () => {
+            expect(section.id).toEqual('temp-section');
+        });
+
+        it('name for section from notebook domain object', () => {
+            expect(section.name).toEqual('section');
+        });
+
+        it('sectionTitle for section from notebook domain object', () => {
+            expect(section.sectionTitle).toEqual('Section');
+        });
+
+        it('number of pages for section from notebook domain object', () => {
+            expect(section.pages.length).toEqual(1);
+        });
+
+        it('id for page from notebook domain object', () => {
+            expect(page.id).toEqual('temp-page');
+        });
+
+        it('name for page from notebook domain object', () => {
+            expect(page.name).toEqual('page');
+        });
+
+        it('pageTitle for page from notebook domain object', () => {
+            expect(page.pageTitle).toEqual('Page');
+        });
+    });
+
+    describe('is getNotebookSectionAndPage function clears default notebook when,', () => {
+        let oldDefaultNotebook;
+
+        beforeEach(() => {
+            NotebookStorage.setDefaultNotebook(openmct, notebookStorage, domainObject);
+
+            oldDefaultNotebook = NotebookStorage.getDefaultNotebook();
+        });
+
+        it('section is not found', () => {
+            expect(oldDefaultNotebook).not.toBe(null);
+
+            const pageId = 'temp-page';
+            const { section, page } = NotebookStorage.getNotebookSectionAndPage(domainObject, null, pageId);
+            expect(section).toBe(undefined);
+            expect(page).toBe(undefined);
+
+            const defaultNotebook = NotebookStorage.getDefaultNotebook();
+            expect(defaultNotebook).toBe(null);
+        });
+
+        it('page not found', () => {
+            expect(oldDefaultNotebook).not.toBe(null);
+
+            const sectionId = 'temp-section';
+            const { section, page } = NotebookStorage.getNotebookSectionAndPage(domainObject, sectionId, null);
+            expect(section).not.toBe(undefined);
+            expect(page).toBe(undefined);
+
+            const defaultNotebook = NotebookStorage.getDefaultNotebook();
+            expect(defaultNotebook).toBe(null);
+        });
     });
 });

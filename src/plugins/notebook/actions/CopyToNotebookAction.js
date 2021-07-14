@@ -1,4 +1,4 @@
-import { getDefaultNotebook } from '../utils/notebook-storage';
+import { getDefaultNotebook, getNotebookSectionAndPage } from '../utils/notebook-storage';
 import { addNotebookEntry } from '../utils/notebook-entries';
 
 export default class CopyToNotebookAction {
@@ -15,11 +15,16 @@ export default class CopyToNotebookAction {
 
     copyToNotebook(entryText) {
         const notebookStorage = getDefaultNotebook();
-        this.openmct.objects.get(notebookStorage.notebookMeta.identifier)
+        this.openmct.objects.get(notebookStorage.identifier)
             .then(domainObject => {
                 addNotebookEntry(this.openmct, domainObject, notebookStorage, null, entryText);
 
-                const defaultPath = `${domainObject.name} - ${notebookStorage.section.name} - ${notebookStorage.page.name}`;
+                const { section, page } = getNotebookSectionAndPage(domainObject, notebookStorage.defaultSectionId, notebookStorage.defaultPageId);
+                if (!section || !page) {
+                    return;
+                }
+
+                const defaultPath = `${domainObject.name} - ${section.name} - ${page.name}`;
                 const msg = `Saved to Notebook ${defaultPath}`;
                 this.openmct.notifications.info(msg);
             });

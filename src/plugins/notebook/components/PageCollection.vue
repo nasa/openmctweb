@@ -87,22 +87,26 @@ export default {
 
             const selectedPage = this.pages.find(p => p.isSelected);
             const defaultNotebook = getDefaultNotebook();
-            const defaultpage = defaultNotebook && defaultNotebook.page;
+            const defaultPageId = defaultNotebook && defaultNotebook.defaultPageId;
             const isPageSelected = selectedPage && selectedPage.id === id;
-            const isPageDefault = defaultpage && defaultpage.id === id;
+            const isPageDefault = defaultPageId === id;
             const pages = this.pages.filter(s => s.id !== id);
             let selectedPageId;
 
-            if (isPageSelected && defaultpage) {
+            if (isPageSelected && defaultPageId) {
                 pages.forEach(s => {
                     s.isSelected = false;
-                    if (defaultpage && defaultpage.id === s.id) {
+                    if (defaultPageId === s.id) {
                         selectedPageId = s.id;
                     }
                 });
             }
 
-            if (pages.length && isPageSelected && (!defaultpage || isPageDefault)) {
+            if (isPageDefault) {
+                this.$emit('defaultPageDeleted');
+            }
+
+            if (pages.length && isPageSelected && (!defaultPageId || isPageDefault)) {
                 selectedPageId = pages[0].id;
             }
 

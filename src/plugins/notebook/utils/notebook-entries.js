@@ -9,24 +9,24 @@ const TIME_BOUNDS = {
 };
 
 export function addEntryIntoPage(notebookStorage, entries, entry) {
-    const defaultSection = notebookStorage.section;
-    const defaultPage = notebookStorage.page;
-    if (!defaultSection || !defaultPage) {
+    const defaultSectionId = notebookStorage.defaultSectionId;
+    const defaultPageId = notebookStorage.defaultPageId;
+    if (!defaultSectionId || !defaultPageId) {
         return;
     }
 
     const newEntries = JSON.parse(JSON.stringify(entries));
-    let section = newEntries[defaultSection.id];
+    let section = newEntries[defaultSectionId];
     if (!section) {
-        newEntries[defaultSection.id] = {};
+        newEntries[defaultSectionId] = {};
     }
 
-    let page = newEntries[defaultSection.id][defaultPage.id];
+    let page = newEntries[defaultSectionId][defaultPageId];
     if (!page) {
-        newEntries[defaultSection.id][defaultPage.id] = [];
+        newEntries[defaultSectionId][defaultPageId] = [];
     }
 
-    newEntries[defaultSection.id][defaultPage.id].push(entry);
+    newEntries[defaultSectionId][defaultPageId].push(entry);
 
     return newEntries;
 }

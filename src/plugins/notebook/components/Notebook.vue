@@ -43,14 +43,16 @@
                  class="c-notebook__nav c-sidebar c-drawer c-drawer--align-left"
                  :class="[{'is-expanded': showNav}, {'c-drawer--push': !sidebarCoversEntries}, {'c-drawer--overlays': sidebarCoversEntries}]"
                  :default-page-id="defaultPageId"
-                 :selected-page-id="selectedPageId"
+                 :selected-page-id="getSelectedPageId()"
                  :default-section-id="defaultSectionId"
-                 :selected-section-id="selectedSectionId"
+                 :selected-section-id="getSelectedSectionId()"
                  :domain-object="domainObject"
                  :page-title="domainObject.configuration.pageTitle"
                  :section-title="domainObject.configuration.sectionTitle"
                  :sections="sections"
                  :sidebar-covers-entries="sidebarCoversEntries"
+                 @defaultPageDeleted="cleanupDefaultNotebook"
+                 @defaultSectionDeleted="cleanupDefaultNotebook"
                  @pagesChanged="pagesChanged"
                  @selectPage="selectPage"
                  @sectionsChanged="sectionsChanged"
@@ -136,7 +138,7 @@ import NotebookEntry from './NotebookEntry.vue';
 import Search from '@/ui/components/search.vue';
 import SearchResults from './SearchResults.vue';
 import Sidebar from './Sidebar.vue';
-import { clearDefaultNotebook, getDefaultNotebook, setDefaultNotebook, setDefaultNotebookSection, setDefaultNotebookPage } from '../utils/notebook-storage';
+import { clearDefaultNotebook, getDefaultNotebook, setDefaultNotebook, setDefaultNotebookSectionId, setDefaultNotebookPageId } from '../utils/notebook-storage';
 import { addNotebookEntry, createNewEmbed, getEntryPosById, getNotebookEntries, mutateObject } from '../utils/notebook-entries';
 import { NOTEBOOK_VIEW_TYPE } from '../notebook-constants';
 import objectUtils from 'objectUtils';
@@ -164,8 +166,10 @@ export default {
     },
     data() {
         return {
-            selectedSectionId: this.getDefaultSectionId(),
-            selectedPageId: this.getDefaultPageId(),
+            defaultPageId: this.getDefaultPageId(),
+            defaultSectionId: this.getDefaultSectionId(),
+            selectedSectionId: this.getSelectedSectionId(),
+            selectedPageId: this.getSelectedPageId(),
             defaultSort: this.domainObject.configuration.defaultSort,
             focusEntryId: null,
             search: '',
@@ -176,12 +180,6 @@ export default {
         };
     },
     computed: {
-        defaultPageId() {
-            return this.getDefaultPageId();
-        },
-        defaultSectionId() {
-            return this.getDefaultSectionId();
-        },
         filteredAndSortedEntries() {
             const filterTime = Date.now();
             const pageEntries = getNotebookEntries(this.domainObject, this.selectedSection, this.selectedPage) || [];
@@ -203,24 +201,38 @@ export default {
         },
         selectedPage() {
             const pages = this.getPages();
-            const selectedPage = pages.find(page => page.id === this.selectedPageId);
+            if (!pages.length) {
+                return undefined;
+            }
 
+            const selectedPage = pages.find(page => page.id === this.selectedPageId);
             if (selectedPage) {
                 return selectedPage;
             }
 
-            if (!selectedPage && !pages.length) {
-                return undefined;
+            const defaultPage = pages.find(page => page.id === this.defaultPageId);
+            if (defaultPage) {
+                return defaultPage;
             }
 
-            return pages[0];
+            return this.pages[0];
         },
         selectedSection() {
             if (!this.sections.length) {
-                return null;
+                return undefined;
             }
 
-            return this.sections.find(section => section.id === this.selectedSectionId);
+            const selectedSection = this.sections.find(section => section.id === this.selectedSectionId);
+            if (selectedSection) {
+                return selectedSection;
+            }
+
+            const defaultSection = this.sections.find(section => section.id === this.defaultSectionId);
+            if (defaultSection) {
+                return defaultSection;
+            }
+
+            return this.sections[0];
         }
     },
     watch: {
@@ -301,26 +313,29 @@ export default {
             this.sectionsChanged({ sections });
             this.resetSearch();
         },
+        cleanupDefaultNotebook() {
+            this.defaultPageId = undefined;
+            this.defaultSectionId = undefined;
+            this.removeDefaultClass(this.domainObject);
+            clearDefaultNotebook();
+        },
         setSectionAndPageFromUrl() {
-            let sectionId = this.getSectionIdFromUrl() || this.selectedSectionId;
-            let pageId = this.getPageIdFromUrl() || this.selectedPageId;
+            let sectionId = this.getSectionIdFromUrl() || this.getDefaultSectionId() || this.getSelectedSectionId();
+            let pageId = this.getPageIdFromUrl() || this.getDefaultPageId() || this.getSelectedPageId();
 
             this.selectSection(sectionId);
             this.selectPage(pageId);
         },
         createNotebookStorageObject() {
-            const notebookMeta = {
-                name: this.domainObject.name,
-                identifier: this.domainObject.identifier,
-                link: this.getLinktoNotebook()
-            };
             const page = this.selectedPage;
             const section = this.selectedSection;
 
             return {
-                notebookMeta,
-                page,
-                section
+                name: this.domainObject.name,
+                identifier: this.domainObject.identifier,
+                link: this.getLinktoNotebook(),
+                defaultSectionId: section.id,
+                defaultPageId: page.id
             };
         },
         deleteEntry(entryId) {
@@ -419,35 +434,21 @@ export default {
             this.sidebarCoversEntries = sidebarCoversEntries;
         },
         getDefaultPageId() {
-            let defaultPageId;
-
-            if (this.isDefaultNotebook()) {
-                defaultPageId = getDefaultNotebook().page.id;
-            } else {
-                const firstSection = this.getSections()[0];
-                defaultPageId = firstSection && firstSection.pages[0].id;
-            }
-
-            return defaultPageId;
+            return this.isDefaultNotebook()
+                ? getDefaultNotebook().defaultPageId
+                : undefined;
         },
         isDefaultNotebook() {
             const defaultNotebook = getDefaultNotebook();
-            const defaultNotebookIdentifier = defaultNotebook && defaultNotebook.notebookMeta.identifier;
+            const defaultNotebookIdentifier = defaultNotebook && defaultNotebook.identifier;
 
             return defaultNotebookIdentifier !== null
                 && this.openmct.objects.areIdsEqual(defaultNotebookIdentifier, this.domainObject.identifier);
         },
         getDefaultSectionId() {
-            let defaultSectionId;
-
-            if (this.isDefaultNotebook()) {
-                defaultSectionId = getDefaultNotebook().section.id;
-            } else {
-                const firstSection = this.getSections()[0];
-                defaultSectionId = firstSection && firstSection.id;
-            }
-
-            return defaultSectionId;
+            return this.isDefaultNotebook()
+                ? getDefaultNotebook().defaultSectionId
+                : undefined;
         },
         getDefaultNotebookObject() {
             const oldNotebookStorage = getDefaultNotebook();
@@ -455,7 +456,7 @@ export default {
                 return null;
             }
 
-            return this.openmct.objects.get(oldNotebookStorage.notebookMeta.identifier);
+            return this.openmct.objects.get(oldNotebookStorage.identifier);
         },
         getLinktoNotebook() {
             const objectPath = this.openmct.router.path;
@@ -573,6 +574,22 @@ export default {
 
             return selectedSection.pages;
         },
+        getSelectedPageId() {
+            const page = this.selectedPage;
+            if (!page) {
+                return undefined;
+            }
+
+            return page.id;
+        },
+        getSelectedSectionId() {
+            const section = this.selectedSection;
+            if (!section) {
+                return undefined;
+            }
+
+            return section.id;
+        },
         newEntry(embed = null) {
             this.resetSearch();
             const notebookStorage = this.createNotebookStorageObject();
@@ -618,48 +635,20 @@ export default {
             const defaultNotebookObject = await this.getDefaultNotebookObject();
             if (!defaultNotebookObject) {
                 setDefaultNotebook(this.openmct, notebookStorage, this.domainObject);
-            } else if (objectUtils.makeKeyString(defaultNotebookObject.identifier) !== objectUtils.makeKeyString(notebookStorage.notebookMeta.identifier)) {
+            } else if (objectUtils.makeKeyString(defaultNotebookObject.identifier) !== objectUtils.makeKeyString(notebookStorage.identifier)) {
                 this.removeDefaultClass(defaultNotebookObject);
                 setDefaultNotebook(this.openmct, notebookStorage, this.domainObject);
             }
 
-            if (this.defaultSectionId && this.defaultSectionId.length === 0 || this.defaultSectionId !== notebookStorage.section.id) {
-                this.defaultSectionId = notebookStorage.section.id;
-                setDefaultNotebookSection(notebookStorage.section);
+            if (this.defaultSectionId !== notebookStorage.defaultSectionId) {
+                setDefaultNotebookSectionId(notebookStorage.defaultSectionId);
+                this.defaultSectionId = notebookStorage.defaultSectionId;
             }
 
-            if (this.defaultPageId && this.defaultPageId.length === 0 || this.defaultPageId !== notebookStorage.page.id) {
-                this.defaultPageId = notebookStorage.page.id;
-                setDefaultNotebookPage(notebookStorage.page);
+            if (this.defaultPageId !== notebookStorage.defaultPageId) {
+                setDefaultNotebookPageId(notebookStorage.defaultPageId);
+                this.defaultPageId = notebookStorage.defaultPageId;
             }
-        },
-        updateDefaultNotebookPage(pages, id) {
-            if (!id) {
-                return;
-            }
-
-            const notebookStorage = getDefaultNotebook();
-            if (!notebookStorage
-                    || notebookStorage.notebookMeta.identifier.key !== this.domainObject.identifier.key) {
-                return;
-            }
-
-            const defaultNotebookPage = notebookStorage.page;
-            const page = pages.find(p => p.id === id);
-            if (!page && defaultNotebookPage.id === id) {
-                this.defaultSectionId = null;
-                this.defaultPageId = null;
-                this.removeDefaultClass(this.domainObject);
-                clearDefaultNotebook();
-
-                return;
-            }
-
-            if (id !== defaultNotebookPage.id) {
-                return;
-            }
-
-            setDefaultNotebookPage(page);
         },
         updateDefaultNotebookSection(sections, id) {
             if (!id) {
@@ -668,26 +657,24 @@ export default {
 
             const notebookStorage = getDefaultNotebook();
             if (!notebookStorage
-                    || notebookStorage.notebookMeta.identifier.key !== this.domainObject.identifier.key) {
+                    || notebookStorage.identifier.key !== this.domainObject.identifier.key) {
                 return;
             }
 
-            const defaultNotebookSection = notebookStorage.section;
+            const defaultNotebookSectionId = notebookStorage.defaultSectionId;
             const section = sections.find(s => s.id === id);
-            if (!section && defaultNotebookSection.id === id) {
-                this.defaultSectionId = null;
-                this.defaultPageId = null;
+            if (!section && defaultNotebookSectionId === id) {
                 this.removeDefaultClass(this.domainObject);
                 clearDefaultNotebook();
 
                 return;
             }
 
-            if (id !== defaultNotebookSection.id) {
+            if (id !== defaultNotebookSectionId) {
                 return;
             }
 
-            setDefaultNotebookSection(section);
+            setDefaultNotebookSectionId(defaultNotebookSectionId);
         },
         updateEntry(entry) {
             const entries = getNotebookEntries(this.domainObject, this.selectedSection, this.selectedPage);
@@ -715,19 +702,27 @@ export default {
                 sectionId: this.selectedSectionId
             });
         },
-        sectionsChanged({ sections, id = null }) {
+        sectionsChanged({ sections, id = undefined }) {
             mutateObject(this.openmct, this.domainObject, 'configuration.sections', sections);
             this.updateDefaultNotebookSection(sections, id);
         },
         selectPage(pageId) {
+            if (!pageId) {
+                return;
+            }
+
             this.selectedPageId = pageId;
             this.syncUrlWithPageAndSection();
         },
         selectSection(sectionId) {
+            if (!sectionId) {
+                return;
+            }
+
             this.selectedSectionId = sectionId;
 
-            const defaultPageId = this.selectedSection.pages[0].id;
-            this.selectPage(defaultPageId);
+            const pageId = this.selectedSection.pages[0].id;
+            this.selectPage(pageId);
 
             this.syncUrlWithPageAndSection();
         }

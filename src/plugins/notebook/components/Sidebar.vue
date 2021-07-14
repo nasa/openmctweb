@@ -19,6 +19,7 @@
                                :domain-object="domainObject"
                                :sections="sections"
                                :section-title="sectionTitle"
+                               @defaultSectionDeleted="defaultSectionDeleted"
                                @updateSection="sectionsChanged"
                                @selectSection="selectSection"
             />
@@ -50,6 +51,7 @@
                             :sections="sections"
                             :sidebar-covers-entries="sidebarCoversEntries"
                             :page-title="pageTitle"
+                            @defaultPageDeleted="defaultPageDeleted"
                             @toggleNav="toggleNav"
                             @updatePage="pagesChanged"
                             @selectPage="selectPage"
@@ -217,6 +219,12 @@ export default {
                 pages,
                 sectionTitle
             };
+        },
+        defaultPageDeleted() {
+            this.$emit('defaultPageDeleted');
+        },
+        defaultSectionDeleted() {
+            this.$emit('defaultSectionDeleted');
         },
         toggleNav() {
             this.$emit('toggleNav');

@@ -75,21 +75,25 @@ export default {
 
             const selectedSection = this.sections.find(s => s.id === this.selectedSectionId);
             const defaultNotebook = getDefaultNotebook();
-            const defaultSection = defaultNotebook && defaultNotebook.section;
+            const defaultSectionId = defaultNotebook && defaultNotebook.defaultSectionId;
             const isSectionSelected = selectedSection && selectedSection.id === id;
-            const isSectionDefault = defaultSection && defaultSection.id === id;
+            const isSectionDefault = defaultSectionId === id;
             const sections = this.sections.filter(s => s.id !== id);
 
-            if (isSectionSelected && defaultSection) {
+            if (isSectionSelected && defaultSectionId) {
                 sections.forEach(s => {
                     s.isSelected = false;
-                    if (defaultSection && defaultSection.id === s.id) {
+                    if (defaultSectionId === s.id) {
                         s.isSelected = true;
                     }
                 });
             }
 
-            if (sections.length && isSectionSelected && (!defaultSection || isSectionDefault)) {
+            if (isSectionDefault) {
+                this.$emit('defaultSectionDeleted');
+            }
+
+            if (sections.length && isSectionSelected && (!defaultSectionId || isSectionDefault)) {
                 sections[0].isSelected = true;
             }
 

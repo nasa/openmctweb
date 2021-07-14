@@ -72,7 +72,7 @@
 <script>
 import LayoutFrame from './LayoutFrame.vue';
 import conditionalStylesMixin from "../mixins/objectStyles-mixin";
-import { getDefaultNotebook } from '@/plugins/notebook/utils/notebook-storage.js';
+import { getDefaultNotebook, getNotebookSectionAndPage } from '@/plugins/notebook/utils/notebook-storage.js';
 
 const DEFAULT_TELEMETRY_DIMENSIONS = [10, 5];
 const DEFAULT_POSITION = [1, 1];
@@ -340,15 +340,16 @@ export default {
         },
         async getContextMenuActions() {
             const defaultNotebook = getDefaultNotebook();
-            const domainObject = defaultNotebook && await this.openmct.objects.get(defaultNotebook.notebookMeta.identifier);
+            const domainObject = defaultNotebook && await this.openmct.objects.get(defaultNotebook.identifier);
             const actionCollection = this.openmct.actions.get(this.currentObjectPath, this.getView());
             const actionsObject = actionCollection.getActionsObject();
 
-            let copyToNotebookAction = actionsObject.copyToNotebook;
-
             if (defaultNotebook) {
-                const defaultPath = domainObject && `${domainObject.name} - ${defaultNotebook.section.name} - ${defaultNotebook.page.name}`;
-                copyToNotebookAction.name = `Copy to Notebook ${defaultPath}`;
+                const { section, page } = getNotebookSectionAndPage(domainObject, defaultNotebook.defaultSectionId, defaultNotebook.defaultPageId);
+                if (section && page) {
+                    const defaultPath = domainObject && `${domainObject.name} - ${section.name} - ${page.name}`;
+                    actionsObject.copyToNotebook.name = `Copy to Notebook ${defaultPath}`;
+                }
             } else {
                 actionsObject.copyToNotebook = undefined;
                 delete actionsObject.copyToNotebook;
