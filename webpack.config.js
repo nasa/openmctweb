@@ -14,9 +14,9 @@ const gitRevision = require('child_process')
 const gitBranch = require('child_process')
     .execSync('git rev-parse --abbrev-ref HEAD')
     .toString().trim();
-const vueFile = devMode ?
-    path.join(__dirname, "node_modules/vue/dist/vue.js") :
-    path.join(__dirname, "node_modules/vue/dist/vue.min.js");
+const vueFile = devMode
+    ? path.join(__dirname, "node_modules/vue/dist/vue.js")
+    : path.join(__dirname, "node_modules/vue/dist/vue.min.js");
 
 const webpackConfig = {
     mode: devMode ? 'development' : 'production',
@@ -24,9 +24,11 @@ const webpackConfig = {
         openmct: './openmct.js',
         espressoTheme: './src/plugins/themes/espresso-theme.scss',
         snowTheme: './src/plugins/themes/snow-theme.scss',
-        maelstromTheme: './src/plugins/themes/maelstrom-theme.scss'
+        maelstromTheme: './src/plugins/themes/maelstrom-theme.scss',
+        CouchChangesFeed: './src/plugins/persistence/couch/CouchChangesFeed.js'
     },
     output: {
+        globalObject: "this",
         filename: '[name].js',
         library: '[name]',
         libraryTarget: 'umd',
@@ -105,13 +107,15 @@ const webpackConfig = {
                     name: '[name].[ext]',
                     outputPath(url, resourcePath, context) {
                         if (/\.(jpg|jpeg|png|svg)$/.test(url)) {
-                            return `images/${url}`
+                            return `images/${url}`;
                         }
+
                         if (/\.ico$/.test(url)) {
-                            return `icons/${url}`
+                            return `icons/${url}`;
                         }
+
                         if (/\.(woff2?|eot|ttf)$/.test(url)) {
-                            return `fonts/${url}`
+                            return `fonts/${url}`;
                         } else {
                             return `${url}`;
                         }

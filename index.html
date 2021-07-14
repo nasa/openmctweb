@@ -27,6 +27,7 @@
         <meta name="apple-mobile-web-app-capable" content="yes">
         <title></title>
         <script src="dist/openmct.js"></script>
+        <script src="dist/CouchChangesFeed.js"></script>
         <link rel="icon" type="image/png" href="dist/favicons/favicon-96x96.png" sizes="96x96" type="image/x-icon">
         <link rel="icon" type="image/png" href="dist/favicons/favicon-32x32.png" sizes="32x32" type="image/x-icon">
         <link rel="icon" type="image/png" href="dist/favicons/favicon-16x16.png" sizes="16x16" type="image/x-icon">
@@ -195,5 +196,6 @@
             {indicator: true}
         ));
         openmct.start();
+        window.addEventListener('beforeunload', openmct.destroy.bind(openmct));
     </script>
 </html>
