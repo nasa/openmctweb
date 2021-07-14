@@ -30,6 +30,18 @@ Building and running Open MCT in your local dev environment is very easy. Be sur
 
 Open MCT is now running, and can be accessed by pointing a web browser at [http://localhost:8080/](http://localhost:8080/)
 
+## Building and Running Open MCT in Docker
+
+Building and running Open MCT in your local dev environment is very easy. Be sure you have [Docker](https://www.docker.com/get-started) installed, then follow the directions below.
+
+1. Build image
+
+  `docker image build -t openmct:1.3.0 .`
+
+2. Create container
+
+  `docker container run -d --name openmct -p 8080:8080 openmct:1.3.0`
+
 ## Open MCT v1.0.0
 This represents a major overhaul of Open MCT with significant changes under the hood. We aim to maintain backward compatibility but if you do find compatibility issues, please let us know by filing an issue in this repository. If you are having major issues with v1.0.0 please check-out the v0.14.0 tag until we can resolve them for you.
 
