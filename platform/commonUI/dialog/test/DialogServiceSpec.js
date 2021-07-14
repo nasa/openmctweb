@@ -161,10 +161,19 @@ define(
                 expect(mockDeferred.resolve).not.toHaveBeenCalled();
             });
 
-            it("ignores non escape keydown events", function () {
+            it("confirms the dialog when a return keydown event is triggered", function () {
                 dialogService.getUserInput({}, {});
                 mockBody.on.calls.mostRecent().args[1]({
                     keyCode: 13
+                });
+                expect(mockDeferred.reject).not.toHaveBeenCalled();
+                expect(mockDeferred.resolve).toHaveBeenCalled();
+            });
+
+            it("ignores non escape or return keydown events", function () {
+                dialogService.getUserInput({}, {});
+                mockBody.on.calls.mostRecent().args[1]({
+                    keyCode: 9
                 });
                 expect(mockDeferred.reject).not.toHaveBeenCalled();
                 expect(mockDeferred.resolve).not.toHaveBeenCalled();

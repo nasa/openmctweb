@@ -65,12 +65,13 @@ define(
             var deferred = this.$q.defer(),
                 self = this,
                 overlay,
-                handleEscKeydown;
+                handleAnyKeydown;
 
             // Confirm function; this will be passed in to the
             // overlay-dialog template and associated with a
             // OK button click
             function confirm(value) {
+                self.findBody().off('keydown', handleAnyKeydown);
                 // Pass along the result
                 deferred.resolve(resultGetter ? resultGetter() : value);
                 self.dismissOverlay(overlay);
@@ -81,13 +82,16 @@ define(
             // Cancel or X button click
             function cancel() {
                 deferred.reject();
-                self.findBody().off('keydown', handleEscKeydown);
+                self.findBody().off('keydown', handleAnyKeydown);
                 self.dismissOverlay(overlay);
             }
 
-            handleEscKeydown = function (event) {
+            handleAnyKeydown = function (event) {
                 if (event.keyCode === 27) {
                     cancel();
+                }
+                if (event.keyCode === 13) {
+                    confirm();
                 }
             };
 
@@ -95,7 +99,7 @@ define(
             model.confirm = confirm;
             model.cancel = cancel;
 
-            this.findBody().on('keydown', handleEscKeydown);
+            this.findBody().on('keydown', handleAnyKeydown);
 
             if (this.canShowDialog(model)) {
                 // Add the overlay using the OverlayService, which
