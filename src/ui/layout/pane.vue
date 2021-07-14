@@ -41,8 +41,11 @@
 
 <script>
 const COLLAPSE_THRESHOLD_PX = 40;
+const HIDE_TREE_PARAM = 'hideTree';
+const HIDE_INSPECTOR_PARAM = 'hideInspector';
 
 export default {
+    inject: ['openmct'],
     props: {
         handle: {
             type: String,
@@ -70,19 +73,50 @@ export default {
         this.type = this.$parent.type;
         this.styleProp = (this.type === 'horizontal') ? 'width' : 'height';
     },
+    async mounted() {
+        await this.$nextTick();
+        // Hide tree and/or inspector pane if specified in URL
+        this.handleHideUrl();
+    },
     methods: {
-        toggleCollapse: function () {
+        toggleCollapse: function (e) {
+            let target = '';
+            target = this.label === 'Browse' ? HIDE_TREE_PARAM : HIDE_INSPECTOR_PARAM;
             this.collapsed = !this.collapsed;
             if (this.collapsed) {
-                // Pane is expanded and is being collapsed
-                this.currentSize = (this.dragCollapse === true) ? this.initial : this.$el.style[this.styleProp];
-                this.$el.style[this.styleProp] = '';
+                this.handleCollapse();
+                this.addHideParam(target);
             } else {
-                // Pane is collapsed and is being expanded
-                this.$el.style[this.styleProp] = this.currentSize;
-                delete this.currentSize;
-                delete this.dragCollapse;
+                this.handleExpand();
+                this.removeHideParam(target);
             }
+        },
+        handleHideUrl: function () {
+            let hideTree = this.openmct.router.getSearchParam(HIDE_TREE_PARAM);
+            let hideInspector = this.openmct.router.getSearchParam(HIDE_INSPECTOR_PARAM);
+            if (hideTree && this.label === 'Browse'
+            || hideInspector && this.label === 'Inspect') {
+                this.collapsePane();
+            }
+        },
+        collapsePane: function () {
+            this.collapsed = true;
+            this.handleCollapse();
+        },
+        addHideParam: function (target) {
+            this.openmct.router.setSearchParam(target, 'true');
+        },
+        removeHideParam: function (target) {
+            this.openmct.router.deleteSearchParam(target);
+        },
+        handleCollapse: function () {
+            this.currentSize = (this.dragCollapse === true) ? this.initial : this.$el.style[this.styleProp];
+            this.$el.style[this.styleProp] = '';
+        },
+        handleExpand: function () {
+            this.$el.style[this.styleProp] = this.currentSize;
+            delete this.currentSize;
+            delete this.dragCollapse;
         },
         trackSize: function () {
             if (!this.dragCollapse === true) {
