@@ -81,7 +81,8 @@
             openmct.legacyRegistry.enable.bind(openmct.legacyRegistry)
         );
 
-        openmct.install(openmct.plugins.LocalStorage());
+        // openmct.install(openmct.plugins.LocalStorage());
+        openmct.install(openmct.plugins.PouchDB());
         openmct.install(openmct.plugins.Espresso());
         openmct.install(openmct.plugins.MyItems());
         openmct.install(openmct.plugins.Generator());
