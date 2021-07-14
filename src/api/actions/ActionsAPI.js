@@ -67,9 +67,7 @@ class ActionsAPI extends EventEmitter {
     }
 
     _getCachedActionCollection(objectPath, view) {
-        let cachedActionCollection = this._actionCollections.get(view);
-
-        return cachedActionCollection;
+        return this._actionCollections.get(view);
     }
 
     _newActionCollection(objectPath, view, skipEnvironmentObservers) {

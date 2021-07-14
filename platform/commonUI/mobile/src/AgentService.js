@@ -79,9 +79,7 @@ define(
          */
         AgentService.prototype.isAndroidTablet = function () {
             if (this.mobileName === 'Android') {
-                if (this.isPortrait() && window.innerWidth >= 768) {
-                    return true;
-                } else if (this.isLandscape() && window.innerHeight >= 768) {
+                if ((this.isPortrait() || this.isLandscape()) && window.innerWidth >= 768) {
                     return true;
                 }
             } else {

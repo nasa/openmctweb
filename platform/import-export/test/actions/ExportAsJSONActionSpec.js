@@ -93,9 +93,7 @@ define(
             });
 
             function invokeAdapter() {
-                var newStyleObject = new AdapterCapability(context.domainObject).invoke();
-
-                return newStyleObject;
+                return new AdapterCapability(context.domainObject).invoke();
             }
 
             it("initializes happily", function () {
