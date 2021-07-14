@@ -19,40 +19,14 @@
  * this source code distribution or the Licensing information page available
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
-define(function () {
+import AgentService from "./src/AgentService";
+import DeviceClassifier from "./src/DeviceClassifier";
 
-    /**
-     * An object containing key-value pairs, where keys are symbolic of
-     * device attributes, and values are functions that take the
-     * `agentService` as inputs and return boolean values indicating
-     * whether or not the current device has these attributes.
-     *
-     * For internal use by the mobile support bundle.
-     *
-     * @memberof platform/commonUI/mobile
-     * @private
-     */
-    return {
-        mobile: function (agentService) {
-            return agentService.isMobile();
-        },
-        phone: function (agentService) {
-            return agentService.isPhone();
-        },
-        tablet: function (agentService) {
-            return agentService.isTablet();
-        },
-        desktop: function (agentService) {
-            return !agentService.isMobile();
-        },
-        portrait: function (agentService) {
-            return agentService.isPortrait();
-        },
-        landscape: function (agentService) {
-            return agentService.isLandscape();
-        },
-        touch: function (agentService) {
-            return agentService.isTouch();
-        }
+export default () => {
+    return (openmct) => {
+        openmct.on("start", () => {
+            const agentService = new AgentService(window);
+            DeviceClassifier(agentService, window.document);
+        });
     };
-});
+};

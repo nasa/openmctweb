@@ -21,7 +21,7 @@
  *****************************************************************************/
 
 define(
-    ['./DeviceMatchers'],
+    ['../../../../src/plugins/DeviceClassifier/src/DeviceMatchers'],
     function (DeviceMatchers) {
 
         /**

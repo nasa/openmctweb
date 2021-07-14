@@ -20,36 +20,38 @@
  * at runtime from the About dialog for additional information.
  *****************************************************************************/
 
-define([
-    "./src/MCTDevice",
-    "./src/AgentService"
-], function (
-    MCTDevice,
-    AgentService
-) {
-    return {
-        name: "platform/commonUI/mobile",
-        definition: {
-            "extensions": {
-                "directives": [
-                    {
-                        "key": "mctDevice",
-                        "implementation": MCTDevice,
-                        "depends": [
-                            "agentService"
-                        ]
-                    }
-                ],
-                "services": [
-                    {
-                        "key": "agentService",
-                        "implementation": AgentService,
-                        "depends": [
-                            "$window"
-                        ]
-                    }
-                ]
-            }
-        }
-    };
-});
+/**
+ * An object containing key-value pairs, where keys are symbolic of
+ * device attributes, and values are functions that take the
+ * `agentService` as inputs and return boolean values indicating
+ * whether or not the current device has these attributes.
+ *
+ * For internal use by the mobile support bundle.
+ *
+ * @memberof src/plugins/DeviceClassifier
+ * @private
+ */
+
+export default {
+    mobile: function (agentService) {
+        return agentService.isMobile();
+    },
+    phone: function (agentService) {
+        return agentService.isPhone();
+    },
+    tablet: function (agentService) {
+        return agentService.isTablet();
+    },
+    desktop: function (agentService) {
+        return !agentService.isMobile();
+    },
+    portrait: function (agentService) {
+        return agentService.isPortrait();
+    },
+    landscape: function (agentService) {
+        return agentService.isLandscape();
+    },
+    touch: function (agentService) {
+        return agentService.isTouch();
+    }
+};
